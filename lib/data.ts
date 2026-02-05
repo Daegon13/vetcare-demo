@@ -1,22 +1,32 @@
 import type { Campaign, PetProfile, ServiceId } from "./types";
+import { clinica, servicios, staff, vacunas, testimonios, faqs } from "@/src/data/vet";
+
+// Capa de compatibilidad para el resto de la demo.
+// Si querés “rebrandear” VetCare, cambiá /src/data/vet.ts.
 
 export const BRAND = {
-  name: "VetCare",
+  name: clinica.nombre,
   tagline: "Cuidado moderno, rápido y humano.",
-  phone: "+598 91 234 567",
-  whatsapp: "+59891234567",
-  address: "Av. Principal 1234, Montevideo",
-  hours: "Lun a Sáb · 9:00–19:00",
+  phone: clinica.telefono,
+  whatsapp: clinica.whatsapp.replace(/\s/g, ""),
+  address: clinica.direccion,
+  hours: clinica.horarios
 };
 
-export const SERVICES: { id: ServiceId; name: string; durationMin: number; bufferMin: number; priceFrom: string; desc: string }[] = [
-  { id: "consulta", name: "Consulta general", durationMin: 30, bufferMin: 10, priceFrom: "$ 900", desc: "Revisión clínica, plan de cuidado y seguimiento." },
-  { id: "vacunacion", name: "Vacunación", durationMin: 20, bufferMin: 10, priceFrom: "$ 750", desc: "Esquema completo y recordatorios para mantener al día." },
-  { id: "desparasitacion", name: "Desparasitación", durationMin: 20, bufferMin: 10, priceFrom: "$ 600", desc: "Interna/externa según especie y peso." },
-  { id: "control", name: "Control + chequeo", durationMin: 40, bufferMin: 10, priceFrom: "$ 1200", desc: "Chequeo preventivo con recomendaciones." },
-  { id: "cirugia", name: "Cirugía programada", durationMin: 60, bufferMin: 20, priceFrom: "A cotizar", desc: "Evaluación + prequirúrgico + seguimiento." },
-  { id: "estetica", name: "Estética / baño", durationMin: 60, bufferMin: 15, priceFrom: "$ 1400", desc: "Baño, corte higiénico y cuidado de piel." }
-];
+export const SERVICES: { id: ServiceId; name: string; durationMin: number; bufferMin: number; priceFrom: string; desc: string }[] = servicios.map((s) => ({
+  id: s.id,
+  name: s.nombre,
+  durationMin: s.duracionMin,
+  bufferMin: s.bufferMin,
+  priceFrom: s.precioDesde,
+  desc: s.descripcion
+}));
+
+// Export extra (no obligatorio para el flujo actual, pero útil en ventas)
+export const STAFF = staff;
+export const VACCINES_SCHEMA = vacunas;
+export const TESTIMONIALS = testimonios;
+export const FAQS = faqs;
 
 export const DEFAULT_PET: PetProfile = {
   id: "pet_1",
@@ -35,19 +45,21 @@ export const DEFAULT_PET: PetProfile = {
 export const DEFAULT_CAMPAIGNS: Campaign[] = [
   {
     id: "c1",
-    title: "Campaña Antipulgas",
+    title: "Vacunación antirrábica -10% (semana)",
     audience: "Clientes",
     channel: "WhatsApp",
-    message: "Hola! Recordatorio: esta semana tenemos control + antipulgas con descuento. ¿Querés agendar para tu mascota?",
+    message:
+      "Hola! Esta semana tenemos antirrábica con -10%. ¿Querés que te pase horarios disponibles para tu mascota?",
     scheduledISO: new Date(Date.now() + 1000 * 60 * 60 * 24 * 2).toISOString(),
     status: "programada"
   },
   {
     id: "c2",
-    title: "Vacunas al día",
+    title: "Control preventivo",
     audience: "Prospectos",
     channel: "Instagram",
-    message: "Vacunas al día = tranquilidad. Escribinos y te armamos el esquema según edad y especie.",
+    message:
+      "Vacunas al día + control preventivo = tranquilidad. Escribinos y te armamos el esquema según edad y especie.",
     scheduledISO: new Date(Date.now() + 1000 * 60 * 60 * 24 * 5).toISOString(),
     status: "borrador"
   }
