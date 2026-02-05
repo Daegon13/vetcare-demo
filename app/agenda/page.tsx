@@ -13,6 +13,35 @@ import { SectionHeading } from "@/components/section";
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
 export default function AgendaPage() {
+  // Next.js (App Router) requiere que `useSearchParams()` se ejecute dentro de un
+  // límite de Suspense para evitar el CSR bailout durante el prerender.
+  // Si se usa directamente en el componente de página, el build en Vercel falla.
+  return (
+    <React.Suspense
+      fallback={
+        <Container className="py-10">
+          <SectionHeading
+            eyebrow="Agenda"
+            title="Reservá un turno"
+            desc="Cargando agenda…"
+          />
+          <div className="mt-8 grid gap-4 lg:grid-cols-5">
+            <Card className="lg:col-span-3">
+              <CardContent className="p-6 text-sm text-black/60">Preparando disponibilidad…</CardContent>
+            </Card>
+            <Card className="lg:col-span-2">
+              <CardContent className="p-6 text-sm text-black/60">Cargando turnos guardados…</CardContent>
+            </Card>
+          </div>
+        </Container>
+      }
+    >
+      <AgendaPageInner />
+    </React.Suspense>
+  );
+}
+
+function AgendaPageInner() {
   const sp = useSearchParams();
   const pre = sp.get("service") as ServiceId | null;
 
