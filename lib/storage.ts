@@ -20,61 +20,123 @@ function safeParse<T>(raw: string | null, fallback: T): T {
 }
 
 function hasStorage() {
-  return typeof window !== "undefined";
+  try {
+    return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+  } catch {
+    return false;
+  }
 }
 
 export function safeGet<T>(key: string, fallback: T): T {
   if (!hasStorage()) return fallback;
-  return safeParse(localStorage.getItem(key), fallback);
+  try {
+    return safeParse(localStorage.getItem(key), fallback);
+  } catch {
+    return fallback;
+  }
 }
 
 export function safeSet<T>(key: string, value: T) {
   if (!hasStorage()) return;
-  localStorage.setItem(key, JSON.stringify(value));
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // noop: storage may be blocked/full
+  }
 }
 
-function isDataStorageEmpty() {
-  if (!hasStorage()) return false;
-  return !localStorage.getItem(KEY.appts)
-    && !localStorage.getItem(KEY.triage)
-    && !localStorage.getItem(KEY.pet)
-    && !localStorage.getItem(KEY.campaigns);
+function safeGetRaw(key: string): string | null {
+  if (!hasStorage()) return null;
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function safeRemove(key: string) {
+  if (!hasStorage()) return;
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // noop
+  }
+}
+
+function setSeededFlag() {
+  if (!hasStorage()) return;
+  try {
+    localStorage.setItem(KEY.seeded, "1");
+  } catch {
+    // noop
+  }
 }
 
 export function ensureDemoSeed() {
   if (!hasStorage()) return;
-  const alreadySeeded = localStorage.getItem(KEY.seeded) === "1";
-  if (alreadySeeded || !isDataStorageEmpty()) return;
 
-  const demo = buildDemoSeed();
-  safeSet(KEY.appts, demo.appointments);
-  safeSet(KEY.triage, demo.triage);
-  safeSet(KEY.pet, demo.pet);
-  safeSet(KEY.campaigns, demo.campaigns);
-  localStorage.setItem(KEY.seeded, "1");
+  try {
+    const demo = buildDemoSeed();
+    const alreadySeeded = safeGetRaw(KEY.seeded) === "1";
+
+    const hasAppts = safeGetRaw(KEY.appts) !== null;
+    const hasTriage = safeGetRaw(KEY.triage) !== null;
+    const hasPet = safeGetRaw(KEY.pet) !== null;
+    const hasCampaigns = safeGetRaw(KEY.campaigns) !== null;
+
+    const allMissing = !hasAppts && !hasTriage && !hasPet && !hasCampaigns;
+
+    if (!alreadySeeded && allMissing) {
+      safeSet(KEY.appts, demo.appointments);
+      safeSet(KEY.triage, demo.triage);
+      safeSet(KEY.pet, demo.pet);
+      safeSet(KEY.campaigns, demo.campaigns);
+      setSeededFlag();
+      return;
+    }
+
+    if (alreadySeeded) {
+      if (!hasAppts) safeSet(KEY.appts, demo.appointments);
+      if (!hasTriage) safeSet(KEY.triage, demo.triage);
+      if (!hasPet) safeSet(KEY.pet, demo.pet);
+      if (!hasCampaigns) safeSet(KEY.campaigns, demo.campaigns);
+      setSeededFlag();
+    }
+  } catch {
+    // noop
+  }
 }
 
 export function clearDemo() {
   if (!hasStorage()) return;
-  localStorage.removeItem(KEY.appts);
-  localStorage.removeItem(KEY.triage);
-  localStorage.removeItem(KEY.pet);
-  localStorage.removeItem(KEY.campaigns);
-  localStorage.removeItem(KEY.seeded);
+  try {
+    safeRemove(KEY.appts);
+    safeRemove(KEY.triage);
+    safeRemove(KEY.pet);
+    safeRemove(KEY.campaigns);
+    safeRemove(KEY.seeded);
+  } catch {
+    // noop
+  }
 }
 
 export function resetDemo() {
   if (!hasStorage()) return;
-  clearDemo();
-  const demo = buildDemoSeed();
-  safeSet(KEY.appts, demo.appointments);
-  safeSet(KEY.triage, demo.triage);
-  safeSet(KEY.pet, demo.pet);
-  safeSet(KEY.campaigns, demo.campaigns);
-  localStorage.setItem(KEY.seeded, "1");
+  try {
+    clearDemo();
+    const demo = buildDemoSeed();
+    safeSet(KEY.appts, demo.appointments);
+    safeSet(KEY.triage, demo.triage);
+    safeSet(KEY.pet, demo.pet);
+    safeSet(KEY.campaigns, demo.campaigns);
+    setSeededFlag();
+  } catch {
+    // noop
+  }
 }
 
 export function loadAppointments(): Appointment[] {
+  ensureDemoSeed();
   return safeGet(KEY.appts, []);
 }
 
@@ -83,6 +145,7 @@ export function saveAppointments(items: Appointment[]) {
 }
 
 export function loadTriage(): TriageCase[] {
+  ensureDemoSeed();
   return safeGet(KEY.triage, []);
 }
 
@@ -91,6 +154,7 @@ export function saveTriage(items: TriageCase[]) {
 }
 
 export function loadPet(): PetProfile {
+  ensureDemoSeed();
   return safeGet(KEY.pet, DEFAULT_PET);
 }
 
@@ -99,6 +163,7 @@ export function savePet(p: PetProfile) {
 }
 
 export function loadCampaigns(): Campaign[] {
+  ensureDemoSeed();
   return safeGet(KEY.campaigns, DEFAULT_CAMPAIGNS);
 }
 
