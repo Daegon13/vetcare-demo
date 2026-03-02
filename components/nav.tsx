@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Container, LinkButton } from "./ui";
 import { BRAND } from "@/lib/data";
+import { resetDemo } from "@/lib/storage";
 
 const links = [
   { href: "/", label: "Inicio" },
@@ -20,6 +21,12 @@ const links = [
 
 export function Nav() {
   const pathname = usePathname();
+
+  function onResetDemo() {
+    resetDemo();
+    window.location.reload();
+  }
+
   return (
     <div className="sticky top-0 z-30 border-b border-black/5 bg-warm-100/85 backdrop-blur">
       <Container className="flex h-16 items-center justify-between gap-4">
@@ -29,6 +36,9 @@ export function Nav() {
             <div className="text-sm font-extrabold tracking-tight">{BRAND.name}</div>
             <div className="text-[11px] text-black/55 -mt-0.5">{BRAND.tagline}</div>
           </div>
+          <span className="hidden md:inline-flex rounded-full border border-cyanSoft-400/70 bg-cyanSoft-50 px-2 py-0.5 text-[10px] font-black tracking-wide text-graphite-900">
+            DEMO
+          </span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1">
@@ -50,6 +60,13 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onResetDemo}
+            className="hidden md:inline-flex rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold hover:bg-black/5"
+          >
+            Reset demo
+          </button>
           <LinkButton
             href="/agenda"
             className="hidden sm:inline-flex"
