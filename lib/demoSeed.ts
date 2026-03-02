@@ -49,7 +49,7 @@ export function buildDemoSeed(now: Date): {
       ownerName: "Sofía",
       phone: "09 123 456",
       notes: "Tos leve hace 2 días",
-      status: "confirmado"
+      status: "confirmado",
     },
     {
       id: "ap_seed_2",
@@ -61,7 +61,7 @@ export function buildDemoSeed(now: Date): {
       ownerName: "Carolina",
       phone: "098 555 111",
       notes: "Primera dosis",
-      status: "pendiente"
+      status: "pendiente",
     },
     {
       id: "ap_seed_3",
@@ -73,7 +73,7 @@ export function buildDemoSeed(now: Date): {
       ownerName: "Diego",
       phone: "091 222 333",
       notes: "Piel sensible",
-      status: "atendido"
+      status: "atendido",
     },
     {
       id: "ap_seed_4",
@@ -85,7 +85,7 @@ export function buildDemoSeed(now: Date): {
       ownerName: "Martín",
       phone: "092 777 888",
       notes: "Chequeo preventivo",
-      status: "pendiente"
+      status: "pendiente",
     },
     {
       id: "ap_seed_5",
@@ -97,8 +97,8 @@ export function buildDemoSeed(now: Date): {
       ownerName: "Valentina",
       phone: "094 101 202",
       notes: "Re-agendar (demo)",
-      status: "cancelado"
-    }
+      status: "cancelado",
+    },
   ].sort((a, b) => (a.dateISO + a.time).localeCompare(b.dateISO + b.time));
 
   const triage: TriageCase[] = [
@@ -112,7 +112,7 @@ export function buildDemoSeed(now: Date): {
       symptoms: ["vómitos", "decaimiento", "no come"],
       freeText: "Vomita espuma y está muy quieto.",
       priority: "alta",
-      recommendedAction: "Urgencia alta: vení ya o llamanos por WhatsApp para indicaciones inmediatas."
+      recommendedAction: "Urgencia alta: vení ya o llamanos por WhatsApp para indicaciones inmediatas.",
     },
     {
       id: "tr_seed_2",
@@ -124,7 +124,7 @@ export function buildDemoSeed(now: Date): {
       symptoms: ["cojera", "dolor al tocar"],
       freeText: "Cojea de la pata trasera desde hoy.",
       priority: "media",
-      recommendedAction: "Prioridad media: evitá saltos, mantené reposo y coordinemos turno hoy o mañana."
+      recommendedAction: "Prioridad media: evitá saltos, mantené reposo y coordinemos turno hoy o mañana.",
     },
     {
       id: "tr_seed_3",
@@ -136,17 +136,18 @@ export function buildDemoSeed(now: Date): {
       symptoms: ["picazón", "enrojecimiento"],
       freeText: "Se rasca mucho en orejas.",
       priority: "baja",
-      recommendedAction: "Prioridad baja: coordinemos control y revisamos alergias/piel."
-    }
+      recommendedAction: "Prioridad baja: coordinemos control y revisamos alergias/piel.",
+    },
   ];
 
   const pet: PetProfile = {
     ...DEFAULT_PET,
+    id: "pet_seed_1",
     vaccines: [
       // 1 vacuna por vencer (<= 30 días) para que se vea el badge.
       { id: "v_seed_1", name: "Antirrábica", dateISO: nextWeek, nextDueISO: nextMonth },
-      { id: "v_seed_2", name: "Polivalente", dateISO: inDaysISO(now, -10), nextDueISO: inDaysISO(now, 320) }
-    ]
+      { id: "v_seed_2", name: "Polivalente", dateISO: inDaysISO(now, -10), nextDueISO: inDaysISO(now, 320) },
+    ],
   };
 
   const campaigns: Campaign[] = [
@@ -157,7 +158,7 @@ export function buildDemoSeed(now: Date): {
       channel: "WhatsApp",
       message: "Hola! Esta semana tenemos antirrábica con -10%. ¿Querés que te pase horarios disponibles para tu mascota?",
       scheduledISO: addDays(now, 2).toISOString(),
-      status: "programada"
+      status: "programada",
     },
     {
       id: "c_seed_2",
@@ -166,8 +167,8 @@ export function buildDemoSeed(now: Date): {
       channel: "Instagram",
       message: "Vacunas al día + control preventivo = tranquilidad. Escribinos y te armamos el esquema según edad y especie.",
       scheduledISO: addDays(now, 5).toISOString(),
-      status: "borrador"
-    }
+      status: "borrador",
+    },
   ];
 
   return { appts, triage, pet, campaigns };

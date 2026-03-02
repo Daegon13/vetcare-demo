@@ -33,10 +33,7 @@ export default function AdminV1Page() {
   const [cWhen, setCWhen] = React.useState<string>("");
 
   React.useEffect(() => {
-    setAppts(loadAppointments());
-    setTriage(loadTriage());
-    setPet(loadPet());
-    setCampaigns(loadCampaigns());
+    reloadFromStorage();
   }, []);
 
   function persistAppts(next: Appointment[]) {
@@ -78,6 +75,13 @@ export default function AdminV1Page() {
 
   function deleteTriage(id: string) {
     persistTriage(triage.filter(t => t.id !== id));
+  }
+
+  function reloadFromStorage() {
+    setAppts(loadAppointments());
+    setTriage(loadTriage());
+    setPet(loadPet());
+    setCampaigns(loadCampaigns());
   }
 
   function demoReset() {
