@@ -7,8 +7,16 @@ const KEY = {
   triage: "vetcare.triage.v1",
   pet: "vetcare.pet.v1",
   campaigns: "vetcare.campaigns.v1",
-  seeded: "vetcare.seeded.v1"
-};
+  seeded: "vetcare.seeded.v1",
+} as const;
+
+function hasStorage() {
+  try {
+    return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+  } catch {
+    return false;
+  }
+}
 
 function safeParse<T>(raw: string | null, fallback: T): T {
   try {
@@ -19,14 +27,7 @@ function safeParse<T>(raw: string | null, fallback: T): T {
   }
 }
 
-function hasStorage() {
-  try {
-    return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
-  } catch {
-    return false;
-  }
-}
-
+/** JSON-safe read (SSR-safe + storage-block-safe) */
 export function safeGet<T>(key: string, fallback: T): T {
   if (!hasStorage()) return fallback;
   try {
@@ -36,6 +37,7 @@ export function safeGet<T>(key: string, fallback: T): T {
   }
 }
 
+/** JSON-safe write (SSR-safe + storage-block-safe) */
 export function safeSet<T>(key: string, value: T) {
   if (!hasStorage()) return;
   try {
@@ -54,6 +56,15 @@ function safeGetRaw(key: string): string | null {
   }
 }
 
+function safeSetRaw(key: string, value: string) {
+  if (!hasStorage()) return;
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // noop
+  }
+}
+
 function safeRemove(key: string) {
   if (!hasStorage()) return;
   try {
@@ -64,19 +75,18 @@ function safeRemove(key: string) {
 }
 
 function setSeededFlag() {
-  if (!hasStorage()) return;
-  try {
-    localStorage.setItem(KEY.seeded, "1");
-  } catch {
-    // noop
-  }
+  safeSetRaw(KEY.seeded, "1");
 }
 
+/**
+ * Ensures the demo is not "empty" on first visit.
+ * - Seeds ONLY if all demo keys are missing and not seeded yet.
+ * - If already seeded, backfills any missing key (won't overwrite existing data).
+ */
 export function ensureDemoSeed() {
   if (!hasStorage()) return;
 
   try {
-    const demo = buildDemoSeed();
     const alreadySeeded = safeGetRaw(KEY.seeded) === "1";
 
     const hasAppts = safeGetRaw(KEY.appts) !== null;
@@ -86,27 +96,38 @@ export function ensureDemoSeed() {
 
     const allMissing = !hasAppts && !hasTriage && !hasPet && !hasCampaigns;
 
-    if (!alreadySeeded && allMissing) {
-      safeSet(KEY.appts, demo.appointments);
-      safeSet(KEY.triage, demo.triage);
-      safeSet(KEY.pet, demo.pet);
-      safeSet(KEY.campaigns, demo.campaigns);
+    // First-visit seed: only if storage is truly empty (matches patch notes intent)
+    const shouldInitialSeed = !alreadySeeded && allMissing;
+
+    // Backfill: only if we know we seeded at least once in this browser
+    const shouldBackfill = alreadySeeded;
+
+    if (!shouldInitialSeed && !shouldBackfill) return;
+
+    const seed = buildDemoSeed(new Date());
+
+    if (shouldInitialSeed) {
+      safeSet(KEY.appts, seed.appts);
+      safeSet(KEY.triage, seed.triage);
+      safeSet(KEY.pet, seed.pet);
+      safeSet(KEY.campaigns, seed.campaigns);
       setSeededFlag();
       return;
     }
 
-    if (alreadySeeded) {
-      if (!hasAppts) safeSet(KEY.appts, demo.appointments);
-      if (!hasTriage) safeSet(KEY.triage, demo.triage);
-      if (!hasPet) safeSet(KEY.pet, demo.pet);
-      if (!hasCampaigns) safeSet(KEY.campaigns, demo.campaigns);
-      setSeededFlag();
-    }
+    // alreadySeeded backfill: fill ONLY missing keys
+    if (!hasAppts) safeSet(KEY.appts, seed.appts);
+    if (!hasTriage) safeSet(KEY.triage, seed.triage);
+    if (!hasPet) safeSet(KEY.pet, seed.pet);
+    if (!hasCampaigns) safeSet(KEY.campaigns, seed.campaigns);
+
+    setSeededFlag();
   } catch {
     // noop
   }
 }
 
+/** Full clear (debug). Not used in UI by default. */
 export function clearDemo() {
   if (!hasStorage()) return;
   try {
@@ -120,15 +141,16 @@ export function clearDemo() {
   }
 }
 
+/** Public action exposed to the UI: resets to a fresh seeded state (not empty). */
 export function resetDemo() {
   if (!hasStorage()) return;
   try {
     clearDemo();
-    const demo = buildDemoSeed();
-    safeSet(KEY.appts, demo.appointments);
-    safeSet(KEY.triage, demo.triage);
-    safeSet(KEY.pet, demo.pet);
-    safeSet(KEY.campaigns, demo.campaigns);
+    const seed = buildDemoSeed(new Date());
+    safeSet(KEY.appts, seed.appts);
+    safeSet(KEY.triage, seed.triage);
+    safeSet(KEY.pet, seed.pet);
+    safeSet(KEY.campaigns, seed.campaigns);
     setSeededFlag();
   } catch {
     // noop

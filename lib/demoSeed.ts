@@ -1,169 +1,175 @@
 import type { Appointment, Campaign, PetProfile, TriageCase } from "./types";
+import { DEFAULT_PET } from "./data";
 
-function asDateISO(base: Date, offsetDays: number) {
+function pad2(n: number) {
+  return n.toString().padStart(2, "0");
+}
+
+function toISODate(d: Date) {
+  // Local date (not UTC) to match <input type="date"> behavior.
+  const yyyy = d.getFullYear();
+  const mm = pad2(d.getMonth() + 1);
+  const dd = pad2(d.getDate());
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function addDays(base: Date, days: number) {
   const d = new Date(base);
-  d.setDate(d.getDate() + offsetDays);
-  return d.toISOString().slice(0, 10);
+  d.setDate(d.getDate() + days);
+  return d;
 }
 
-function asDateTimeISO(base: Date, offsetHours: number) {
-  const d = new Date(base.getTime() + offsetHours * 60 * 60 * 1000);
-  return d.toISOString();
+function addMinutes(base: Date, minutes: number) {
+  return new Date(base.getTime() + minutes * 60_000);
 }
 
-export function buildDemoSeed() {
-  const now = new Date();
+function inDaysISO(now: Date, days: number) {
+  return toISODate(addDays(now, days));
+}
 
-  const appointments: Appointment[] = [
+export function buildDemoSeed(now: Date): {
+  appts: Appointment[];
+  triage: TriageCase[];
+  pet: PetProfile;
+  campaigns: Campaign[];
+} {
+  const today = inDaysISO(now, 0);
+  const tomorrow = inDaysISO(now, 1);
+  const nextWeek = inDaysISO(now, 7);
+  const nextMonth = inDaysISO(now, 25);
+
+  const appts: Appointment[] = [
     {
       id: "ap_seed_1",
-      createdAt: asDateTimeISO(now, -18),
-      dateISO: asDateISO(now, 0),
+      createdAt: addMinutes(now, -90).toISOString(),
+      dateISO: today,
       time: "10:00",
       serviceId: "consulta",
-      petName: "Luna",
-      ownerName: "Sofía Méndez",
-      phone: "+598 99 123 456",
-      notes: "Control anual.",
-      status: "confirmado"
+      petName: "Milo",
+      ownerName: "Sofía",
+      phone: "09 123 456",
+      notes: "Tos leve hace 2 días",
+      status: "confirmado",
     },
     {
       id: "ap_seed_2",
-      createdAt: asDateTimeISO(now, -16),
-      dateISO: asDateISO(now, 0),
-      time: "11:30",
+      createdAt: addMinutes(now, -70).toISOString(),
+      dateISO: today,
+      time: "11:20",
       serviceId: "vacunacion",
-      petName: "Milo",
-      ownerName: "Martín Pérez",
-      phone: "+598 98 555 221",
-      notes: "Refuerzo polivalente.",
-      status: "pendiente"
+      petName: "Luna",
+      ownerName: "Carolina",
+      phone: "098 555 111",
+      notes: "Primera dosis",
+      status: "pendiente",
     },
     {
       id: "ap_seed_3",
-      createdAt: asDateTimeISO(now, -8),
-      dateISO: asDateISO(now, 1),
-      time: "09:30",
-      serviceId: "desparasitacion",
+      createdAt: addMinutes(now, -40).toISOString(),
+      dateISO: today,
+      time: "15:10",
+      serviceId: "estetica",
       petName: "Nala",
-      ownerName: "Camila Rodríguez",
-      phone: "+598 94 332 100",
-      status: "pendiente"
+      ownerName: "Diego",
+      phone: "091 222 333",
+      notes: "Piel sensible",
+      status: "atendido",
     },
     {
       id: "ap_seed_4",
-      createdAt: asDateTimeISO(now, -4),
-      dateISO: asDateISO(now, 1),
-      time: "16:00",
+      createdAt: addMinutes(now, -15).toISOString(),
+      dateISO: tomorrow,
+      time: "09:30",
       serviceId: "control",
       petName: "Toby",
-      ownerName: "Andrés Silva",
-      phone: "+598 91 888 900",
-      notes: "Seguimiento dermatológico.",
-      status: "confirmado"
+      ownerName: "Martín",
+      phone: "092 777 888",
+      notes: "Chequeo preventivo",
+      status: "pendiente",
     },
     {
       id: "ap_seed_5",
-      createdAt: asDateTimeISO(now, -2),
-      dateISO: asDateISO(now, 2),
-      time: "14:30",
-      serviceId: "estetica",
-      petName: "Kiara",
-      ownerName: "Lucía Torres",
-      phone: "+598 92 741 852",
-      status: "pendiente"
-    }
-  ];
+      createdAt: addMinutes(now, -5).toISOString(),
+      dateISO: tomorrow,
+      time: "17:00",
+      serviceId: "cirugia",
+      petName: "Kira",
+      ownerName: "Valentina",
+      phone: "094 101 202",
+      notes: "Re-agendar (demo)",
+      status: "cancelado",
+    },
+  ].sort((a, b) => (a.dateISO + a.time).localeCompare(b.dateISO + b.time));
 
   const triage: TriageCase[] = [
     {
       id: "tr_seed_1",
-      createdAt: asDateTimeISO(now, -3),
-      petName: "Rocky",
+      createdAt: addMinutes(now, -22).toISOString(),
+      petName: "Milo",
       species: "Perro",
-      ownerName: "Diego Alonso",
-      phone: "+598 99 800 121",
-      symptoms: ["vómitos", "apatía"],
-      freeText: "No quiere comer desde ayer.",
-      priority: "media",
-      recommendedAction: "Traer hoy para evaluación clínica y control de hidratación."
+      ownerName: "Sofía",
+      phone: "09 123 456",
+      symptoms: ["vómitos", "decaimiento", "no come"],
+      freeText: "Vomita espuma y está muy quieto.",
+      priority: "alta",
+      recommendedAction: "Urgencia alta: vení ya o llamanos por WhatsApp para indicaciones inmediatas.",
     },
     {
       id: "tr_seed_2",
-      createdAt: asDateTimeISO(now, -1),
-      petName: "Misha",
+      createdAt: addMinutes(now, -55).toISOString(),
+      petName: "Luna",
       species: "Gato",
-      ownerName: "Valentina Cabrera",
-      phone: "+598 95 777 220",
-      symptoms: ["dificultad respiratoria", "tos"],
-      freeText: "Respira rápido y está escondida.",
-      priority: "alta",
-      recommendedAction: "Acudir de inmediato a urgencias para estabilización."
+      ownerName: "Carolina",
+      phone: "098 555 111",
+      symptoms: ["cojera", "dolor al tocar"],
+      freeText: "Cojea de la pata trasera desde hoy.",
+      priority: "media",
+      recommendedAction: "Prioridad media: evitá saltos, mantené reposo y coordinemos turno hoy o mañana.",
     },
     {
       id: "tr_seed_3",
-      createdAt: asDateTimeISO(now, -0.5),
-      petName: "Pipa",
+      createdAt: addMinutes(now, -180).toISOString(),
+      petName: "Nala",
       species: "Perro",
-      ownerName: "Gabriela Núñez",
-      phone: "+598 97 314 990",
-      symptoms: ["cojera"],
-      freeText: "Se golpeó jugando en el parque.",
+      ownerName: "Diego",
+      phone: "091 222 333",
+      symptoms: ["picazón", "enrojecimiento"],
+      freeText: "Se rasca mucho en orejas.",
       priority: "baja",
-      recommendedAction: "Reposo, frío local y consulta de control en las próximas 24 h."
-    }
+      recommendedAction: "Prioridad baja: coordinemos control y revisamos alergias/piel.",
+    },
   ];
 
   const pet: PetProfile = {
+    ...DEFAULT_PET,
     id: "pet_seed_1",
-    petName: "Milo",
-    species: "Perro",
-    breed: "Mestizo",
-    birthYear: 2021,
-    weightKg: 14.2,
-    allergies: "Sensibilidad leve a pulgas.",
     vaccines: [
-      {
-        id: "vac_seed_1",
-        name: "Antirrábica",
-        dateISO: asDateISO(now, -320),
-        nextDueISO: asDateISO(now, 45)
-      },
-      {
-        id: "vac_seed_2",
-        name: "Polivalente",
-        dateISO: asDateISO(now, -190),
-        nextDueISO: asDateISO(now, 18)
-      },
-      {
-        id: "vac_seed_3",
-        name: "Bordetella",
-        dateISO: asDateISO(now, -30),
-        nextDueISO: asDateISO(now, 335)
-      }
-    ]
+      // 1 vacuna por vencer (<= 30 días) para que se vea el badge.
+      { id: "v_seed_1", name: "Antirrábica", dateISO: nextWeek, nextDueISO: nextMonth },
+      { id: "v_seed_2", name: "Polivalente", dateISO: inDaysISO(now, -10), nextDueISO: inDaysISO(now, 320) },
+    ],
   };
 
   const campaigns: Campaign[] = [
     {
-      id: "camp_seed_1",
-      title: "Recordatorio vacunas de otoño",
+      id: "c_seed_1",
+      title: "Vacunación antirrábica -10% (semana)",
       audience: "Clientes",
       channel: "WhatsApp",
-      message: "Hola 👋 Tenemos cupos esta semana para refuerzos y control preventivo.",
-      scheduledISO: asDateTimeISO(now, 24),
-      status: "programada"
+      message: "Hola! Esta semana tenemos antirrábica con -10%. ¿Querés que te pase horarios disponibles para tu mascota?",
+      scheduledISO: addDays(now, 2).toISOString(),
+      status: "programada",
     },
     {
-      id: "camp_seed_2",
-      title: "Chequeo senior + análisis",
+      id: "c_seed_2",
+      title: "Control preventivo",
       audience: "Prospectos",
       channel: "Instagram",
-      message: "En mayo priorizá prevención: chequeo geriátrico con agenda flexible.",
-      scheduledISO: asDateTimeISO(now, 72),
-      status: "borrador"
-    }
+      message: "Vacunas al día + control preventivo = tranquilidad. Escribinos y te armamos el esquema según edad y especie.",
+      scheduledISO: addDays(now, 5).toISOString(),
+      status: "borrador",
+    },
   ];
 
-  return { appointments, triage, pet, campaigns };
+  return { appts, triage, pet, campaigns };
 }

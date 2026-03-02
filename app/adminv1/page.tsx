@@ -86,7 +86,11 @@ export default function AdminV1Page() {
 
   function demoReset() {
     resetDemo();
-    reloadFromStorage();
+    setAppts(loadAppointments());
+    setTriage(loadTriage());
+    setPet(loadPet());
+    setCampaigns(loadCampaigns());
+    setQ("");
   }
 
   const filteredAppts = appts
