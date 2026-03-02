@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { BRAND, DEFAULT_CAMPAIGNS, DEFAULT_PET, SERVICES } from "@/lib/data";
+import { BRAND, SERVICES } from "@/lib/data";
 import type { Appointment, AppointmentStatus, Campaign, PetProfile, TriageCase } from "@/lib/types";
 import { loadAppointments, loadCampaigns, loadPet, loadTriage, resetDemo, saveAppointments, saveCampaigns, savePet, saveTriage } from "@/lib/storage";
 import { cn, uid } from "@/lib/utils";
@@ -82,10 +82,11 @@ export default function AdminV1Page() {
 
   function demoReset() {
     resetDemo();
-    setAppts([]);
-    setTriage([]);
-    setPet(DEFAULT_PET);
-    setCampaigns(DEFAULT_CAMPAIGNS);
+    setAppts(loadAppointments());
+    setTriage(loadTriage());
+    setPet(loadPet());
+    setCampaigns(loadCampaigns());
+    setQ("");
   }
 
   const filteredAppts = appts

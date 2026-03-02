@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Container, LinkButton } from "./ui";
+import { Container, LinkButton, Button, Badge } from "./ui";
 import { BRAND } from "@/lib/data";
+import { resetDemo } from "@/lib/storage";
 
 const links = [
   { href: "/", label: "Inicio" },
@@ -20,6 +21,13 @@ const links = [
 
 export function Nav() {
   const pathname = usePathname();
+
+  function onResetDemo() {
+    resetDemo();
+    // Client pages load from localStorage on mount; a reload guarantees fresh state everywhere.
+    window.location.reload();
+  }
+
   return (
     <div className="sticky top-0 z-30 border-b border-black/5 bg-warm-100/85 backdrop-blur">
       <Container className="flex h-16 items-center justify-between gap-4">
@@ -50,6 +58,16 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Badge className="hidden md:inline-flex" tone="neutral">DEMO</Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onResetDemo}
+            className="hidden md:inline-flex"
+            title="Restablecer datos demo"
+          >
+            Reset demo
+          </Button>
           <LinkButton
             href="/agenda"
             className="hidden sm:inline-flex"
