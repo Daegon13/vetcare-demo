@@ -28,7 +28,7 @@ export function FloatingCta() {
         target="_blank"
         rel="noreferrer"
         onClick={onImplementationClick}
-        className="inline-flex h-10 items-center justify-center rounded-xl border border-black/10 bg-white px-4 text-xs font-semibold text-graphite-900 shadow-soft hover:bg-black/5 dark:border-white/15 dark:bg-graphite-900 dark:text-white dark:hover:bg-white/10 sm:text-sm"
+        className="inline-flex h-10 items-center justify-center rounded-xl border border-black/10 bg-white px-4 text-xs font-semibold text-graphite-900 shadow-soft hover:bg-black/5 dark:border-white/10 dark:bg-graphite-900 dark:text-white dark:hover:bg-white/10 sm:text-sm"
       >
         {BRAND.implementationCtaLabel}
       </a>
