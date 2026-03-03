@@ -6,14 +6,14 @@ import { SectionHeading } from "@/components/section";
 export default function HomePage() {
   return (
     <div>
-      <div className="bg-gradient-to-b from-white to-warm-100">
+      <div className="bg-gradient-to-b from-white to-warm-100 dark:from-graphite-950 dark:to-graphite-900">
         <Container className="py-10 sm:py-14 grid gap-10 lg:grid-cols-2 lg:items-center">
           <div className="grid gap-5">
             <Badge className="w-fit" tone="neutral">Demo vendible · Turnos + Urgencias + Portal</Badge>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight">
               Veterinaria moderna para encontrar turno en minutos.
             </h1>
-            <p className="text-sm sm:text-lg text-black/60 max-w-xl">
+            <p className="max-w-xl text-sm text-black/60 dark:text-white/70 sm:text-lg">
               Agenda con disponibilidad real, triage de urgencias y un portal simple para vacunas e historial. En modo demo, todo queda guardado localmente.
             </p>
             <div className="flex flex-wrap gap-2">
@@ -29,7 +29,7 @@ export default function HomePage() {
               </LinkButton>
               <LinkButton href="/adminv1" variant="ghost">Ver panel admin</LinkButton>
             </div>
-            <div className="text-xs text-black/50">
+            <div className="text-xs text-black/50 dark:text-white/60">
               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
             </div>
           </div>
@@ -43,7 +43,7 @@ export default function HomePage() {
             <CardContent className="grid gap-4">
               <div className="grid gap-2">
                 <div className="text-sm font-extrabold">Qué incluye</div>
-                <ul className="text-sm text-black/65 grid gap-1">
+                <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
                   <li>• Agenda con buffers y slots reales</li>
                   <li>• Triage con prioridad y recomendaciones</li>
                   <li>• “Mi Mascota” con vacunas + recordatorio WhatsApp</li>
@@ -54,13 +54,13 @@ export default function HomePage() {
                 <div className="text-sm font-extrabold">Servicios populares</div>
                 <div className="flex flex-wrap gap-2">
                   {SERVICES.slice(0, 4).map(s => (
-                    <Link key={s.id} href={`/agenda?service=${s.id}`} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold hover:bg-black/10">
+                    <Link key={s.id} href={`/agenda?service=${s.id}`} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20">
                       {s.name}
                     </Link>
                   ))}
                 </div>
               </div>
-              <div className="rounded-xl bg-warm-100 p-3 text-xs text-black/70">
+              <div className="rounded-xl bg-warm-100 p-3 text-xs text-black/70 dark:bg-graphite-800 dark:text-white/75">
                 También podés compartir esta demo con tu equipo y adaptar textos, colores y logo en minutos.
               </div>
             </CardContent>
@@ -69,10 +69,10 @@ export default function HomePage() {
       </div>
 
       <Container className="py-4 sm:py-6">
-        <div className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 shadow-soft sm:grid-cols-2">
+        <div className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900 sm:grid-cols-2">
           <div>
             <div className="text-sm font-extrabold">Implementación rápida</div>
-            <ul className="mt-2 grid gap-1 text-sm text-black/65">
+            <ul className="mt-2 grid gap-1 text-sm text-black/65 dark:text-white/70">
               <li>1. Personalizamos marca, servicios y canales de contacto.</li>
               <li>2. Ajustamos agenda/triage según tu operación actual.</li>
               <li>3. Publicamos y validamos el flujo con casos reales.</li>
@@ -80,7 +80,7 @@ export default function HomePage() {
           </div>
           <div>
             <div className="text-sm font-extrabold">Qué incluye</div>
-            <ul className="mt-2 grid gap-1 text-sm text-black/65">
+            <ul className="mt-2 grid gap-1 text-sm text-black/65 dark:text-white/70">
               <li>• Sitio con agenda online y urgencias guiadas.</li>
               <li>• Portal para clientes con vacunas e historial básico.</li>
               <li>• Panel simple para seguimiento interno.</li>
@@ -107,7 +107,7 @@ export default function HomePage() {
             <Card key={i}>
               <CardContent className="grid gap-2">
                 <div className="text-sm font-extrabold">{f.title}</div>
-                <p className="text-sm text-black/60">{f.desc}</p>
+                <p className="text-sm text-black/60 dark:text-white/70">{f.desc}</p>
               </CardContent>
             </Card>
           ))}

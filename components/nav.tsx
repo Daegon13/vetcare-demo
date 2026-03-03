@@ -7,6 +7,7 @@ import { Container, LinkButton } from "./ui";
 import { BRAND } from "@/lib/data";
 import { resetDemo } from "@/lib/storage";
 import { trackEvent } from "@/lib/analytics";
+import { ThemeToggle } from "./theme-toggle";
 
 const links = [
   { href: "/", label: "Inicio" },
@@ -34,20 +35,20 @@ export function Nav() {
   }
 
   return (
-    <div className="sticky top-0 z-30 border-b border-black/5 bg-warm-100/85 backdrop-blur">
+    <div className="sticky top-0 z-30 border-b border-black/5 bg-warm-100/85 text-graphite-900 backdrop-blur dark:border-white/10 dark:bg-graphite-950/85 dark:text-white">
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2">
-          <span className="h-9 w-9 rounded-xl bg-graphite-900 text-white grid place-items-center font-black">V</span>
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-graphite-900 font-black text-white dark:bg-cyanSoft-400 dark:text-graphite-950">V</span>
           <div className="leading-tight">
             <div className="text-sm font-extrabold tracking-tight">{BRAND.name}</div>
-            <div className="text-[11px] text-black/55 -mt-0.5">{BRAND.tagline}</div>
+            <div className="-mt-0.5 text-[11px] text-black/55 dark:text-white/65">{BRAND.tagline}</div>
           </div>
-          <span className="hidden md:inline-flex rounded-full border border-cyanSoft-400/70 bg-cyanSoft-50 px-2 py-0.5 text-[10px] font-black tracking-wide text-graphite-900">
+          <span className="hidden rounded-full border border-cyanSoft-400/70 bg-cyanSoft-50 px-2 py-0.5 text-[10px] font-black tracking-wide text-graphite-900 md:inline-flex dark:bg-cyanSoft-400/20 dark:text-cyanSoft-100">
             DEMO
           </span>
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden items-center gap-1 lg:flex">
           {links.map(l => {
             const active = pathname === l.href;
             return (
@@ -56,7 +57,7 @@ export function Nav() {
                 href={l.href}
                 className={cn(
                   "rounded-xl px-3 py-2 text-sm font-semibold transition",
-                  active ? "bg-black/5" : "hover:bg-black/5"
+                  active ? "bg-black/5 dark:bg-white/15" : "hover:bg-black/5 dark:hover:bg-white/10"
                 )}
               >
                 {l.label}
@@ -69,17 +70,14 @@ export function Nav() {
           <button
             type="button"
             onClick={onResetDemo}
-            className="hidden md:inline-flex rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold hover:bg-black/5"
+            className="hidden rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex dark:border-white/15 dark:bg-graphite-900 dark:hover:bg-white/10"
           >
             Reset demo
           </button>
-          <LinkButton
-            href="/agenda"
-            className="hidden sm:inline-flex"
-            variant="outline"
-          >
+          <LinkButton href="/agenda" className="hidden sm:inline-flex" variant="outline">
             Reservar turno
           </LinkButton>
+          <ThemeToggle />
           <LinkButton
             href={BRAND.whatsappUrl}
             target="_blank"
@@ -92,12 +90,19 @@ export function Nav() {
         </div>
       </Container>
 
-      <Container className="lg:hidden pb-3">
+      <Container className="pb-3 lg:hidden">
         <div className="flex flex-wrap gap-2">
           {links.map(l => {
             const active = pathname === l.href;
             return (
-              <Link key={l.href} href={l.href} className={cn("rounded-xl px-3 py-2 text-xs font-semibold", active ? "bg-black/5" : "bg-white/70 hover:bg-black/5")}>
+              <Link
+                key={l.href}
+                href={l.href}
+                className={cn(
+                  "rounded-xl px-3 py-2 text-xs font-semibold",
+                  active ? "bg-black/5 dark:bg-white/15" : "bg-white/70 hover:bg-black/5 dark:bg-graphite-900 dark:hover:bg-white/10"
+                )}
+              >
                 {l.label}
               </Link>
             );
