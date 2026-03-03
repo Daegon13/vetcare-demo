@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Container, LinkButton } from "./ui";
+import { Container, LinkButton, Button, Badge } from "./ui";
 import { BRAND } from "@/lib/data";
 import { resetDemo } from "@/lib/storage";
 
