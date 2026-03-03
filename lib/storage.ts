@@ -1,11 +1,13 @@
 import type { Appointment, Campaign, PetProfile, TriageCase } from "./types";
 import { DEFAULT_CAMPAIGNS, DEFAULT_PET } from "./data";
+import { buildDemoSeed } from "./demoSeed";
 
 const KEY = {
   appts: "vetcare.appts.v1",
   triage: "vetcare.triage.v1",
   pet: "vetcare.pet.v1",
-  campaigns: "vetcare.campaigns.v1"
+  campaigns: "vetcare.campaigns.v1",
+  seeded: "vetcare.seeded.v1"
 };
 
 function safeParse<T>(raw: string | null, fallback: T): T {
@@ -17,42 +19,154 @@ function safeParse<T>(raw: string | null, fallback: T): T {
   }
 }
 
-export function loadAppointments(): Appointment[] {
-  if (typeof window === "undefined") return [];
-  return safeParse(localStorage.getItem(KEY.appts), []);
-}
-export function saveAppointments(items: Appointment[]) {
-  localStorage.setItem(KEY.appts, JSON.stringify(items));
-}
-
-export function loadTriage(): TriageCase[] {
-  if (typeof window === "undefined") return [];
-  return safeParse(localStorage.getItem(KEY.triage), []);
-}
-export function saveTriage(items: TriageCase[]) {
-  localStorage.setItem(KEY.triage, JSON.stringify(items));
+function hasStorage() {
+  try {
+    return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
+  } catch {
+    return false;
+  }
 }
 
-export function loadPet(): PetProfile {
-  if (typeof window === "undefined") return DEFAULT_PET;
-  return safeParse(localStorage.getItem(KEY.pet), DEFAULT_PET);
-}
-export function savePet(p: PetProfile) {
-  localStorage.setItem(KEY.pet, JSON.stringify(p));
+export function safeGet<T>(key: string, fallback: T): T {
+  if (!hasStorage()) return fallback;
+  try {
+    return safeParse(localStorage.getItem(key), fallback);
+  } catch {
+    return fallback;
+  }
 }
 
-export function loadCampaigns(): Campaign[] {
-  if (typeof window === "undefined") return DEFAULT_CAMPAIGNS;
-  return safeParse(localStorage.getItem(KEY.campaigns), DEFAULT_CAMPAIGNS);
+export function safeSet<T>(key: string, value: T) {
+  if (!hasStorage()) return;
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // noop: storage may be blocked/full
+  }
 }
-export function saveCampaigns(items: Campaign[]) {
-  localStorage.setItem(KEY.campaigns, JSON.stringify(items));
+
+function safeGetRaw(key: string): string | null {
+  if (!hasStorage()) return null;
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function safeRemove(key: string) {
+  if (!hasStorage()) return;
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // noop
+  }
+}
+
+function setSeededFlag() {
+  if (!hasStorage()) return;
+  try {
+    localStorage.setItem(KEY.seeded, "1");
+  } catch {
+    // noop
+  }
+}
+
+export function ensureDemoSeed() {
+  if (!hasStorage()) return;
+
+  try {
+    const demo = buildDemoSeed();
+    const alreadySeeded = safeGetRaw(KEY.seeded) === "1";
+
+    const hasAppts = safeGetRaw(KEY.appts) !== null;
+    const hasTriage = safeGetRaw(KEY.triage) !== null;
+    const hasPet = safeGetRaw(KEY.pet) !== null;
+    const hasCampaigns = safeGetRaw(KEY.campaigns) !== null;
+
+    const allMissing = !hasAppts && !hasTriage && !hasPet && !hasCampaigns;
+
+    if (!alreadySeeded && allMissing) {
+      safeSet(KEY.appts, demo.appointments);
+      safeSet(KEY.triage, demo.triage);
+      safeSet(KEY.pet, demo.pet);
+      safeSet(KEY.campaigns, demo.campaigns);
+      setSeededFlag();
+      return;
+    }
+
+    if (alreadySeeded) {
+      if (!hasAppts) safeSet(KEY.appts, demo.appointments);
+      if (!hasTriage) safeSet(KEY.triage, demo.triage);
+      if (!hasPet) safeSet(KEY.pet, demo.pet);
+      if (!hasCampaigns) safeSet(KEY.campaigns, demo.campaigns);
+      setSeededFlag();
+    }
+  } catch {
+    // noop
+  }
+}
+
+export function clearDemo() {
+  if (!hasStorage()) return;
+  try {
+    safeRemove(KEY.appts);
+    safeRemove(KEY.triage);
+    safeRemove(KEY.pet);
+    safeRemove(KEY.campaigns);
+    safeRemove(KEY.seeded);
+  } catch {
+    // noop
+  }
 }
 
 export function resetDemo() {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(KEY.appts);
-  localStorage.removeItem(KEY.triage);
-  localStorage.removeItem(KEY.pet);
-  localStorage.removeItem(KEY.campaigns);
+  if (!hasStorage()) return;
+  try {
+    clearDemo();
+    const demo = buildDemoSeed();
+    safeSet(KEY.appts, demo.appointments);
+    safeSet(KEY.triage, demo.triage);
+    safeSet(KEY.pet, demo.pet);
+    safeSet(KEY.campaigns, demo.campaigns);
+    setSeededFlag();
+  } catch {
+    // noop
+  }
+}
+
+export function loadAppointments(): Appointment[] {
+  ensureDemoSeed();
+  return safeGet(KEY.appts, []);
+}
+
+export function saveAppointments(items: Appointment[]) {
+  safeSet(KEY.appts, items);
+}
+
+export function loadTriage(): TriageCase[] {
+  ensureDemoSeed();
+  return safeGet(KEY.triage, []);
+}
+
+export function saveTriage(items: TriageCase[]) {
+  safeSet(KEY.triage, items);
+}
+
+export function loadPet(): PetProfile {
+  ensureDemoSeed();
+  return safeGet(KEY.pet, DEFAULT_PET);
+}
+
+export function savePet(p: PetProfile) {
+  safeSet(KEY.pet, p);
+}
+
+export function loadCampaigns(): Campaign[] {
+  ensureDemoSeed();
+  return safeGet(KEY.campaigns, DEFAULT_CAMPAIGNS);
+}
+
+export function saveCampaigns(items: Campaign[]) {
+  safeSet(KEY.campaigns, items);
 }

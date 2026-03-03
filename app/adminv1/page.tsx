@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { BRAND, DEFAULT_CAMPAIGNS, DEFAULT_PET, SERVICES } from "@/lib/data";
+import { BRAND, SERVICES } from "@/lib/data";
 import type { Appointment, AppointmentStatus, Campaign, PetProfile, TriageCase } from "@/lib/types";
 import { loadAppointments, loadCampaigns, loadPet, loadTriage, resetDemo, saveAppointments, saveCampaigns, savePet, saveTriage } from "@/lib/storage";
 import { cn, uid } from "@/lib/utils";
@@ -33,10 +33,7 @@ export default function AdminV1Page() {
   const [cWhen, setCWhen] = React.useState<string>("");
 
   React.useEffect(() => {
-    setAppts(loadAppointments());
-    setTriage(loadTriage());
-    setPet(loadPet());
-    setCampaigns(loadCampaigns());
+    reloadFromStorage();
   }, []);
 
   function persistAppts(next: Appointment[]) {
@@ -80,12 +77,16 @@ export default function AdminV1Page() {
     persistTriage(triage.filter(t => t.id !== id));
   }
 
+  function reloadFromStorage() {
+    setAppts(loadAppointments());
+    setTriage(loadTriage());
+    setPet(loadPet());
+    setCampaigns(loadCampaigns());
+  }
+
   function demoReset() {
     resetDemo();
-    setAppts([]);
-    setTriage([]);
-    setPet(DEFAULT_PET);
-    setCampaigns(DEFAULT_CAMPAIGNS);
+    reloadFromStorage();
   }
 
   const filteredAppts = appts
