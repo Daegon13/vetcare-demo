@@ -87,6 +87,7 @@ export default function AdminV1Page() {
   function demoReset() {
     resetDemo();
     reloadFromStorage();
+    setQ("");
   }
 
   const filteredAppts = appts

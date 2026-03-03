@@ -24,6 +24,7 @@ export function Nav() {
 
   function onResetDemo() {
     resetDemo();
+    // Client pages read storage on mount; full reload guarantees fresh state everywhere.
     window.location.reload();
   }
 

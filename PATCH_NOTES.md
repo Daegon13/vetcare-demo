@@ -7,3 +7,5 @@
 - `app/adminv1/page.tsx` ahora vuelve a cargar estado desde storage luego de reset para evitar métricas en cero.
 - Fix de robustez: se corrigieron condiciones de carrera (seed antes de cada load) y se endureció la seguridad de storage con `try/catch` en todas las rutas críticas (`safeGet/safeSet/ensureDemoSeed/resetDemo/clearDemo`).
 - Fix de compatibilidad de build: `lib/demoSeed.ts` ahora fuerza tipos de `serviceId`/`status` en turnos demo para evitar widening a `string` tras merges/conflictos.
+
+- Se resolvieron conflictos con `main` unificando variantes en `nav`, `demoSeed`, `storage`, `demo-bootstrap` y `adminv1` para mantener compatibilidad de tipos y flujo de reset estable.
