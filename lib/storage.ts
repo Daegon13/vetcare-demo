@@ -135,6 +135,11 @@ export function resetDemo() {
   }
 }
 
+export function restoreDemoData() {
+  if (!hasStorage()) return;
+  resetDemo();
+}
+
 export function loadAppointments(): Appointment[] {
   ensureDemoSeed();
   return safeGet(KEY.appts, []);

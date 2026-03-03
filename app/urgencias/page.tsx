@@ -3,10 +3,12 @@
 import * as React from "react";
 import { BRAND } from "@/lib/data";
 import type { PetSpecies, TriageCase, TriagePriority } from "@/lib/types";
-import { loadTriage, saveTriage } from "@/lib/storage";
+import { loadTriage, restoreDemoData, saveTriage } from "@/lib/storage";
 import { toWhatsAppLink, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+import { EmptyState } from "@/components/empty";
+import { Ambulance } from "lucide-react";
 
 const SYMPTOMS = [
   { id: "respira", label: "Dificultad respiratoria" },
@@ -188,7 +190,16 @@ export default function UrgenciasPage() {
           </CardHeader>
           <CardContent className="grid gap-3">
             {cases.length === 0 ? (
-              <div className="text-sm text-black/60">No hay casos todavía.</div>
+              <EmptyState
+                title="No hay casos todavía"
+                description="Cargá datos demo para visualizar urgencias recientes y prioridades."
+                icon={Ambulance}
+                actionLabel="Cargar demo"
+                onAction={() => {
+                  restoreDemoData();
+                  setCases(loadTriage());
+                }}
+              />
             ) : (
               cases.slice(0, 6).map(c => (
                 <div key={c.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
