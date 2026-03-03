@@ -9,6 +9,9 @@ export const BRAND = {
   tagline: "Cuidado moderno, rápido y humano.",
   phone: clinica.telefono,
   whatsapp: clinica.whatsapp.replace(/\s/g, ""),
+  whatsappUrl: clinica.whatsappUrl,
+  implementationCtaLabel: clinica.ctaImplementacionLabel,
+  implementationCtaUrl: clinica.ctaImplementacionUrl,
   address: clinica.direccion,
   hours: clinica.horarios
 };
