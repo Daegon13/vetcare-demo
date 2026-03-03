@@ -3,15 +3,27 @@
 import * as React from "react";
 import Link from "next/link";
 import { Badge, Card } from "@/components/ui";
+import { SERVICES } from "@/lib/data";
 import { loadAppointments, loadPet, loadTriage } from "@/lib/storage";
 import type { Appointment, TriageCase, Vaccine } from "@/lib/types";
-import { SERVICES } from "@/lib/data";
+
+type AgendaItem = {
+  id: string;
+  petName: string;
+  service: string;
+  label: string;
+};
+
+const AGENDA_PLACEHOLDERS: AgendaItem[] = [
+  { id: "placeholder-a", petName: "Luna", service: "Control general", label: "Hoy · 10:30" },
+  { id: "placeholder-b", petName: "Milo", service: "Vacunación", label: "Mañana · 16:00" }
+];
 
 function toDateTimeMs(item: Appointment) {
   return new Date(`${item.dateISO}T${item.time}:00`).getTime();
 }
 
-function formatAppt(appt: Appointment) {
+function formatAppt(appt: Appointment): AgendaItem {
   const when = new Date(`${appt.dateISO}T${appt.time}:00`);
   const service = SERVICES.find((s) => s.id === appt.serviceId)?.name ?? "Consulta";
 
@@ -47,11 +59,14 @@ function getNextVaccine(vaccines: Vaccine[]) {
   return candidates[0];
 }
 
+function getPriorityTone(priority: string): "bad" | "warn" | "neutral" {
+  if (priority === "ALTA") return "bad";
+  if (priority === "MEDIA") return "warn";
+  return "neutral";
+}
+
 export function HeroVisual() {
-  const [agenda, setAgenda] = React.useState([
-    { id: "placeholder-a", petName: "Luna", service: "Control general", label: "Hoy · 10:30" },
-    { id: "placeholder-b", petName: "Milo", service: "Vacunación", label: "Mañana · 16:00" }
-  ]);
+  const [agenda, setAgenda] = React.useState<AgendaItem[]>(AGENDA_PLACEHOLDERS);
   const [triage, setTriage] = React.useState({
     petName: "Nina",
     symptom: "dificultad para respirar",
@@ -64,8 +79,9 @@ export function HeroVisual() {
   });
 
   React.useEffect(() => {
+    const now = Date.now();
     const appointments = loadAppointments()
-      .filter((item) => item.status !== "cancelado")
+      .filter((item) => item.status !== "cancelado" && toDateTimeMs(item) >= now)
       .sort((a, b) => toDateTimeMs(a) - toDateTimeMs(b))
       .slice(0, 2)
       .map(formatAppt);
@@ -92,7 +108,7 @@ export function HeroVisual() {
 
     if (vaccine?.nextDueISO) {
       const days = Math.ceil((new Date(vaccine.nextDueISO).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-      const dueLabel = days <= 0 ? "Vence hoy" : `Vence en ${days} días`;
+      const dueLabel = days < 0 ? "Vencida" : days === 0 ? "Vence hoy" : `Vence en ${days} días`;
 
       setPet({
         petName: petProfile.petName,
@@ -104,7 +120,7 @@ export function HeroVisual() {
 
   return (
     <div className="grid gap-3 sm:gap-4">
-      <Card className="p-4 transition-transform duration-200 hover:-translate-y-0.5">
+      <Card className="min-h-[220px] p-4 transition-transform duration-200 hover:-translate-y-0.5">
         <div className="mb-3 flex items-center justify-between">
           <p className="text-xs font-bold uppercase tracking-wide text-black/60 dark:text-white/70">Agenda · Próximos turnos</p>
           <Link href="/agenda" className="text-xs font-semibold text-cyanSoft-700 hover:underline dark:text-cyanSoft-300">Ver agenda</Link>
@@ -121,20 +137,20 @@ export function HeroVisual() {
       </Card>
 
       <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-        <Card className="p-4 transition-transform duration-200 hover:-translate-y-0.5">
-          <div className="mb-3 flex items-center justify-between">
+        <Card className="min-h-[164px] p-4 transition-transform duration-200 hover:-translate-y-0.5">
+          <div className="mb-3 flex items-center justify-between gap-2">
             <p className="text-xs font-bold uppercase tracking-wide text-black/60 dark:text-white/70">Triage</p>
-            <Badge tone="bad">{triage.priority}</Badge>
+            <Badge tone={getPriorityTone(triage.priority)}>{triage.priority}</Badge>
           </div>
           <div className="text-sm font-semibold">{triage.petName}</div>
           <p className="mt-1 text-xs text-black/65 dark:text-white/70">Síntoma principal: {triage.symptom}</p>
           <Link href="/urgencias" className="mt-3 inline-block text-xs font-semibold text-cyanSoft-700 hover:underline dark:text-cyanSoft-300">Abrir urgencias</Link>
         </Card>
 
-        <Card className="p-4 transition-transform duration-200 hover:-translate-y-0.5">
-          <div className="mb-3 flex items-center justify-between">
+        <Card className="min-h-[164px] p-4 transition-transform duration-200 hover:-translate-y-0.5">
+          <div className="mb-3 flex items-center justify-between gap-2">
             <p className="text-xs font-bold uppercase tracking-wide text-black/60 dark:text-white/70">Mi Mascota</p>
-            <Badge tone="warn">Próximo control</Badge>
+            <Badge tone="warn">Próxima vacuna</Badge>
           </div>
           <div className="text-sm font-semibold">{pet.petName}</div>
           <p className="mt-1 text-xs text-black/65 dark:text-white/70">{pet.vaccine}</p>
