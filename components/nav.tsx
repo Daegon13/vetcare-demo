@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Container, LinkButton, Button, Badge } from "./ui";
+import { Container, LinkButton } from "./ui";
 import { BRAND } from "@/lib/data";
 import { resetDemo } from "@/lib/storage";
+import { trackEvent } from "@/lib/analytics";
 
 const links = [
   { href: "/", label: "Inicio" },
@@ -26,6 +27,10 @@ export function Nav() {
     resetDemo();
     // Client pages read storage on mount; full reload guarantees fresh state everywhere.
     window.location.reload();
+  }
+
+  function onWhatsappClick() {
+    trackEvent("cta_whatsapp_click", { location: "navbar" });
   }
 
   return (
@@ -76,12 +81,13 @@ export function Nav() {
             Reservar turno
           </LinkButton>
           <LinkButton
-            href={`https://wa.me/${BRAND.whatsapp.replace(/\D/g, "")}`}
+            href={BRAND.whatsappUrl}
             target="_blank"
             rel="noreferrer"
+            onClick={onWhatsappClick}
             className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
           >
-            WhatsApp
+            Hablar por WhatsApp
           </LinkButton>
         </div>
       </Container>

@@ -3,6 +3,7 @@ import "./globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { DemoBootstrap } from "@/components/demo-bootstrap";
+import { FloatingCta } from "@/components/floating-cta";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <DemoBootstrap />
         <Nav />
         <main className="min-h-[60vh]">{children}</main>
+        <FloatingCta />
         <Footer />
       </body>
     </html>

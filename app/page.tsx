@@ -19,6 +19,14 @@ export default function HomePage() {
             <div className="flex flex-wrap gap-2">
               <LinkButton href="/agenda" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Reservar turno</LinkButton>
               <LinkButton href="/urgencias" variant="outline">Evaluar urgencia</LinkButton>
+              <LinkButton
+                href={BRAND.implementationCtaUrl}
+                target="_blank"
+                rel="noreferrer"
+                variant="outline"
+              >
+                {BRAND.implementationCtaLabel}
+              </LinkButton>
               <LinkButton href="/adminv1" variant="ghost">Ver panel admin</LinkButton>
             </div>
             <div className="text-xs text-black/50">
@@ -52,10 +60,34 @@ export default function HomePage() {
                   ))}
                 </div>
               </div>
+              <div className="rounded-xl bg-warm-100 p-3 text-xs text-black/70">
+                También podés compartir esta demo con tu equipo y adaptar textos, colores y logo en minutos.
+              </div>
             </CardContent>
           </Card>
         </Container>
       </div>
+
+      <Container className="py-4 sm:py-6">
+        <div className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 shadow-soft sm:grid-cols-2">
+          <div>
+            <div className="text-sm font-extrabold">Implementación rápida</div>
+            <ul className="mt-2 grid gap-1 text-sm text-black/65">
+              <li>1. Personalizamos marca, servicios y canales de contacto.</li>
+              <li>2. Ajustamos agenda/triage según tu operación actual.</li>
+              <li>3. Publicamos y validamos el flujo con casos reales.</li>
+            </ul>
+          </div>
+          <div>
+            <div className="text-sm font-extrabold">Qué incluye</div>
+            <ul className="mt-2 grid gap-1 text-sm text-black/65">
+              <li>• Sitio con agenda online y urgencias guiadas.</li>
+              <li>• Portal para clientes con vacunas e historial básico.</li>
+              <li>• Panel simple para seguimiento interno.</li>
+            </ul>
+          </div>
+        </div>
+      </Container>
 
       <Container className="py-12">
         <SectionHeading
@@ -84,6 +116,14 @@ export default function HomePage() {
         <div className="mt-10 flex flex-wrap gap-2">
           <LinkButton href="/agenda" className="bg-graphite-900 text-white hover:bg-graphite-800">Ir a Agenda</LinkButton>
           <LinkButton href="/servicios" variant="outline">Ver servicios</LinkButton>
+          <LinkButton
+            href={BRAND.implementationCtaUrl}
+            target="_blank"
+            rel="noreferrer"
+            variant="outline"
+          >
+            {BRAND.implementationCtaLabel}
+          </LinkButton>
           <LinkButton href="/mi-mascota" variant="outline">Abrir Mi Mascota</LinkButton>
         </div>
       </Container>
