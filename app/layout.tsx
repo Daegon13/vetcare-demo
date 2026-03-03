@@ -4,6 +4,7 @@ import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { DemoBootstrap } from "@/components/demo-bootstrap";
 import { FloatingCta } from "@/components/floating-cta";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
@@ -28,13 +29,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <body>
-        <DemoBootstrap />
-        <Nav />
-        <main className="min-h-[60vh]">{children}</main>
-        <FloatingCta />
-        <Footer />
+        <ThemeProvider>
+          <DemoBootstrap />
+          <Nav />
+          <main className="min-h-[60vh]">{children}</main>
+          <FloatingCta />
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );
