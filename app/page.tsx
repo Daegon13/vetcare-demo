@@ -1,7 +1,7 @@
-import Link from "next/link";
-import { BRAND, SERVICES } from "@/lib/data";
+import { BRAND } from "@/lib/data";
 import { Container, Card, CardContent, LinkButton, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+import { HeroVisual } from "@/components/hero-visual";
 
 export default function HomePage() {
   return (
@@ -34,37 +34,16 @@ export default function HomePage() {
             </div>
           </div>
 
-          <Card className="overflow-hidden">
-            <div className="p-6 bg-graphite-900 text-white">
-              <div className="text-sm font-semibold text-white/70">Resumen rápido</div>
-              <div className="mt-2 text-2xl font-black">“Me resolvieron el turno y la urgencia en un rato.”</div>
-              <div className="mt-3 text-sm text-white/70">Experiencia tipo app, pero con vibra humana.</div>
-            </div>
-            <CardContent className="grid gap-4">
-              <div className="grid gap-2">
-                <div className="text-sm font-extrabold">Qué incluye</div>
-                <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
-                  <li>• Agenda con buffers y slots reales</li>
-                  <li>• Triage con prioridad y recomendaciones</li>
-                  <li>• “Mi Mascota” con vacunas + recordatorio WhatsApp</li>
-                  <li>• Admin v1 con estados, campañas y reset</li>
-                </ul>
+          <div className="grid gap-4">
+            <Card className="overflow-hidden">
+              <div className="p-6 bg-graphite-900 text-white">
+                <div className="text-sm font-semibold text-white/70">Resumen rápido</div>
+                <div className="mt-2 text-2xl font-black">“Me resolvieron el turno y la urgencia en un rato.”</div>
+                <div className="mt-3 text-sm text-white/70">Experiencia tipo app, pero con vibra humana.</div>
               </div>
-              <div className="grid gap-2">
-                <div className="text-sm font-extrabold">Servicios populares</div>
-                <div className="flex flex-wrap gap-2">
-                  {SERVICES.slice(0, 4).map(s => (
-                    <Link key={s.id} href={`/agenda?service=${s.id}`} className="rounded-full bg-black/5 px-3 py-1.5 text-xs font-semibold hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20">
-                      {s.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              <div className="rounded-xl bg-warm-100 p-3 text-xs text-black/70 dark:bg-graphite-800 dark:text-white/75">
-                También podés compartir esta demo con tu equipo y adaptar textos, colores y logo en minutos.
-              </div>
-            </CardContent>
-          </Card>
+            </Card>
+            <HeroVisual />
+          </div>
         </Container>
       </div>
 
