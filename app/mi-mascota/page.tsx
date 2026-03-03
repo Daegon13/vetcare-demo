@@ -3,10 +3,12 @@
 import * as React from "react";
 import { BRAND } from "@/lib/data";
 import type { PetProfile, Vaccine } from "@/lib/types";
-import { loadPet, savePet } from "@/lib/storage";
+import { loadPet, restoreDemoData, savePet } from "@/lib/storage";
 import { formatDateLong, toWhatsAppLink, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+import { EmptyState } from "@/components/empty";
+import { Syringe } from "lucide-react";
 
 type HistoryItem = { id: string; dateISO: string; title: string; notes: string };
 
@@ -127,7 +129,16 @@ export default function MiMascotaPage() {
                   <div className="text-sm font-extrabold">Vacunas</div>
                   <div className="grid gap-2">
                     {pet.vaccines.length === 0 ? (
-                      <div className="text-sm text-black/60">No hay vacunas cargadas.</div>
+                      <EmptyState
+                        title="No hay vacunas cargadas"
+                        description="Cargá datos demo para ver un carnet con vacunas y próximos vencimientos."
+                        icon={Syringe}
+                        actionLabel="Cargar demo"
+                        onAction={() => {
+                          restoreDemoData();
+                          setPet(loadPet());
+                        }}
+                      />
                     ) : (
                       pet.vaccines.map(v => (
                         <div key={v.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-black/5 px-3 py-2">

@@ -1,14 +1,28 @@
-import { Card, CardContent, LinkButton } from "./ui";
+import type { LucideIcon } from "lucide-react";
+import { Card, CardContent, Button } from "./ui";
 
-export function EmptyState({ title, desc, actionHref, actionLabel }: { title: string; desc: string; actionHref?: string; actionLabel?: string }) {
+type EmptyStateProps = {
+  title: string;
+  description: string;
+  icon?: LucideIcon;
+  actionLabel?: string;
+  onAction?: () => void;
+};
+
+export function EmptyState({ title, description, icon: Icon, actionLabel, onAction }: EmptyStateProps) {
   return (
-    <Card>
-      <CardContent className="grid gap-2">
+    <Card className="ring-1 ring-black/5 bg-gradient-to-b from-white to-cyanSoft-50/30">
+      <CardContent className="grid gap-3 p-6">
+        {Icon ? (
+          <div className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white ring-1 ring-black/10 text-cyanSoft-500">
+            <Icon size={18} />
+          </div>
+        ) : null}
         <div className="text-sm font-extrabold">{title}</div>
-        <p className="text-sm text-black/60">{desc}</p>
-        {actionHref && actionLabel ? (
-          <div className="pt-2">
-            <LinkButton href={actionHref} variant="outline">{actionLabel}</LinkButton>
+        <p className="text-sm text-black/60">{description}</p>
+        {actionLabel && onAction ? (
+          <div className="pt-1">
+            <Button onClick={onAction} variant="outline">{actionLabel}</Button>
           </div>
         ) : null}
       </CardContent>

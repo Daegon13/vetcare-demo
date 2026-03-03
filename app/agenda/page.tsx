@@ -5,10 +5,12 @@ import { useSearchParams } from "next/navigation";
 import { BRAND, SERVICES } from "@/lib/data";
 import type { Appointment, ServiceId } from "@/lib/types";
 import { buildDailySlots, getService, makeICS } from "@/lib/schedule";
-import { loadAppointments, saveAppointments } from "@/lib/storage";
+import { loadAppointments, restoreDemoData, saveAppointments } from "@/lib/storage";
 import { formatDateLong, toWhatsAppLink, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+import { EmptyState } from "@/components/empty";
+import { CalendarX2 } from "lucide-react";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
@@ -242,7 +244,16 @@ function AgendaPageInner() {
           </CardHeader>
           <CardContent className="grid gap-3">
             {appts.length === 0 ? (
-              <div className="text-sm text-black/60">Todavía no hay turnos creados.</div>
+              <EmptyState
+                title="Todavía no hay turnos creados"
+                description="Podés cargar datos demo para ver reservas y acciones reales en este módulo."
+                icon={CalendarX2}
+                actionLabel="Cargar demo"
+                onAction={() => {
+                  restoreDemoData();
+                  setAppts(loadAppointments());
+                }}
+              />
             ) : (
               appts
                 .slice()
