@@ -24,7 +24,7 @@ export function Nav() {
 
   function onResetDemo() {
     resetDemo();
-    // Client pages load from localStorage on mount; a reload guarantees fresh state everywhere.
+    // Client pages read storage on mount; full reload guarantees fresh state everywhere.
     window.location.reload();
   }
 
@@ -37,6 +37,9 @@ export function Nav() {
             <div className="text-sm font-extrabold tracking-tight">{BRAND.name}</div>
             <div className="text-[11px] text-black/55 -mt-0.5">{BRAND.tagline}</div>
           </div>
+          <span className="hidden md:inline-flex rounded-full border border-cyanSoft-400/70 bg-cyanSoft-50 px-2 py-0.5 text-[10px] font-black tracking-wide text-graphite-900">
+            DEMO
+          </span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1">
@@ -58,16 +61,13 @@ export function Nav() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Badge className="hidden md:inline-flex" tone="neutral">DEMO</Badge>
-          <Button
-            variant="outline"
-            size="sm"
+          <button
+            type="button"
             onClick={onResetDemo}
-            className="hidden md:inline-flex"
-            title="Restablecer datos demo"
+            className="hidden md:inline-flex rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold hover:bg-black/5"
           >
             Reset demo
-          </Button>
+          </button>
           <LinkButton
             href="/agenda"
             className="hidden sm:inline-flex"
