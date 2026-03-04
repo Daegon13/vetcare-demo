@@ -85,11 +85,20 @@ export default function HomePage() {
                 <div className="mt-3 text-sm text-white/70">Experiencia tipo app, pero con vibra humana.</div>
               </div>
             </Card>
-
-            <HeroVisual />
           </div>
         </Container>
       </div>
+
+      <Container className="py-8 sm:py-10">
+        <SectionHeading
+          eyebrow="Demo en acción"
+          title="Así se ve en la práctica"
+          desc="Vista rápida de agenda, urgencias y portal con datos de la demo."
+        />
+        <div className="mt-6">
+          <HeroVisual />
+        </div>
+      </Container>
 
       <Container className="py-4 sm:py-6">
         <div className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900 sm:grid-cols-2">
