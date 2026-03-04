@@ -1,21 +1,32 @@
 "use client";
 
+import * as React from "react";
 import { BRAND } from "@/lib/data";
 import { trackEvent } from "@/lib/analytics";
+import { appendUtmToUrl, buildWhatsappUrl, getStoredUtm } from "@/lib/utm";
 
 export function FloatingCta() {
+  const [whatsappUrl, setWhatsappUrl] = React.useState(BRAND.whatsappUrl);
+  const [implementationUrl, setImplementationUrl] = React.useState(BRAND.implementationCtaUrl);
+
+  React.useEffect(() => {
+    const utm = getStoredUtm();
+    setWhatsappUrl(buildWhatsappUrl(BRAND.whatsappUrl, utm, "Mi interés: implementación."));
+    setImplementationUrl(appendUtmToUrl(BRAND.implementationCtaUrl, utm));
+  }, []);
+
   function onWhatsappClick() {
-    trackEvent("cta_whatsapp_click", { location: "floating" });
+    trackEvent("cta_whatsapp_click", { location: "floating", ...(getStoredUtm() ?? {}) });
   }
 
   function onImplementationClick() {
-    trackEvent("cta_implementation_click", { location: "floating" });
+    trackEvent("cta_implementation_click", { location: "floating", ...(getStoredUtm() ?? {}) });
   }
 
   return (
     <div className="fixed bottom-4 right-4 z-40 flex max-w-[calc(100vw-2rem)] flex-col gap-2 sm:bottom-5 sm:right-5 lg:hidden">
       <a
-        href={BRAND.whatsappUrl}
+        href={whatsappUrl}
         target="_blank"
         rel="noreferrer"
         onClick={onWhatsappClick}
@@ -24,7 +35,7 @@ export function FloatingCta() {
         Hablar por WhatsApp
       </a>
       <a
-        href={BRAND.implementationCtaUrl}
+        href={implementationUrl}
         target="_blank"
         rel="noreferrer"
         onClick={onImplementationClick}
