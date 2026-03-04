@@ -193,6 +193,7 @@ export default function UrgenciasPage() {
               <EmptyState
                 title="No hay casos todavía"
                 description="Cargá datos demo para visualizar urgencias recientes y prioridades."
+                illustrationSrc="/brand/feature-triage.webp"
                 icon={Ambulance}
                 actionLabel="Cargar demo"
                 onAction={() => {

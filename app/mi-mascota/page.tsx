@@ -132,6 +132,7 @@ export default function MiMascotaPage() {
                       <EmptyState
                         title="No hay vacunas cargadas"
                         description="Cargá datos demo para ver un carnet con vacunas y próximos vencimientos."
+                illustrationSrc="/brand/feature-portal.webp"
                         icon={Syringe}
                         actionLabel="Cargar demo"
                         onAction={() => {

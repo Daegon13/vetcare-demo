@@ -247,6 +247,7 @@ function AgendaPageInner() {
               <EmptyState
                 title="Todavía no hay turnos creados"
                 description="Podés cargar datos demo para ver reservas y acciones reales en este módulo."
+                illustrationSrc="/brand/feature-appointments.webp"
                 icon={CalendarX2}
                 actionLabel="Cargar demo"
                 onAction={() => {

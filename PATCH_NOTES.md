@@ -33,3 +33,5 @@ Este paquete actualiza la demo para que no se sienta vacía y deja documentada l
 - `docs/ARCHITECTURE.md`
 - `docs/PATCHLOAD.md`
 - `README.md`
+
+- Patch: Integración completa de imágenes (hero + features + og + empty states) en `public/brand/` y uso vía `next/image`.

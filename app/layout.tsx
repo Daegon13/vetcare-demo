@@ -18,12 +18,21 @@ export const metadata: Metadata = {
     type: "website",
     title: "VetCare — Turnos, urgencias y portal del cliente",
     description: "Agenda con disponibilidad real, triage de urgencias y recordatorios por WhatsApp.",
-    siteName: "VetCare"
+    siteName: "VetCare",
+    images: [
+      {
+        url: "/brand/og.webp",
+        width: 1200,
+        height: 630,
+        alt: "VetCare — Turnos, urgencias y portal del cliente"
+      }
+    ]
   },
   twitter: {
     card: "summary_large_image",
     title: "VetCare — Turnos, urgencias y portal del cliente",
-    description: "Agenda con disponibilidad real, triage de urgencias y recordatorios por WhatsApp."
+    description: "Agenda con disponibilidad real, triage de urgencias y recordatorios por WhatsApp.",
+    images: ["/brand/og.webp"]
   }
 };
 
