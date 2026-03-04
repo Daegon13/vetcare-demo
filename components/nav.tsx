@@ -36,8 +36,8 @@ export function Nav() {
 
   return (
     <div className="sticky top-0 z-30 border-b border-black/5 bg-warm-100/85 text-graphite-900 backdrop-blur dark:border-white/10 dark:bg-graphite-950/85 dark:text-white">
-      <Container className="flex h-16 items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2">
+      <Container className="flex h-16 flex-nowrap items-center justify-between gap-3 overflow-hidden">
+        <Link href="/" className="flex shrink-0 items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-graphite-900 font-black text-white dark:bg-cyanSoft-400 dark:text-graphite-950">V</span>
           <div className="leading-tight">
             <div className="text-sm font-extrabold tracking-tight">{BRAND.name}</div>
@@ -48,7 +48,7 @@ export function Nav() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden max-w-[calc(100vw-34rem)] flex-1 items-center gap-1 overflow-x-auto whitespace-nowrap lg:flex">
           {links.map(l => {
             const active = pathname === l.href;
             return (
@@ -66,15 +66,15 @@ export function Nav() {
           })}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 flex-nowrap items-center gap-2 [&>*]:shrink-0">
           <button
             type="button"
             onClick={onResetDemo}
-            className="hidden rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex dark:border-white/15 dark:bg-graphite-900 dark:hover:bg-white/10"
+            className="hidden whitespace-nowrap rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex dark:border-white/15 dark:bg-graphite-900 dark:hover:bg-white/10"
           >
             Reset demo
           </button>
-          <LinkButton href="/agenda" className="hidden sm:inline-flex" variant="outline">
+          <LinkButton href="/agenda" className="hidden whitespace-nowrap sm:inline-flex" variant="outline">
             Reservar turno
           </LinkButton>
           <ThemeToggle />
@@ -83,7 +83,7 @@ export function Nav() {
             target="_blank"
             rel="noreferrer"
             onClick={onWhatsappClick}
-            className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
+            className="whitespace-nowrap bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
           >
             Hablar por WhatsApp
           </LinkButton>

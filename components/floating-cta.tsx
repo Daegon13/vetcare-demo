@@ -13,7 +13,7 @@ export function FloatingCta() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex max-w-[calc(100vw-2rem)] flex-col gap-2 sm:bottom-5 sm:right-5">
+    <div className="fixed bottom-4 right-4 z-40 flex max-w-[calc(100vw-2rem)] flex-col gap-2 sm:bottom-5 sm:right-5 lg:hidden">
       <a
         href={BRAND.whatsappUrl}
         target="_blank"
