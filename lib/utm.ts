@@ -9,6 +9,17 @@ export type UTMData = {
   captured_at?: string;
 };
 
+export type LeadInterest = "turnos" | "urgencias" | "portal" | "admin";
+
+export type LeadPayload = {
+  nombre: string;
+  clinica: string;
+  ciudad: string;
+  whatsapp: string;
+  plan: string;
+  interes: LeadInterest[];
+};
+
 const UTM_STORAGE_KEY = "vetcare:utm";
 const UTM_KEYS: Array<keyof UTMData> = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "ref"];
 
@@ -116,4 +127,27 @@ export function buildWhatsappUrl(baseWhatsappUrl: string, utm: UTMData | null, e
   }
 
   return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+}
+
+export function buildLeadWhatsappUrl(baseWhatsappUrl: string, utm: UTMData | null, lead: LeadPayload): string {
+  const interest = lead.interes.join("/") || "sin especificar";
+  const chunks = [
+    `Plan: ${lead.plan}`,
+    `Clínica: ${lead.clinica} / Ciudad: ${lead.ciudad}`,
+    `Interés: ${interest}`,
+    lead.nombre ? `Nombre: ${lead.nombre}` : "",
+    lead.whatsapp ? `WhatsApp: ${lead.whatsapp}` : ""
+  ].filter(Boolean);
+
+  const utmChunks: string[] = [];
+  if (utm?.utm_campaign) utmChunks.push(`utm_campaign=${utm.utm_campaign}`);
+  if (utm?.utm_source) utmChunks.push(`utm_source=${utm.utm_source}`);
+  if (utm?.utm_medium) utmChunks.push(`utm_medium=${utm.utm_medium}`);
+  if (utm?.ref) utmChunks.push(`ref=${utm.ref}`);
+
+  if (utmChunks.length) {
+    chunks.push(`UTM: ${utmChunks.join(", ")}`);
+  }
+
+  return buildWhatsappUrl(baseWhatsappUrl, null, chunks.join("\n"));
 }
