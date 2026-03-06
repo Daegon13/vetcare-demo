@@ -24,7 +24,8 @@ const SERVICE_ICON_BY_ID: Record<string, string> = {
 };
 
 function iconSrc(key: string) {
-  return `/brand/icons/${key}.webp`;
+  // We ship the icons as PNGs in-repo (simple + no webp tooling required).
+  return `/brand/icons/${key}.png`;
 }
 
 export default function ServicesPage() {
