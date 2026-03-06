@@ -24,6 +24,7 @@ const SERVICE_ICON_BY_ID: Record<string, string> = {
 };
 
 function iconSrc(key: string) {
+  // We ship the icons as PNGs in-repo (simple + no webp tooling required).
   return `/brand/icons/${key}.webp`;
 }
 
@@ -84,7 +85,7 @@ export default function ServicesPage() {
                       </div>
                       <div className="grid gap-1">
                         <div className="text-sm font-extrabold">{s.name}</div>
-                        <p className="text-sm text-black/65 dark:text-white/70">{s.description}</p>
+                        <p className="text-sm text-black/65 dark:text-white/70">{s.desc}</p>
                       </div>
                     </div>
 
