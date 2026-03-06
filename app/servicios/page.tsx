@@ -24,7 +24,7 @@ const SERVICE_ICON_BY_ID: Record<string, string> = {
 };
 
 function iconSrc(key: string) {
-  // We ship the icons as PNGs in-repo (simple + no webp tooling required).
+  // Icons live in /public/brand/icons. Prefer .webp (smaller), keep names stable.
   return `/brand/icons/${key}.webp`;
 }
 
@@ -100,7 +100,7 @@ export default function ServicesPage() {
                       </div>
                       <div>
                         <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">$</div>
-                        <div className="font-bold">{s.priceUYU}</div>
+                        <div className="font-bold">{s.priceFrom}</div>
                       </div>
                     </div>
 
