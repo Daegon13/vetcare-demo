@@ -9,6 +9,18 @@ export type UTMData = {
   captured_at?: string;
 };
 
+// Lead capture (LP) -> WhatsApp helper
+export type LeadInterest = "turnos" | "urgencias" | "portal" | "admin";
+
+export type LeadPayload = {
+  nombre?: string;
+  clinica?: string;
+  ciudad?: string;
+  whatsapp?: string;
+  plan?: string;
+  interes: LeadInterest[];
+};
+
 const UTM_STORAGE_KEY = "vetcare:utm";
 const UTM_KEYS: Array<keyof UTMData> = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "ref"];
 
@@ -125,4 +137,23 @@ export function buildWhatsappUrl(baseWhatsappUrl: string, utm: UTMData | null, e
   }
 
   return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+}
+
+/**
+ * Construye un link de WhatsApp con un resumen del lead (LP) + UTMs.
+ * Se usa en /lp y /gracias.
+ */
+export function buildLeadWhatsappUrl(baseWhatsappUrl: string, utm: UTMData | null, lead: LeadPayload): string {
+  const interest = lead.interes?.join("/") || "sin especificar";
+
+  const chunks: string[] = [];
+  chunks.push("Lead VetCare:");
+  if (lead.nombre) chunks.push(`- Nombre: ${lead.nombre}`);
+  if (lead.clinica) chunks.push(`- Clínica: ${lead.clinica}`);
+  if (lead.ciudad) chunks.push(`- Ciudad: ${lead.ciudad}`);
+  if (lead.whatsapp) chunks.push(`- WhatsApp: ${lead.whatsapp}`);
+  if (lead.plan) chunks.push(`- Plan: ${lead.plan}`);
+  chunks.push(`- Interés: ${interest}`);
+
+  return buildWhatsappUrl(baseWhatsappUrl, utm, chunks.join("\n"));
 }
