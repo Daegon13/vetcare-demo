@@ -108,7 +108,8 @@ export function ensureDemoSeed() {
 }
 
 export function clearDemo() {
-  // Intentionally removing only VetCare demo keys to preserve UI preferences such as next-themes ("theme").
+  // Intentionally removing only VetCare demo keys to preserve UI preferences such as next-themes ("theme")
+  // and marketing attribution storage such as "vetcare:utm".
   if (!hasStorage()) return;
   try {
     safeRemove(KEY.appts);

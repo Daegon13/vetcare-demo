@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { BRAND } from "@/lib/data";
+import { isDemoToolsEnabled } from "@/lib/demoMode";
 import { Container, Card, CardContent, LinkButton, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { HeroVisual } from "@/components/hero-visual";
@@ -30,7 +31,20 @@ const FEATURES: { title: string; desc: string; img?: string }[] = [
   { title: "Deploy rápido", desc: "Next + Tailwind listo para Vercel sin configuración extra." }
 ];
 
-export default function HomePage() {
+type HomePageProps = {
+  searchParams?: Record<string, string | string[] | undefined>;
+};
+
+export default function HomePage({ searchParams }: HomePageProps) {
+  const params = new URLSearchParams();
+  if (searchParams) {
+    for (const [key, value] of Object.entries(searchParams)) {
+      if (typeof value === "string") params.set(key, value);
+      if (Array.isArray(value) && value[0]) params.set(key, value[0]);
+    }
+  }
+  const demoToolsEnabled = isDemoToolsEnabled(params);
+
   return (
     <div>
       <div className="bg-gradient-to-b from-white to-warm-100 dark:from-graphite-950 dark:to-graphite-900">
@@ -55,9 +69,11 @@ export default function HomePage() {
               <LinkButton href={BRAND.implementationCtaUrl} target="_blank" rel="noreferrer" variant="outline">
                 {BRAND.implementationCtaLabel}
               </LinkButton>
-              <LinkButton href="/adminv1" variant="ghost">
-                Ver panel admin
-              </LinkButton>
+              {demoToolsEnabled ? (
+                <LinkButton href="/adminv1" variant="ghost">
+                  Ver panel admin
+                </LinkButton>
+              ) : null}
             </div>
             <div className="text-xs text-black/50 dark:text-white/60">
               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
@@ -85,11 +101,20 @@ export default function HomePage() {
                 <div className="mt-3 text-sm text-white/70">Experiencia tipo app, pero con vibra humana.</div>
               </div>
             </Card>
-
-            <HeroVisual />
           </div>
         </Container>
       </div>
+
+      <Container className="py-8 sm:py-10">
+        <SectionHeading
+          eyebrow="Demo en acción"
+          title="Así se ve en la práctica"
+          desc="Vista rápida de agenda, urgencias y portal con datos de la demo."
+        />
+        <div className="mt-6">
+          <HeroVisual />
+        </div>
+      </Container>
 
       <Container className="py-4 sm:py-6">
         <div className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900 sm:grid-cols-2">

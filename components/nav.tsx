@@ -31,8 +31,11 @@ export function Nav() {
 
   function withDemo(href: string) {
     if (!demoToolsEnabled) return href;
+    // only internal app routes
+    if (!href.startsWith("/")) return href;
+
     try {
-      const url = new URL(href, "http://localhost");
+      const url = new URL(href, window.location.origin);
       url.searchParams.set("demo", "1");
       return `${url.pathname}${url.search}${url.hash}`;
     } catch {
@@ -46,9 +49,20 @@ export function Nav() {
   }, [searchParams]);
 
   React.useEffect(() => {
-    if (!demoToolsEnabled) {
-      trackEvent("sales_mode_enabled", { location: pathname || "unknown" });
+    // In "sales mode" (no demo tools), log once per browser.
+    if (demoToolsEnabled) return;
+
+    const storageKey = "vetcare:sales_mode_logged";
+    try {
+      if (typeof window !== "undefined" && window.localStorage) {
+        if (localStorage.getItem(storageKey) === "1") return;
+        localStorage.setItem(storageKey, "1");
+      }
+    } catch {
+      // ignore
     }
+
+    trackEvent("sales_mode_enabled", { location: pathname || "unknown" });
   }, [demoToolsEnabled, pathname]);
 
   function onResetDemo() {
@@ -66,7 +80,7 @@ export function Nav() {
   return (
     <div className="sticky top-0 z-30 border-b border-black/5 bg-warm-100/85 text-graphite-900 backdrop-blur dark:border-white/10 dark:bg-graphite-950/85 dark:text-white">
       <Container className="flex h-16 flex-nowrap items-center justify-between gap-3 overflow-hidden">
-        <Link href="/" className="flex shrink-0 items-center gap-2">
+        <Link href={withDemo("/")} className="flex shrink-0 items-center gap-2">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-graphite-900 font-black text-white dark:bg-cyanSoft-400 dark:text-graphite-950">V</span>
           <div className="leading-tight">
             <div className="text-sm font-extrabold tracking-tight">{BRAND.name}</div>
@@ -105,10 +119,13 @@ export function Nav() {
               Reset demo
             </button>
           ) : null}
+
           <LinkButton href={withDemo("/agenda")} className="hidden whitespace-nowrap sm:inline-flex" variant="outline">
             Reservar turno
           </LinkButton>
+
           {demoToolsEnabled ? <ThemeToggle /> : null}
+
           <LinkButton
             href={whatsappUrl}
             target="_blank"

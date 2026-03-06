@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
@@ -41,8 +42,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es" suppressHydrationWarning>
       <body className="min-h-screen bg-white text-graphite-950 antialiased dark:bg-graphite-950 dark:text-white">
         <ThemeProvider>
-          <DemoBootstrap />
-          <Nav />
+          <Suspense fallback={null}>
+            <DemoBootstrap />
+            <Nav />
+          </Suspense>
           <main className="min-h-[60vh]">{children}</main>
           <FloatingCta />
           <Footer />
