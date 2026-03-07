@@ -8,8 +8,10 @@ import { loadAppointments, loadCampaigns, loadPet, loadTriage, resetDemo, saveAp
 import { cn, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Button, Badge, Field, Input, Select, Textarea, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+import { clearLeads, exportLeadsCSV, exportLeadsJSON, getLeads, type LeadEvent } from "@/lib/leads";
+import { trackEvent } from "@/lib/analytics";
 
-type Tab = "turnos" | "triage" | "mascotas" | "campañas";
+type Tab = "turnos" | "triage" | "mascotas" | "campañas" | "leads";
 
 function statTone(n: number) {
   return n === 0 ? "neutral" : "good";
@@ -22,6 +24,7 @@ export default function AdminV1Page() {
   const [triage, setTriage] = React.useState<TriageCase[]>([]);
   const [pet, setPet] = React.useState<PetProfile | null>(null);
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
+  const [leads, setLeads] = React.useState<LeadEvent[]>([]);
 
   const [q, setQ] = React.useState("");
 
@@ -82,12 +85,14 @@ export default function AdminV1Page() {
     setTriage(loadTriage());
     setPet(loadPet());
     setCampaigns(loadCampaigns());
+    setLeads(getLeads());
   }
 
   function demoReset() {
     resetDemo();
     reloadFromStorage();
     setQ("");
+    setLeads(getLeads());
   }
 
   const filteredAppts = appts
@@ -109,6 +114,46 @@ export default function AdminV1Page() {
     const s = q.toLowerCase();
     return t.petName.toLowerCase().includes(s) || t.ownerName.toLowerCase().includes(s) || t.phone.toLowerCase().includes(s);
   });
+
+  const filteredLeads = leads.filter((lead) => {
+    if (!q.trim()) return true;
+    const s = q.toLowerCase();
+    return (
+      lead.sourcePage.toLowerCase().includes(s) ||
+      (lead.utm?.utm_campaign?.toLowerCase().includes(s) ?? false) ||
+      (lead.interest ?? []).join(" ").toLowerCase().includes(s)
+    );
+  });
+
+  function downloadFile(filename: string, content: string, mime: string) {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function onExportCSV() {
+    const csv = exportLeadsCSV();
+    downloadFile("vetcare-leads.csv", csv, "text/csv;charset=utf-8");
+    trackEvent("leads_exported", { format: "csv", count: leads.length });
+  }
+
+  function onExportJSON() {
+    const json = exportLeadsJSON();
+    downloadFile("vetcare-leads.json", json, "application/json;charset=utf-8");
+    trackEvent("leads_exported", { format: "json", count: leads.length });
+  }
+
+  function onClearLeads() {
+    clearLeads();
+    setLeads(getLeads());
+    trackEvent("leads_cleared", { location: "adminv1" });
+  }
 
   function createCampaign() {
     if (!cTitle.trim() || !cMsg.trim()) return;
@@ -177,7 +222,7 @@ export default function AdminV1Page() {
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-2">
-          {(["turnos", "triage", "mascotas", "campañas"] as Tab[]).map(t => (
+          {(["turnos", "triage", "mascotas", "campañas", "leads"] as Tab[]).map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -409,6 +454,52 @@ export default function AdminV1Page() {
               </CardContent>
             </Card>
           </div>
+        ) : null}
+
+        {tab === "leads" ? (
+          <Card>
+            <CardHeader className="flex items-center justify-between gap-3 flex-wrap">
+              <div className="grid">
+                <div className="text-sm font-extrabold">Leads</div>
+                <div className="text-sm text-black/60">Inbox demo local con exportación.</div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button size="sm" variant="outline" onClick={onExportCSV}>Export CSV</Button>
+                <Button size="sm" variant="outline" onClick={onExportJSON}>Export JSON</Button>
+                <Button size="sm" className="bg-rose-50 text-rose-800 hover:bg-rose-100" onClick={onClearLeads}>Clear leads</Button>
+              </div>
+            </CardHeader>
+            <CardContent className="grid gap-3 overflow-x-auto">
+              {filteredLeads.length === 0 ? (
+                <div className="text-sm text-black/60">No hay leads para mostrar.</div>
+              ) : (
+                <table className="min-w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-black/10 text-xs uppercase text-black/50">
+                      <th className="px-2 py-2">Fecha</th>
+                      <th className="px-2 py-2">Page</th>
+                      <th className="px-2 py-2">Canal</th>
+                      <th className="px-2 py-2">Interest</th>
+                      <th className="px-2 py-2">utm_campaign</th>
+                      <th className="px-2 py-2">Nota</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredLeads.map((lead) => (
+                      <tr key={lead.id} className="border-b border-black/5 align-top">
+                        <td className="px-2 py-2 whitespace-nowrap">{new Date(lead.createdAtISO).toLocaleString("es-UY")}</td>
+                        <td className="px-2 py-2">{lead.sourcePage}</td>
+                        <td className="px-2 py-2">{lead.channel}</td>
+                        <td className="px-2 py-2">{(lead.interest ?? []).join(", ") || "—"}</td>
+                        <td className="px-2 py-2">{lead.utm?.utm_campaign ?? "—"}</td>
+                        <td className="px-2 py-2">{lead.note ?? "—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </CardContent>
+          </Card>
         ) : null}
       </div>
 

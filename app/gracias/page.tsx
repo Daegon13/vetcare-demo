@@ -4,7 +4,12 @@ import * as React from "react";
 import { BRAND } from "@/lib/data";
 import { Container, LinkButton, Badge } from "@/components/ui";
 import { trackEvent } from "@/lib/analytics";
+import { addLead } from "@/lib/leads";
 import { buildLeadWhatsappUrl, getStoredUtm, type LeadPayload } from "@/lib/utm";
+
+type StoredLead = LeadPayload & {
+  leadId?: string;
+};
 
 export default function GraciasPage() {
   const [whatsappUrl, setWhatsappUrl] = React.useState(BRAND.whatsappUrl);
@@ -16,8 +21,23 @@ export default function GraciasPage() {
     try {
       const raw = localStorage.getItem("vetcare:lead");
       if (!raw) return;
-      const lead = JSON.parse(raw) as LeadPayload;
+      const lead = JSON.parse(raw) as StoredLead;
       setWhatsappUrl(buildLeadWhatsappUrl(BRAND.whatsappUrl, utm, lead));
+
+      const hasInterest = Array.isArray(lead.interes) && lead.interes.length > 0;
+      const hasUtm = Boolean(utm && Object.values(utm).some(Boolean));
+      if (hasInterest || hasUtm) {
+        addLead({
+          leadId: lead.leadId,
+          sourcePage: window.location.pathname,
+          channel: "thank_you",
+          utm: utm ?? undefined,
+          interest: hasInterest ? lead.interes : ["implementacion"],
+          note: "Thank you page visit",
+          phone: lead.whatsapp
+        });
+        trackEvent("lead_saved", { channel: "thank_you", location: "gracias", ...(utm ?? {}) });
+      }
     } catch {
       setWhatsappUrl(BRAND.whatsappUrl);
     }

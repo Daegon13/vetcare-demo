@@ -6,6 +6,7 @@ import { BRAND } from "@/lib/data";
 import { Container, LinkButton, Card, CardContent, Badge } from "@/components/ui";
 import { trackEvent } from "@/lib/analytics";
 import { buildLeadWhatsappUrl, buildWhatsappUrl, captureUtmFromUrl, getStoredUtm, type LeadInterest } from "@/lib/utm";
+import { addLead } from "@/lib/leads";
 
 type PlanOption = {
   title: string;
@@ -68,7 +69,16 @@ export default function LandingPage() {
   }, []);
 
   function onWhatsappClick() {
-    trackEvent("cta_whatsapp_click", { location: "lp", ...(getStoredUtm() ?? {}) });
+    const utm = getStoredUtm();
+    addLead({
+      sourcePage: window.location.pathname,
+      channel: "whatsapp_click",
+      utm: utm ?? undefined,
+      interest: ["implementacion"],
+      note: "LP hero CTA"
+    });
+    trackEvent("cta_whatsapp_click", { location: "lp", ...(utm ?? {}) });
+    trackEvent("lead_saved", { channel: "whatsapp_click", location: "lp", ...(utm ?? {}) });
   }
 
   function onChoosePlan(plan: string) {
@@ -92,8 +102,21 @@ export default function LandingPage() {
       interes
     };
 
+    const leadId = `lp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+
     trackEvent("lead_submit", { plan: selectedPlan, ...(utm ?? {}) });
-    localStorage.setItem("vetcare:lead", JSON.stringify(leadPayload));
+    localStorage.setItem("vetcare:lead", JSON.stringify({ ...leadPayload, leadId }));
+
+    addLead({
+      leadId,
+      sourcePage: window.location.pathname,
+      channel: "whatsapp_click",
+      utm: utm ?? undefined,
+      interest: interes.length ? interes : ["implementacion"],
+      note: `LP submit · plan: ${selectedPlan}`,
+      phone: whatsapp
+    });
+    trackEvent("lead_saved", { channel: "whatsapp_click", location: "lp_submit", ...(utm ?? {}) });
 
     const leadWhatsappUrl = buildLeadWhatsappUrl(BRAND.whatsappUrl, utm, leadPayload);
     router.push("/gracias");
