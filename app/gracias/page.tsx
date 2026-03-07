@@ -4,8 +4,12 @@ import * as React from "react";
 import { BRAND } from "@/lib/data";
 import { Container, LinkButton, Badge } from "@/components/ui";
 import { trackEvent } from "@/lib/analytics";
-import { recordLeadEvent } from "@/lib/leadTracking";
+import { addLead } from "@/lib/leads";
 import { buildLeadWhatsappUrl, getStoredUtm, type LeadPayload } from "@/lib/utm";
+
+type StoredLead = LeadPayload & {
+  leadId?: string;
+};
 
 export default function GraciasPage() {
   const [whatsappUrl, setWhatsappUrl] = React.useState(BRAND.whatsappUrl);
@@ -26,7 +30,24 @@ export default function GraciasPage() {
       }
 
       trackEvent("lead_thanks_view", { leadId: lead.leadId, ...(utm ?? {}) });
+      if (!raw) return;
+      const lead = JSON.parse(raw) as StoredLead;
       setWhatsappUrl(buildLeadWhatsappUrl(BRAND.whatsappUrl, utm, lead));
+
+      const hasInterest = Array.isArray(lead.interes) && lead.interes.length > 0;
+      const hasUtm = Boolean(utm && Object.values(utm).some(Boolean));
+      if (hasInterest || hasUtm) {
+        addLead({
+          leadId: lead.leadId,
+          sourcePage: window.location.pathname,
+          channel: "thank_you",
+          utm: utm ?? undefined,
+          interest: hasInterest ? lead.interes : ["implementacion"],
+          note: "Thank you page visit",
+          phone: lead.whatsapp
+        });
+        trackEvent("lead_saved", { channel: "thank_you", location: "gracias", ...(utm ?? {}) });
+      }
     } catch {
       trackEvent("lead_thanks_view", { ...(utm ?? {}) });
       setWhatsappUrl(BRAND.whatsappUrl);

@@ -11,6 +11,7 @@ import { trackEvent } from "@/lib/analytics";
 import { ThemeToggle } from "./theme-toggle";
 import { isDemoToolsEnabled } from "@/lib/demoMode";
 import { buildWhatsappUrl, getStoredUtm } from "@/lib/utm";
+import { addLead } from "@/lib/leads";
 
 const links = [
   { href: "/", label: "Inicio" },
@@ -72,7 +73,16 @@ export function Nav() {
   }
 
   function onWhatsappClick() {
-    trackEvent("cta_whatsapp_click", { location: "navbar", ...(getStoredUtm() ?? {}) });
+    const utm = getStoredUtm();
+    addLead({
+      sourcePage: pathname || window.location.pathname,
+      channel: "whatsapp_click",
+      utm: utm ?? undefined,
+      interest: ["implementacion"],
+      note: "Navbar CTA"
+    });
+    trackEvent("cta_whatsapp_click", { location: "navbar", ...(utm ?? {}) });
+    trackEvent("lead_saved", { channel: "whatsapp_click", location: "navbar", ...(utm ?? {}) });
   }
 
   const navLinks = demoToolsEnabled ? [...links, { href: "/adminv1", label: "Admin v1" }] : links;
