@@ -1,0 +1,199 @@
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import { trackEvent } from "@/lib/analytics";
+import { Button, Card, CardContent, CardHeader, Container, Field, Input } from "@/components/ui";
+import { SectionHeading } from "@/components/section";
+
+type Destination = {
+  label: string;
+  path: string;
+};
+
+type MarketingFields = {
+  utm_source: string;
+  utm_medium: string;
+  utm_campaign: string;
+  utm_content: string;
+  utm_term: string;
+  ref: string;
+};
+
+const DESTINATIONS: Destination[] = [
+  { label: "Home", path: "/" },
+  { label: "Servicios", path: "/servicios" },
+  { label: "Agenda", path: "/agenda" },
+  { label: "Urgencias", path: "/urgencias" },
+  { label: "LP", path: "/lp" }
+];
+
+const SOURCE_PRESETS = ["IG Reels", "IG Stories", "TikTok", "WhatsApp"];
+const CAMPAIGN_PRESETS = ["marin_dev_demo", "vetcare_demo", "promo_control"];
+
+const DEFAULT_FIELDS: MarketingFields = {
+  utm_source: "",
+  utm_medium: "social",
+  utm_campaign: "",
+  utm_content: "",
+  utm_term: "",
+  ref: ""
+};
+
+function normalizeSource(source: string) {
+  return source.trim().toLowerCase().replace(/\s+/g, "_");
+}
+
+export default function AdminV1MarketingPage() {
+  const [destination, setDestination] = React.useState<Destination>(DESTINATIONS[0]);
+  const [fields, setFields] = React.useState<MarketingFields>(DEFAULT_FIELDS);
+  const [includeDemo, setIncludeDemo] = React.useState(false);
+  const [copyFeedback, setCopyFeedback] = React.useState<"idle" | "copied" | "error">("idle");
+
+  const baseUrl = React.useMemo(() => {
+    if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+    if (typeof window !== "undefined") return window.location.origin;
+    return "http://localhost:3000";
+  }, []);
+
+  const generatedLink = React.useMemo(() => {
+    const url = new URL(destination.path, baseUrl);
+    const entries = Object.entries(fields) as Array<[keyof MarketingFields, string]>;
+
+    for (const [key, value] of entries) {
+      const trimmed = value.trim();
+      if (trimmed) {
+        url.searchParams.set(key, trimmed);
+      }
+    }
+
+    if (includeDemo) {
+      url.searchParams.set("demo", "1");
+    }
+
+    return url.toString();
+  }, [baseUrl, destination.path, fields, includeDemo]);
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(generatedLink);
+      setCopyFeedback("copied");
+      trackEvent("marketing_link_copied", {
+        destination: destination.path,
+        utm_campaign: fields.utm_campaign || "",
+        utm_source: fields.utm_source || ""
+      });
+    } catch {
+      setCopyFeedback("error");
+    }
+  }
+
+  function updateField(key: keyof MarketingFields, value: string) {
+    setFields(prev => ({ ...prev, [key]: value }));
+    setCopyFeedback("idle");
+  }
+
+  return (
+    <Container className="py-10">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <SectionHeading
+          eyebrow="Admin v1"
+          title="Marketing link builder"
+          desc="Generá links con UTM para campañas internas sin depender de herramientas externas."
+        />
+        <Link href="/adminv1" className="inline-flex h-11 items-center rounded-xl border border-black/10 bg-white px-4 text-sm font-semibold hover:bg-black/5">
+          Volver al admin
+        </Link>
+      </div>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <div className="text-sm font-extrabold">Destino</div>
+          <div className="text-sm text-black/60">Elegí la ruta base y completá parámetros UTM opcionales.</div>
+        </CardHeader>
+        <CardContent className="grid gap-6">
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+            {DESTINATIONS.map((item) => (
+              <Button
+                key={item.path}
+                variant={destination.path === item.path ? "primary" : "outline"}
+                onClick={() => setDestination(item)}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Field label="utm_source">
+              <Input value={fields.utm_source} onChange={(e) => updateField("utm_source", e.target.value)} placeholder="instagram" />
+            </Field>
+            <Field label="utm_medium">
+              <Input value={fields.utm_medium} onChange={(e) => updateField("utm_medium", e.target.value)} placeholder="social" />
+            </Field>
+            <Field label="utm_campaign">
+              <Input value={fields.utm_campaign} onChange={(e) => updateField("utm_campaign", e.target.value)} placeholder="promo_control" />
+            </Field>
+            <Field label="utm_content">
+              <Input value={fields.utm_content} onChange={(e) => updateField("utm_content", e.target.value)} />
+            </Field>
+            <Field label="utm_term">
+              <Input value={fields.utm_term} onChange={(e) => updateField("utm_term", e.target.value)} />
+            </Field>
+            <Field label="ref">
+              <Input value={fields.ref} onChange={(e) => updateField("ref", e.target.value)} />
+            </Field>
+          </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid gap-2">
+              <div className="text-sm font-semibold">Presets de fuente</div>
+              <div className="flex flex-wrap gap-2">
+                {SOURCE_PRESETS.map((source) => (
+                  <Button key={source} size="sm" variant="outline" onClick={() => updateField("utm_source", normalizeSource(source))}>
+                    {source}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid gap-2">
+              <div className="text-sm font-semibold">Campañas ejemplo</div>
+              <div className="flex flex-wrap gap-2">
+                {CAMPAIGN_PRESETS.map((campaign) => (
+                  <Button key={campaign} size="sm" variant="outline" onClick={() => updateField("utm_campaign", campaign)}>
+                    {campaign}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <label className="inline-flex items-center gap-2 text-sm font-semibold">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded border border-black/20"
+              checked={includeDemo}
+              onChange={(e) => {
+                setIncludeDemo(e.target.checked);
+                setCopyFeedback("idle");
+              }}
+            />
+            Incluir demo=1
+          </label>
+
+          <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-4">
+            <div className="text-xs font-semibold uppercase text-black/50">Preview</div>
+            <p className="mt-2 break-all font-mono text-sm">{generatedLink}</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Button onClick={copyLink} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Copy link</Button>
+            {copyFeedback === "copied" ? <span className="text-sm text-emerald-700">Link copiado ✅</span> : null}
+            {copyFeedback === "error" ? <span className="text-sm text-rose-700">No se pudo copiar. Copiá desde el preview.</span> : null}
+          </div>
+        </CardContent>
+      </Card>
+    </Container>
+  );
+}

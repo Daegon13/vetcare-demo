@@ -180,8 +180,9 @@ export default function AdminV1Page() {
           title="Panel de operación (modo demo)"
           desc="Para mostrar “cómo funcionaría”. Estados, triage entrante, perfil de mascota y campañas."
         />
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button variant="outline" onClick={demoReset}>Reset demo</Button>
+          <LinkButton href="/adminv1/marketing" variant="outline">Marketing links</LinkButton>
           <LinkButton href="/agenda" variant="outline">Ir a Agenda</LinkButton>
         </div>
       </div>
