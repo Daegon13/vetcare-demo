@@ -19,7 +19,7 @@ Se agregó una herramienta interna para generar links con UTM listos para campa�
   - `utm_term`
   - `ref`
 - Presets rápidos:
-  - Fuentes: `IG Reels`, `IG Stories`, `TikTok`, `WhatsApp`
+  - Canales: `IG Reels`, `IG Stories`, `TikTok`, `WhatsApp` (autocompleta `utm_source` + `utm_medium`)
   - Campañas: `marin_dev_demo`, `vetcare_demo`, `promo_control`
 - Toggle: `Incluir demo=1`.
 - Lógica de URL base:

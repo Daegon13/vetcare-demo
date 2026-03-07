@@ -28,7 +28,12 @@ const DESTINATIONS: Destination[] = [
   { label: "LP", path: "/lp" }
 ];
 
-const SOURCE_PRESETS = ["IG Reels", "IG Stories", "TikTok", "WhatsApp"];
+const CHANNEL_PRESETS = [
+  { label: "IG Reels", utm_source: "instagram", utm_medium: "reels" },
+  { label: "IG Stories", utm_source: "instagram", utm_medium: "stories" },
+  { label: "TikTok", utm_source: "tiktok", utm_medium: "social_video" },
+  { label: "WhatsApp", utm_source: "whatsapp", utm_medium: "chat" }
+];
 const CAMPAIGN_PRESETS = ["marin_dev_demo", "vetcare_demo", "promo_control"];
 
 const DEFAULT_FIELDS: MarketingFields = {
@@ -39,10 +44,6 @@ const DEFAULT_FIELDS: MarketingFields = {
   utm_term: "",
   ref: ""
 };
-
-function normalizeSource(source: string) {
-  return source.trim().toLowerCase().replace(/\s+/g, "_");
-}
 
 export default function AdminV1MarketingPage() {
   const [destination, setDestination] = React.useState<Destination>(DESTINATIONS[0]);
@@ -147,11 +148,23 @@ export default function AdminV1MarketingPage() {
 
           <div className="grid gap-4 lg:grid-cols-2">
             <div className="grid gap-2">
-              <div className="text-sm font-semibold">Presets de fuente</div>
+              <div className="text-sm font-semibold">Presets de canal</div>
               <div className="flex flex-wrap gap-2">
-                {SOURCE_PRESETS.map((source) => (
-                  <Button key={source} size="sm" variant="outline" onClick={() => updateField("utm_source", normalizeSource(source))}>
-                    {source}
+                {CHANNEL_PRESETS.map((preset) => (
+                  <Button
+                    key={preset.label}
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      setFields((prev) => ({
+                        ...prev,
+                        utm_source: preset.utm_source,
+                        utm_medium: preset.utm_medium
+                      }));
+                      setCopyFeedback("idle");
+                    }}
+                  >
+                    {preset.label}
                   </Button>
                 ))}
               </div>
