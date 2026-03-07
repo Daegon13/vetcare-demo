@@ -24,19 +24,14 @@ export default function GraciasPage() {
         return;
       }
 
-      const lead = JSON.parse(raw) as LeadPayload;
-      if (lead.leadId) {
-        recordLeadEvent(lead.leadId, "thank_you");
-      }
-
-      trackEvent("lead_thanks_view", { leadId: lead.leadId, ...(utm ?? {}) });
-      if (!raw) return;
       const lead = JSON.parse(raw) as StoredLead;
       setWhatsappUrl(buildLeadWhatsappUrl(BRAND.whatsappUrl, utm, lead));
 
+      trackEvent("lead_thanks_view", { leadId: lead.leadId, ...(utm ?? {}) });
+
       const hasInterest = Array.isArray(lead.interes) && lead.interes.length > 0;
       const hasUtm = Boolean(utm && Object.values(utm).some(Boolean));
-      if (hasInterest || hasUtm) {
+      if ((hasInterest || hasUtm) && lead.leadId) {
         addLead({
           leadId: lead.leadId,
           sourcePage: window.location.pathname,

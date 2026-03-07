@@ -1,12 +1,14 @@
 import type { UTMData } from "@/lib/utm";
 
+export type LeadChannel = "whatsapp_click" | "thank_you";
+
 export type LeadEvent = {
   id: string;
   createdAtISO: string;
   sourcePage: string;
   utm?: UTMData;
   interest?: string[];
-  channel: string;
+  channel: LeadChannel | string;
   note?: string;
   phone?: string;
   petName?: string;
@@ -49,7 +51,7 @@ export function getLeads(): LeadEvent[] {
 }
 
 export function addLead(lead: LeadEventInput): LeadEvent {
-  const id = lead.leadId ?? lead.id ?? uid();
+  const id = lead.leadId ? `${lead.leadId}:${lead.channel}` : (lead.id ?? uid());
   const nextLead: LeadEvent = {
     ...lead,
     id,

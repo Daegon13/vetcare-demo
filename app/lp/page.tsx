@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { BRAND } from "@/lib/data";
 import { Container, LinkButton, Card, CardContent, Badge } from "@/components/ui";
 import { trackEvent } from "@/lib/analytics";
-import { createLeadId, recordLeadEvent } from "@/lib/leadTracking";
 import { buildLeadWhatsappUrl, buildWhatsappUrl, captureUtmFromUrl, getStoredUtm, type LeadInterest } from "@/lib/utm";
 import { addLead } from "@/lib/leads";
 
@@ -94,7 +93,7 @@ export default function LandingPage() {
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const utm = getStoredUtm();
-    const leadId = createLeadId();
+    const leadId = `lp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
     const leadPayload = {
       leadId,
       nombre,
@@ -104,8 +103,6 @@ export default function LandingPage() {
       plan: selectedPlan,
       interes
     };
-
-    const leadId = `lp_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
 
     trackEvent("lead_submit", { plan: selectedPlan, ...(utm ?? {}) });
     localStorage.setItem("vetcare:lead", JSON.stringify({ ...leadPayload, leadId }));
