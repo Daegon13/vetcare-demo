@@ -13,6 +13,7 @@ export type UTMData = {
 export type LeadInterest = "turnos" | "urgencias" | "portal" | "admin";
 
 export type LeadPayload = {
+  leadId?: string;
   nombre?: string;
   clinica?: string;
   ciudad?: string;

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { BRAND } from "@/lib/data";
 import { Container, LinkButton, Card, CardContent, Badge } from "@/components/ui";
 import { trackEvent } from "@/lib/analytics";
+import { createLeadId, recordLeadEvent } from "@/lib/leadTracking";
 import { buildLeadWhatsappUrl, buildWhatsappUrl, captureUtmFromUrl, getStoredUtm, type LeadInterest } from "@/lib/utm";
 import { addLead } from "@/lib/leads";
 
@@ -93,7 +94,9 @@ export default function LandingPage() {
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const utm = getStoredUtm();
+    const leadId = createLeadId();
     const leadPayload = {
+      leadId,
       nombre,
       clinica,
       ciudad,

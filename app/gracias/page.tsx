@@ -16,10 +16,20 @@ export default function GraciasPage() {
 
   React.useEffect(() => {
     const utm = getStoredUtm();
-    trackEvent("lead_thanks_view", { ...(utm ?? {}) });
 
     try {
       const raw = localStorage.getItem("vetcare:lead");
+      if (!raw) {
+        trackEvent("lead_thanks_view", { ...(utm ?? {}) });
+        return;
+      }
+
+      const lead = JSON.parse(raw) as LeadPayload;
+      if (lead.leadId) {
+        recordLeadEvent(lead.leadId, "thank_you");
+      }
+
+      trackEvent("lead_thanks_view", { leadId: lead.leadId, ...(utm ?? {}) });
       if (!raw) return;
       const lead = JSON.parse(raw) as StoredLead;
       setWhatsappUrl(buildLeadWhatsappUrl(BRAND.whatsappUrl, utm, lead));
@@ -39,6 +49,7 @@ export default function GraciasPage() {
         trackEvent("lead_saved", { channel: "thank_you", location: "gracias", ...(utm ?? {}) });
       }
     } catch {
+      trackEvent("lead_thanks_view", { ...(utm ?? {}) });
       setWhatsappUrl(BRAND.whatsappUrl);
     }
   }, []);
