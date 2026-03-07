@@ -6,6 +6,7 @@ import { BRAND, SERVICES } from "@/lib/data";
 import type { Appointment, AppointmentStatus, Campaign, PetProfile, TriageCase } from "@/lib/types";
 import { loadAppointments, loadCampaigns, loadPet, loadTriage, resetDemo, saveAppointments, saveCampaigns, savePet, saveTriage } from "@/lib/storage";
 import { cn, uid } from "@/lib/utils";
+import { loadLeadEvents, type LeadChannelEvent } from "@/lib/leadTracking";
 import { Container, Card, CardContent, CardHeader, Button, Badge, Field, Input, Select, Textarea, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 
@@ -22,6 +23,7 @@ export default function AdminV1Page() {
   const [triage, setTriage] = React.useState<TriageCase[]>([]);
   const [pet, setPet] = React.useState<PetProfile | null>(null);
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
+  const [leadEvents, setLeadEvents] = React.useState<LeadChannelEvent[]>([]);
 
   const [q, setQ] = React.useState("");
 
@@ -82,6 +84,7 @@ export default function AdminV1Page() {
     setTriage(loadTriage());
     setPet(loadPet());
     setCampaigns(loadCampaigns());
+    setLeadEvents(loadLeadEvents());
   }
 
   function demoReset() {
@@ -316,6 +319,25 @@ export default function AdminV1Page() {
 
         {tab === "campañas" ? (
           <div className="grid gap-4 lg:grid-cols-5">
+            <Card className="lg:col-span-5">
+              <CardHeader>
+                <div className="text-sm font-extrabold">Canales de conversión de leads</div>
+                <div className="text-sm text-black/60">Registro local e idempotente por evento: whatsapp_click y thank_you.</div>
+              </CardHeader>
+              <CardContent className="grid gap-3">
+                {leadEvents.length === 0 ? (
+                  <div className="text-sm text-black/60">Aún no hay eventos de lead.</div>
+                ) : (
+                  leadEvents.map((event) => (
+                    <div key={event.id} className="rounded-2xl border border-black/10 bg-white p-3 text-sm">
+                      <div className="font-semibold">{event.channel}</div>
+                      <div className="text-xs text-black/60">leadId: {event.leadId}</div>
+                      <div className="text-xs text-black/55">{new Date(event.createdAt).toLocaleString("es-UY")}</div>
+                    </div>
+                  ))
+                )}
+              </CardContent>
+            </Card>
             <Card className="lg:col-span-3">
               <CardHeader>
                 <div className="text-sm font-extrabold">Campañas</div>

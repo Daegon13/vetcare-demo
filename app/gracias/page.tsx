@@ -4,6 +4,7 @@ import * as React from "react";
 import { BRAND } from "@/lib/data";
 import { Container, LinkButton, Badge } from "@/components/ui";
 import { trackEvent } from "@/lib/analytics";
+import { recordLeadEvent } from "@/lib/leadTracking";
 import { buildLeadWhatsappUrl, getStoredUtm, type LeadPayload } from "@/lib/utm";
 
 export default function GraciasPage() {
@@ -11,14 +12,23 @@ export default function GraciasPage() {
 
   React.useEffect(() => {
     const utm = getStoredUtm();
-    trackEvent("lead_thanks_view", { ...(utm ?? {}) });
 
     try {
       const raw = localStorage.getItem("vetcare:lead");
-      if (!raw) return;
+      if (!raw) {
+        trackEvent("lead_thanks_view", { ...(utm ?? {}) });
+        return;
+      }
+
       const lead = JSON.parse(raw) as LeadPayload;
+      if (lead.leadId) {
+        recordLeadEvent(lead.leadId, "thank_you");
+      }
+
+      trackEvent("lead_thanks_view", { leadId: lead.leadId, ...(utm ?? {}) });
       setWhatsappUrl(buildLeadWhatsappUrl(BRAND.whatsappUrl, utm, lead));
     } catch {
+      trackEvent("lead_thanks_view", { ...(utm ?? {}) });
       setWhatsappUrl(BRAND.whatsappUrl);
     }
   }, []);
