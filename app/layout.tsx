@@ -6,41 +6,68 @@ import { Footer } from "@/components/footer";
 import { DemoBootstrap } from "@/components/demo-bootstrap";
 import { FloatingCta } from "@/components/floating-cta";
 import { ThemeProvider } from "@/components/theme-provider";
+import { BRAND } from "@/lib/data";
+import { getSiteUrl } from "@/lib/seo";
+
+const siteUrl = getSiteUrl();
+
+const defaultTitle = `${BRAND.name} — Turnos, urgencias y portal del cliente`;
+const defaultDescription = `Demo web de ${BRAND.name}: agenda con disponibilidad real, triage de urgencias y portal para clientes.`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "VetCare — Turnos, urgencias y portal del cliente",
-    template: "%s · VetCare"
+    default: defaultTitle,
+    template: `%s · ${BRAND.name}`
   },
-  description: "Demo web para veterinaria: turnos, triage, portal ‘Mi Mascota’ y panel admin.",
-  applicationName: "VetCare",
+  description: defaultDescription,
+  applicationName: BRAND.name,
+  alternates: {
+    canonical: "/"
+  },
   openGraph: {
     type: "website",
-    title: "VetCare — Turnos, urgencias y portal del cliente",
-    description: "Agenda con disponibilidad real, triage de urgencias y recordatorios por WhatsApp.",
-    siteName: "VetCare",
-    images: [
-      {
-        url: "/brand/og.webp",
-        width: 1200,
-        height: 630,
-        alt: "VetCare — Turnos, urgencias y portal del cliente"
-      }
-    ]
+    title: defaultTitle,
+    description: defaultDescription,
+    siteName: BRAND.name,
+    url: siteUrl,
+    images: ["/opengraph-image"]
   },
   twitter: {
     card: "summary_large_image",
-    title: "VetCare — Turnos, urgencias y portal del cliente",
-    description: "Agenda con disponibilidad real, triage de urgencias y recordatorios por WhatsApp.",
-    images: ["/brand/og.webp"]
+    title: defaultTitle,
+    description: defaultDescription,
+    images: ["/opengraph-image"]
   }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const localBusinessSchema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "VeterinaryCare",
+    name: BRAND.name,
+    url: siteUrl
+  };
+
+  if (BRAND.address) {
+    localBusinessSchema.address = {
+      "@type": "PostalAddress",
+      streetAddress: BRAND.address
+    };
+  }
+
+  if (BRAND.phone) {
+    localBusinessSchema.telephone = BRAND.phone;
+  }
+
+  if (BRAND.hours) {
+    localBusinessSchema.openingHours = BRAND.hours;
+  }
+
   return (
     <html lang="es" suppressHydrationWarning>
       <body className="min-h-screen bg-white text-graphite-950 antialiased dark:bg-graphite-950 dark:text-white">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
         <ThemeProvider>
           <Suspense fallback={null}>
             <DemoBootstrap />
