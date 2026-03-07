@@ -1,11 +1,14 @@
 "use client";
 
 import * as React from "react";
+import { usePathname } from "next/navigation";
 import { BRAND } from "@/lib/data";
 import { trackEvent } from "@/lib/analytics";
+import { addLead } from "@/lib/leads";
 import { appendUtmToUrl, buildWhatsappUrl, getStoredUtm } from "@/lib/utm";
 
 export function FloatingCta() {
+  const pathname = usePathname();
   const [whatsappUrl, setWhatsappUrl] = React.useState(BRAND.whatsappUrl);
   const [implementationUrl, setImplementationUrl] = React.useState(BRAND.implementationCtaUrl);
 
@@ -16,7 +19,16 @@ export function FloatingCta() {
   }, []);
 
   function onWhatsappClick() {
-    trackEvent("cta_whatsapp_click", { location: "floating", ...(getStoredUtm() ?? {}) });
+    const utm = getStoredUtm();
+    addLead({
+      sourcePage: pathname || window.location.pathname,
+      channel: "whatsapp_click",
+      utm: utm ?? undefined,
+      interest: ["implementacion"],
+      note: "Floating CTA"
+    });
+    trackEvent("cta_whatsapp_click", { location: "floating", ...(utm ?? {}) });
+    trackEvent("lead_saved", { channel: "whatsapp_click", location: "floating", ...(utm ?? {}) });
   }
 
   function onImplementationClick() {
