@@ -19,6 +19,7 @@
   - `/faq`
   - `/lp`
   - `/gracias`
+- Para las páginas que necesitan Client Components (`agenda`, `urgencias`, `mi-mascota`, `lp`, `gracias`), se dejó `page.tsx` como Server Component con `export const metadata` y se movió la UI a archivos `*-client-page.tsx`.
 - Se creó/ajustó:
   - `app/sitemap.ts` con todas las rutas públicas solicitadas.
   - `app/robots.ts` con `allow: /` y URL de sitemap.
@@ -26,4 +27,3 @@
 ## Notas
 
 - No se tocaron iconos ni imágenes existentes.
-- Para páginas client (`agenda`, `urgencias`, `mi-mascota`, `lp`, `gracias`) se usó `layout.tsx` de segmento para exportar metadata válida en App Router.
