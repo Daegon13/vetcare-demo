@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
+import { BRAND } from "@/lib/data";
+import { buildPageMetadata } from "@/lib/seo";
 import { Container, Card, CardContent, Badge, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: `Preguntas frecuentes | ${BRAND.name}`,
+  description: `Resolvé dudas sobre turnos, urgencias, portal y funcionamiento general de ${BRAND.name}.`,
+  path: "/faq"
+});
 
 const FAQ = [
   {

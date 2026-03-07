@@ -1,5 +1,14 @@
+import type { Metadata } from "next";
+import { BRAND } from "@/lib/data";
+import { buildPageMetadata } from "@/lib/seo";
 import { Container, Card, CardContent, Badge, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: `Equipo veterinario | ${BRAND.name}`,
+  description: `Conocé al equipo de ${BRAND.name}: profesionales en clínica, cirugía y atención integral para mascotas.`,
+  path: "/equipo"
+});
 
 const TEAM = [
   { name: "Dra. Valentina Pereira", role: "Clínica general", bio: "Enfoque preventivo + medicina interna. Le gusta explicar todo con calma." },

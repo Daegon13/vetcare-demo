@@ -1,0 +1,46 @@
+import type { Metadata } from "next";
+import { BRAND } from "@/lib/data";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteName = BRAND.name;
+
+const defaultOgImage = "/opengraph-image";
+
+export function buildPageMetadata({
+  title,
+  description,
+  path
+}: {
+  title: string;
+  description: string;
+  path: string;
+}): Metadata {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const canonical = new URL(normalizedPath, siteUrl).toString();
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical
+    },
+    openGraph: {
+      type: "website",
+      siteName,
+      title,
+      description,
+      url: canonical,
+      images: [defaultOgImage]
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [defaultOgImage]
+    }
+  };
+}
+
+export function getSiteUrl() {
+  return siteUrl;
+}

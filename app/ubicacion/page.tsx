@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { BRAND } from "@/lib/data";
-import { Container, Card, CardContent, CardHeader, Badge, LinkButton } from "@/components/ui";
+import { buildPageMetadata } from "@/lib/seo";
 import { SectionHeading } from "@/components/section";
+import { Container, Card, CardContent, CardHeader, Badge, LinkButton } from "@/components/ui";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: `Ubicación y contacto | ${BRAND.name}`,
+  description: `Encontrá la ubicación de ${BRAND.name}, horarios de atención y vías de contacto para turnos y consultas.`,
+  path: "/ubicacion"
+});
 
 export default function UbicacionPage() {
   const mapsQuery = encodeURIComponent(BRAND.address);

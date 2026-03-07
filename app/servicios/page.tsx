@@ -1,6 +1,14 @@
 import Image from "next/image";
 import { Container, Card, CardContent, Badge, LinkButton } from "@/components/ui";
 import { BRAND, SERVICES } from "@/lib/data";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: `Servicios veterinarios | ${BRAND.name}`,
+  description: `Explorá los servicios de ${BRAND.name}: consulta, vacunación, cirugía, internación y más con foco preventivo.`,
+  path: "/servicios"
+});
 
 const ICONS: Array<{ key: string; label: string }> = [
   { key: "consulta", label: "Consulta" },

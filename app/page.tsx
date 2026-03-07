@@ -1,10 +1,18 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 
 import { BRAND } from "@/lib/data";
 import { isDemoToolsEnabled } from "@/lib/demoMode";
+import { buildPageMetadata } from "@/lib/seo";
 import { Container, Card, CardContent, LinkButton, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { HeroVisual } from "@/components/hero-visual";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: `${BRAND.name} | Demo veterinaria con turnos y urgencias`,
+  description: `Conocé ${BRAND.name}: agenda online, triage de urgencias y portal para clientes en una sola experiencia.`,
+  path: "/"
+});
 
 const FEATURES: { title: string; desc: string; img?: string }[] = [
   {
