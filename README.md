@@ -37,6 +37,22 @@ Este repositorio contiene una **demo comercial interactiva** para clínicas vete
 - Enlaces/UTM para campañas comerciales.
 - CTA de contacto para implementación.
 
+
+## Quickstart local (demo)
+
+```bash
+npm install
+npm run dev
+# abrir http://localhost:3000/?demo=1
+```
+
+Si querés dejar demo tools fijo en local:
+
+```bash
+# .env.local
+NEXT_PUBLIC_DEMO_TOOLS=true
+```
+
 ## Modo demo tools
 
 El proyecto permite habilitar herramientas internas de demo (por ejemplo `/adminv1`) por **query param** y/o **env var**.
@@ -62,6 +78,16 @@ NEXT_PUBLIC_DEMO_TOOLS=true
 3. estado persistido en `localStorage`
 
 Además, para rutas admin, el middleware también persiste la bandera en cookie y restringe `/adminv1` cuando demo tools no está habilitado.
+
+
+## Entrega como patch (`git apply`)
+
+Si necesitás mover este cambio entre repos sin merge directo:
+
+```bash
+git format-patch -1 --stdout > patch-13-demo-kit-followup.diff
+git apply patch-13-demo-kit-followup.diff
+```
 
 ## Demo script + checklist de grabación
 
