@@ -6,6 +6,24 @@ const siteName = BRAND.name;
 
 const defaultOgImage = "/opengraph-image";
 
+function isNoIndexEnabled() {
+  const value = process.env.NEXT_PUBLIC_DEMO_NOINDEX?.toLowerCase();
+  return value === "1" || value === "true";
+}
+
+export function getRobotsMetadata(): Metadata["robots"] {
+  const indexable = !isNoIndexEnabled();
+
+  return {
+    index: indexable,
+    follow: indexable,
+    googleBot: {
+      index: indexable,
+      follow: indexable
+    }
+  };
+}
+
 export function buildPageMetadata({
   title,
   description,
@@ -21,6 +39,7 @@ export function buildPageMetadata({
   return {
     title,
     description,
+    robots: getRobotsMetadata(),
     alternates: {
       canonical
     },
@@ -43,4 +62,8 @@ export function buildPageMetadata({
 
 export function getSiteUrl() {
   return siteUrl;
+}
+
+export function shouldNoIndexSite() {
+  return isNoIndexEnabled();
 }

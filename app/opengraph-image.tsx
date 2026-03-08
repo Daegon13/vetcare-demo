@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { BRAND } from "@/lib/data";
 
 export const runtime = "edge";
 
@@ -33,7 +34,7 @@ export default function OpenGraphImage() {
               boxShadow: "0 12px 30px rgba(0,0,0,0.12)"
             }}
           />
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0b0e11" }}>VetCare</div>
+          <div style={{ fontSize: 28, fontWeight: 800, color: "#0b0e11" }}>{BRAND.name}</div>
         </div>
 
         <div style={{ marginTop: 22, fontSize: 62, fontWeight: 900, color: "#0b0e11", lineHeight: 1.05 }}>
@@ -43,7 +44,7 @@ export default function OpenGraphImage() {
         </div>
 
         <div style={{ marginTop: 22, fontSize: 26, color: "rgba(0,0,0,0.65)", maxWidth: 900 }}>
-          Demo Next.js lista para vender: agenda con disponibilidad, triage de urgencias y recordatorios por WhatsApp.
+          Demo web lista para vender: agenda con disponibilidad, triage de urgencias y recordatorios por WhatsApp.
         </div>
 
         <div

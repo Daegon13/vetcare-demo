@@ -7,7 +7,7 @@ import { DemoBootstrap } from "@/components/demo-bootstrap";
 import { FloatingCta } from "@/components/floating-cta";
 import { ThemeProvider } from "@/components/theme-provider";
 import { BRAND } from "@/lib/data";
-import { getSiteUrl } from "@/lib/seo";
+import { getRobotsMetadata, getSiteUrl } from "@/lib/seo";
 
 const siteUrl = getSiteUrl();
 
@@ -22,6 +22,7 @@ export const metadata: Metadata = {
   },
   description: defaultDescription,
   applicationName: BRAND.name,
+  robots: getRobotsMetadata(),
   alternates: {
     canonical: "/"
   },
