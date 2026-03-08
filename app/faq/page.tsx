@@ -12,24 +12,28 @@ export const metadata: Metadata = buildPageMetadata({
 
 const FAQ = [
   {
-    q: "¿Cómo funciona la agenda?",
-    a: "Elegís servicio, fecha y un horario disponible. La disponibilidad se calcula con duración + buffer. En producción se conecta a Google Calendar y al sistema interno."
+    q: "¿Cuánto cuesta una consulta o control?",
+    a: "Cada servicio muestra un precio estimado para que tengas referencia antes de reservar. El valor final puede variar según evaluación clínica y estudios necesarios."
   },
   {
-    q: "¿El triage reemplaza al veterinario?",
-    a: "No. Es una guía rápida para priorizar. Si hay signos graves (respiración, sangrado, desmayo), es urgencia."
+    q: "¿Atienden urgencias fuera de horario?",
+    a: "Sí, podés iniciar la evaluación de urgencia y contactar por WhatsApp para coordinar guardia. Si hay dificultad respiratoria, sangrado o desmayo, se prioriza atención inmediata."
   },
   {
-    q: "¿Cómo recuerdan vacunas?",
-    a: "En demo se genera un mensaje para WhatsApp. En producción se programan recordatorios automáticos según vencimientos."
+    q: "¿Puedo cancelar o reprogramar un turno?",
+    a: "Sí. Podés hacerlo con anticipación desde el canal de confirmación para liberar ese horario y elegir uno nuevo según disponibilidad."
   },
   {
-    q: "¿Qué hace el panel Admin?",
-    a: "Permite confirmar/cancelar turnos, ver triage entrante, editar mascota demo y simular campañas."
+    q: "¿Qué horarios manejan para turnos generales?",
+    a: "La agenda muestra los horarios disponibles en tiempo real. Si no encontrás lugar hoy, podés dejar consulta por WhatsApp y te proponemos la opción más cercana."
   },
   {
-    q: "¿Se puede integrar pagos?",
-    a: "Sí. Checkout para reservas, señas, planes preventivos y facturación."
+    q: "¿Cómo sé qué vacunas o controles le faltan a mi mascota?",
+    a: "En el portal vas a ver historial, próximos vencimientos y recordatorios para mantener el plan preventivo al día."
+  },
+  {
+    q: "¿Esto ya está funcionando o es una demo?",
+    a: `Esta experiencia es una demo de ${BRAND.name}: muestra el flujo completo de agenda, urgencias y portal con datos simulados para evaluar implementación.`
   }
 ];
 

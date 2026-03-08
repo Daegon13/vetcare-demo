@@ -94,7 +94,7 @@ export default function UrgenciasPage() {
       <SectionHeading
         eyebrow="Urgencias"
         title="Evaluación rápida (triage)"
-        desc="Esto no reemplaza una consulta médica. La demo clasifica prioridad en base a síntomas para guiar el próximo paso."
+        desc="Contanos síntomas y te mostramos prioridad estimada para decidir el próximo paso. Es una demo orientativa y no reemplaza atención veterinaria."
       />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
@@ -159,6 +159,7 @@ export default function UrgenciasPage() {
               </Button>
               <LeadCTA interest="urgencias" label="Escribir por WhatsApp" variant="outline" />
             </div>
+            <div className="text-xs text-black/45">Modo demo: el resultado no genera ticket real de guardia.</div>
 
             {created ? (
               <Card className="bg-white ring-1 ring-black/5">

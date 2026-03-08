@@ -1,0 +1,165 @@
+diff --git a/app/agenda/agenda-client-page.tsx b/app/agenda/agenda-client-page.tsx
+index 43f2c1f..c2b4469 100644
+--- a/app/agenda/agenda-client-page.tsx
++++ b/app/agenda/agenda-client-page.tsx
+@@ -132,7 +132,7 @@ function AgendaPageInner() {
+       <SectionHeading
+         eyebrow="Agenda"
+         title="Reservá un turno"
+-        desc="Elegí servicio y horario disponible. En esta demo, el sistema simula disponibilidad real con duración + buffer."
++        desc="Elegí servicio y horario disponible en pocos pasos. Esta agenda es una demo con disponibilidad simulada según duración + buffer."
+       />
+ 
+       <div className="mt-8 grid gap-4 lg:grid-cols-5">
+@@ -180,6 +180,7 @@ function AgendaPageInner() {
+               <div className="text-xs text-black/50">
+                 Tip: los turnos ocupados se bloquean automáticamente por duración + buffer.
+               </div>
++              <div className="text-xs text-black/45">Demo activa: no se envían mensajes reales ni se cobran reservas.</div>
+             </div>
+ 
+             <div className="grid gap-3 pt-2">
+diff --git a/app/faq/page.tsx b/app/faq/page.tsx
+index d0ce395..1bf0be1 100644
+--- a/app/faq/page.tsx
++++ b/app/faq/page.tsx
+@@ -12,24 +12,28 @@ export const metadata: Metadata = buildPageMetadata({
+ 
+ const FAQ = [
+   {
+-    q: "¿Cómo funciona la agenda?",
+-    a: "Elegís servicio, fecha y un horario disponible. La disponibilidad se calcula con duración + buffer. En producción se conecta a Google Calendar y al sistema interno."
++    q: "¿Cuánto cuesta una consulta o control?",
++    a: "Cada servicio muestra un precio estimado para que tengas referencia antes de reservar. El valor final puede variar según evaluación clínica y estudios necesarios."
+   },
+   {
+-    q: "¿El triage reemplaza al veterinario?",
+-    a: "No. Es una guía rápida para priorizar. Si hay signos graves (respiración, sangrado, desmayo), es urgencia."
++    q: "¿Atienden urgencias fuera de horario?",
++    a: "Sí, podés iniciar la evaluación de urgencia y contactar por WhatsApp para coordinar guardia. Si hay dificultad respiratoria, sangrado o desmayo, se prioriza atención inmediata."
+   },
+   {
+-    q: "¿Cómo recuerdan vacunas?",
+-    a: "En demo se genera un mensaje para WhatsApp. En producción se programan recordatorios automáticos según vencimientos."
++    q: "¿Puedo cancelar o reprogramar un turno?",
++    a: "Sí. Podés hacerlo con anticipación desde el canal de confirmación para liberar ese horario y elegir uno nuevo según disponibilidad."
+   },
+   {
+-    q: "¿Qué hace el panel Admin?",
+-    a: "Permite confirmar/cancelar turnos, ver triage entrante, editar mascota demo y simular campañas."
++    q: "¿Qué horarios manejan para turnos generales?",
++    a: "La agenda muestra los horarios disponibles en tiempo real. Si no encontrás lugar hoy, podés dejar consulta por WhatsApp y te proponemos la opción más cercana."
+   },
+   {
+-    q: "¿Se puede integrar pagos?",
+-    a: "Sí. Checkout para reservas, señas, planes preventivos y facturación."
++    q: "¿Cómo sé qué vacunas o controles le faltan a mi mascota?",
++    a: "En el portal vas a ver historial, próximos vencimientos y recordatorios para mantener el plan preventivo al día."
++  },
++  {
++    q: "¿Esto ya está funcionando o es una demo?",
++    a: `Esta experiencia es una demo de ${BRAND.name}: muestra el flujo completo de agenda, urgencias y portal con datos simulados para evaluar implementación.`
+   }
+ ];
+ 
+diff --git a/app/page.tsx b/app/page.tsx
+index 9b1931d..0c715e5 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -60,14 +60,19 @@ export default function HomePage({ searchParams }: HomePageProps) {
+         <Container className="grid gap-10 py-10 sm:py-14 lg:grid-cols-2 lg:items-center">
+           <div className="grid gap-5">
+             <Badge className="w-fit" tone="neutral">
+-              Demo vendible · Turnos + Urgencias + Portal
++              VetCare para clínicas y veterinarias con alta demanda diaria
+             </Badge>
+             <h1 className="text-3xl font-black tracking-tight sm:text-5xl">
+-              Veterinaria moderna para encontrar turno en minutos.
++              Menos llamadas, más turnos confirmados y urgencias mejor priorizadas.
+             </h1>
+             <p className="max-w-xl text-sm text-black/60 dark:text-white/70 sm:text-lg">
+-              Agenda con disponibilidad real, triage de urgencias y un portal simple para vacunas e historial. En modo demo, todo queda guardado localmente.
++              VetCare centraliza agenda online, triage y seguimiento para equipos veterinarios que quieren responder más rápido sin perder el trato humano.
+             </p>
++            <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
++              <li>• Respuesta en menos de 2 minutos para casos urgentes vía flujo guiado + WhatsApp.</li>
++              <li>• Recordatorios automáticos para reducir ausencias y sostener controles preventivos.</li>
++              <li>• Historial y próximos vencimientos visibles para el tutor en un solo lugar.</li>
++            </ul>
+             <div className="flex flex-wrap gap-2">
+               <LinkButton href="/agenda" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
+                 Reservar turno
+@@ -82,6 +87,9 @@ export default function HomePage({ searchParams }: HomePageProps) {
+                 </LinkButton>
+               ) : null}
+             </div>
++            <div className="text-xs text-black/45 dark:text-white/55">
++              Vista demo interactiva: datos simulados para mostrar el flujo completo antes de implementar.
++            </div>
+             <div className="text-xs text-black/50 dark:text-white/60">
+               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
+             </div>
+@@ -104,8 +112,8 @@ export default function HomePage({ searchParams }: HomePageProps) {
+             <Card className="overflow-hidden">
+               <div className="bg-graphite-900 p-6 text-white">
+                 <div className="text-sm font-semibold text-white/70">Resumen rápido</div>
+-                <div className="mt-2 text-2xl font-black">“Me resolvieron el turno y la urgencia en un rato.”</div>
+-                <div className="mt-3 text-sm text-white/70">Experiencia tipo app, pero con vibra humana.</div>
++                <div className="mt-2 text-2xl font-black">“Pasé de responder todo por teléfono a tener turnos y urgencias ordenadas.”</div>
++                <div className="mt-3 text-sm text-white/70">Flujo claro para el tutor, contexto útil para el equipo.</div>
+               </div>
+             </Card>
+           </div>
+diff --git a/app/servicios/page.tsx b/app/servicios/page.tsx
+index 75bf973..5824d80 100644
+--- a/app/servicios/page.tsx
++++ b/app/servicios/page.tsx
+@@ -45,8 +45,13 @@ export default function ServicesPage() {
+           <Badge className="w-fit">SERVICIOS</Badge>
+           <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Atención clínica, preventiva y estética</h1>
+           <p className="max-w-2xl text-sm sm:text-base text-black/65 dark:text-white/70">
+-            Precios orientativos para demo. La agenda calcula duración y buffer por tipo de servicio.
++            Elegí el tipo de atención, revisá tiempos estimados y reservá en minutos. Valores y disponibilidad mostrados en esta vista son de demostración.
+           </p>
++          <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
++            <li>• Turnos con duración real por servicio para evitar sobrecarga en recepción.</li>
++            <li>• Confirmaciones y recordatorios por WhatsApp para bajar ausencias.</li>
++            <li>• Historial de cada mascota para decisiones clínicas más rápidas.</li>
++          </ul>
+         </section>
+ 
+         <section className="grid gap-4 rounded-2xl border border-black/5 bg-white/70 p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900/70 sm:p-6">
+diff --git a/app/urgencias/urgencias-client-page.tsx b/app/urgencias/urgencias-client-page.tsx
+index 986e9b7..4d96f89 100644
+--- a/app/urgencias/urgencias-client-page.tsx
++++ b/app/urgencias/urgencias-client-page.tsx
+@@ -94,7 +94,7 @@ export default function UrgenciasPage() {
+       <SectionHeading
+         eyebrow="Urgencias"
+         title="Evaluación rápida (triage)"
+-        desc="Esto no reemplaza una consulta médica. La demo clasifica prioridad en base a síntomas para guiar el próximo paso."
++        desc="Contanos síntomas y te mostramos prioridad estimada para decidir el próximo paso. Es una demo orientativa y no reemplaza atención veterinaria."
+       />
+ 
+       <div className="mt-8 grid gap-4 lg:grid-cols-5">
+@@ -159,6 +159,7 @@ export default function UrgenciasPage() {
+               </Button>
+               <LeadCTA interest="urgencias" label="Escribir por WhatsApp" variant="outline" />
+             </div>
++            <div className="text-xs text-black/45">Modo demo: el resultado no genera ticket real de guardia.</div>
+ 
+             {created ? (
+               <Card className="bg-white ring-1 ring-black/5">
+diff --git a/components/footer.tsx b/components/footer.tsx
+index c8c8ee7..fc258ef 100644
+--- a/components/footer.tsx
++++ b/components/footer.tsx
+@@ -29,7 +29,7 @@ export function Footer() {
+         </div>
+       </Container>
+       <div className="border-t border-black/5 py-4 text-center text-xs text-black/50">
+-        Hecho para demo · {new Date().getFullYear()}
++        VetCare Demo · Datos simulados para evaluación comercial · {new Date().getFullYear()}
+       </div>
+     </footer>
+   );
