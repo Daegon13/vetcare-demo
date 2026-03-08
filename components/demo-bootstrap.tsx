@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
 import { ensureDemoSeed } from "@/lib/storage";
-import { persistDemoToolsFlagIfEnabled } from "@/lib/demoMode";
+import { persistDemoToolsFlagIfEnabled, syncDemoToolsFlagFromQuery } from "@/lib/demoMode";
 import { captureUtmFromUrl } from "@/lib/utm";
 
 /**
@@ -18,6 +18,7 @@ export function DemoBootstrap() {
   }, []);
 
   React.useEffect(() => {
+    syncDemoToolsFlagFromQuery(searchParams);
     persistDemoToolsFlagIfEnabled(searchParams);
   }, [searchParams]);
 

@@ -75,6 +75,12 @@ export function persistDemoToolsFlag(enabled: boolean) {
   writeStoredFlag(enabled);
 }
 
+export function syncDemoToolsFlagFromQuery(searchParams?: URLSearchParams | null) {
+  const queryEnabled = readQueryFlag(searchParams);
+  if (queryEnabled === null) return;
+  writeStoredFlag(queryEnabled);
+}
+
 export function persistDemoToolsFlagIfEnabled(searchParams?: URLSearchParams | null) {
   const state = getDemoToolsState(searchParams);
   if (state.enabled) {
@@ -91,11 +97,5 @@ export function persistDemoToolsFlagIfEnabled(searchParams?: URLSearchParams | n
  *  3) stored localStorage flag (so navigation doesn't drop demo tools)
  */
 export function isDemoToolsEnabled(searchParams?: URLSearchParams | null): boolean {
-  const state = getDemoToolsState(searchParams);
-
-  if (state.source === "query") {
-    writeStoredFlag(state.enabled);
-  }
-
-  return state.enabled;
+  return getDemoToolsState(searchParams).enabled;
 }
