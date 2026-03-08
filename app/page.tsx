@@ -181,7 +181,9 @@ export default function HomePage({ searchParams }: HomePageProps) {
           <LinkButton href="/servicios" variant="outline">
             Ver servicios
           </LinkButton>
-          <LeadCTA interest="general" label="Consultar implementación" variant="outline" />
+          <LinkButton href={BRAND.implementationCtaUrl} target="_blank" rel="noreferrer" variant="outline">
+            {BRAND.implementationCtaLabel}
+          </LinkButton>
           <LinkButton href="/mi-mascota" variant="outline">
             Abrir Mi Mascota
           </LinkButton>

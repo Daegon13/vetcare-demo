@@ -113,11 +113,14 @@ export default function ServicesPage() {
                       </div>
                     </div>
 
-                    <LeadCTA interest="servicios" label="Consultar por WhatsApp" className="w-fit" />
                   </CardContent>
                 </Card>
               );
             })}
+          </div>
+
+          <div className="flex justify-start">
+            <LeadCTA interest="servicios" label="Consultar servicios por WhatsApp" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300" />
           </div>
         </section>
       </Container>
