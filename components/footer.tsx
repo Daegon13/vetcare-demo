@@ -29,7 +29,7 @@ export function Footer() {
         </div>
       </Container>
       <div className="border-t border-black/5 py-4 text-center text-xs text-black/50">
-        Hecho para demo · {new Date().getFullYear()}
+        VetCare Demo · Datos simulados para evaluación comercial · {new Date().getFullYear()}
       </div>
     </footer>
   );

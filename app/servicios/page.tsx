@@ -45,8 +45,13 @@ export default function ServicesPage() {
           <Badge className="w-fit">SERVICIOS</Badge>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Atención clínica, preventiva y estética</h1>
           <p className="max-w-2xl text-sm sm:text-base text-black/65 dark:text-white/70">
-            Precios orientativos para demo. La agenda calcula duración y buffer por tipo de servicio.
+            Elegí el tipo de atención, revisá tiempos estimados y reservá en minutos. Valores y disponibilidad mostrados en esta vista son de demostración.
           </p>
+          <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
+            <li>• Turnos con duración real por servicio para evitar sobrecarga en recepción.</li>
+            <li>• Confirmaciones y recordatorios por WhatsApp para bajar ausencias.</li>
+            <li>• Historial de cada mascota para decisiones clínicas más rápidas.</li>
+          </ul>
         </section>
 
         <section className="grid gap-4 rounded-2xl border border-black/5 bg-white/70 p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900/70 sm:p-6">

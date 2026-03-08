@@ -60,14 +60,19 @@ export default function HomePage({ searchParams }: HomePageProps) {
         <Container className="grid gap-10 py-10 sm:py-14 lg:grid-cols-2 lg:items-center">
           <div className="grid gap-5">
             <Badge className="w-fit" tone="neutral">
-              Demo vendible · Turnos + Urgencias + Portal
+              VetCare para clínicas y veterinarias con alta demanda diaria
             </Badge>
             <h1 className="text-3xl font-black tracking-tight sm:text-5xl">
-              Veterinaria moderna para encontrar turno en minutos.
+              Menos llamadas, más turnos confirmados y urgencias mejor priorizadas.
             </h1>
             <p className="max-w-xl text-sm text-black/60 dark:text-white/70 sm:text-lg">
-              Agenda con disponibilidad real, triage de urgencias y un portal simple para vacunas e historial. En modo demo, todo queda guardado localmente.
+              VetCare centraliza agenda online, triage y seguimiento para equipos veterinarios que quieren responder más rápido sin perder el trato humano.
             </p>
+            <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
+              <li>• Respuesta en menos de 2 minutos para casos urgentes vía flujo guiado + WhatsApp.</li>
+              <li>• Recordatorios automáticos para reducir ausencias y sostener controles preventivos.</li>
+              <li>• Historial y próximos vencimientos visibles para el tutor en un solo lugar.</li>
+            </ul>
             <div className="flex flex-wrap gap-2">
               <LinkButton href="/agenda" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
                 Reservar turno
@@ -81,6 +86,9 @@ export default function HomePage({ searchParams }: HomePageProps) {
                   Ver panel admin
                 </LinkButton>
               ) : null}
+            </div>
+            <div className="text-xs text-black/45 dark:text-white/55">
+              Vista demo interactiva: datos simulados para mostrar el flujo completo antes de implementar.
             </div>
             <div className="text-xs text-black/50 dark:text-white/60">
               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
@@ -104,8 +112,8 @@ export default function HomePage({ searchParams }: HomePageProps) {
             <Card className="overflow-hidden">
               <div className="bg-graphite-900 p-6 text-white">
                 <div className="text-sm font-semibold text-white/70">Resumen rápido</div>
-                <div className="mt-2 text-2xl font-black">“Me resolvieron el turno y la urgencia en un rato.”</div>
-                <div className="mt-3 text-sm text-white/70">Experiencia tipo app, pero con vibra humana.</div>
+                <div className="mt-2 text-2xl font-black">“Pasé de responder todo por teléfono a tener turnos y urgencias ordenadas.”</div>
+                <div className="mt-3 text-sm text-white/70">Flujo claro para el tutor, contexto útil para el equipo.</div>
               </div>
             </Card>
           </div>

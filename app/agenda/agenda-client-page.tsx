@@ -132,7 +132,7 @@ function AgendaPageInner() {
       <SectionHeading
         eyebrow="Agenda"
         title="Reservá un turno"
-        desc="Elegí servicio y horario disponible. En esta demo, el sistema simula disponibilidad real con duración + buffer."
+        desc="Elegí servicio y horario disponible en pocos pasos. Esta agenda es una demo con disponibilidad simulada según duración + buffer."
       />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
@@ -180,6 +180,7 @@ function AgendaPageInner() {
               <div className="text-xs text-black/50">
                 Tip: los turnos ocupados se bloquean automáticamente por duración + buffer.
               </div>
+              <div className="text-xs text-black/45">Demo activa: no se envían mensajes reales ni se cobran reservas.</div>
             </div>
 
             <div className="grid gap-3 pt-2">
