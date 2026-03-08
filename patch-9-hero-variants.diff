@@ -1,0 +1,71 @@
+diff --git a/app/page.tsx b/app/page.tsx
+index 77c20a1..cbaa3dd 100644
+--- a/app/page.tsx
++++ b/app/page.tsx
+@@ -44,6 +44,21 @@ type HomePageProps = {
+   searchParams?: Record<string, string | string[] | undefined>;
+ };
+ 
++const HERO_COPY = {
++  a: {
++    badge: "VetCare · Agenda online + urgencias + seguimiento en un solo flujo",
++    title: "Resolvé turnos y urgencias de tu mascota sin idas y vueltas.",
++    desc: "Para tutores que quieren respuesta rápida y para clínicas que necesitan ordenar agenda, urgencias y seguimiento sin perder cercanía.",
++    quote: "“Ahora reservo, sigo vacunas y sé qué hacer ante una urgencia desde el mismo lugar.”"
++  },
++  b: {
++    badge: "VetCare · Atención veterinaria más clara para tutores y equipos",
++    title: "Reservá más rápido, actuá antes en urgencias y seguí el plan de salud.",
++    desc: "Una experiencia simple para pedir turno, priorizar síntomas y mantener vacunas e historial al día en un solo lugar.",
++    quote: "“Pasamos de mensajes sueltos a un flujo claro: turno, urgencia y seguimiento en minutos.”"
++  }
++} as const;
++
+ export default function HomePage({ searchParams }: HomePageProps) {
+   const params = new URLSearchParams();
+   if (searchParams) {
+@@ -53,6 +68,8 @@ export default function HomePage({ searchParams }: HomePageProps) {
+     }
+   }
+   const demoToolsEnabled = isDemoToolsEnabled(params);
++  const variant = params.get("variant") === "b" ? "b" : "a";
++  const hero = HERO_COPY[variant];
+ 
+   return (
+     <div>
+@@ -60,13 +77,13 @@ export default function HomePage({ searchParams }: HomePageProps) {
+         <Container className="grid gap-10 py-10 sm:py-14 lg:grid-cols-2 lg:items-center">
+           <div className="grid gap-5">
+             <Badge className="w-fit" tone="neutral">
+-              VetCare · Agenda online + urgencias + seguimiento en un solo flujo
++              {hero.badge}
+             </Badge>
+             <h1 className="text-3xl font-black tracking-tight sm:text-5xl">
+-              Resolvé turnos y urgencias de tu mascota sin idas y vueltas.
++              {hero.title}
+             </h1>
+             <p className="max-w-xl text-sm text-black/60 dark:text-white/70 sm:text-lg">
+-              Para tutores que quieren respuesta rápida y para clínicas que necesitan ordenar agenda, urgencias y seguimiento sin perder cercanía.
++              {hero.desc}
+             </p>
+             <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
+               <li>• Priorización de urgencias con guía clara y contacto directo por WhatsApp.</li>
+@@ -90,6 +107,9 @@ export default function HomePage({ searchParams }: HomePageProps) {
+             <div className="text-xs text-black/45 dark:text-white/55">
+               Vista demo interactiva: datos simulados para mostrar el flujo completo antes de implementar.
+             </div>
++            <div className="text-xs text-black/45 dark:text-white/55">
++              Probando copy hero variante {variant.toUpperCase()} (usar <code>?variant=a</code> o <code>?variant=b</code>).
++            </div>
+             <div className="text-xs text-black/50 dark:text-white/60">
+               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
+             </div>
+@@ -112,7 +132,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
+             <Card className="overflow-hidden">
+               <div className="bg-graphite-900 p-6 text-white">
+                 <div className="text-sm font-semibold text-white/70">Resumen rápido</div>
+-                <div className="mt-2 text-2xl font-black">“Ahora reservo, sigo vacunas y sé qué hacer ante una urgencia desde el mismo lugar.”</div>
++                <div className="mt-2 text-2xl font-black">{hero.quote}</div>
+                 <div className="mt-3 text-sm text-white/70">Flujo claro para el tutor, contexto útil para el equipo.</div>
+               </div>
+             </Card>
