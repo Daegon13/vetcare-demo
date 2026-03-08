@@ -1,0 +1,139 @@
+diff --git a/app/adminv1/page.tsx b/app/adminv1/page.tsx
+index 2ef26b3..91c7035 100644
+--- a/app/adminv1/page.tsx
++++ b/app/adminv1/page.tsx
+@@ -93,6 +93,7 @@ export default function AdminV1Page() {
+     reloadFromStorage();
+     setQ("");
+     setLeads(getLeads());
++    trackEvent("demo_reset", { page: "/adminv1" });
+   }
+ 
+   const filteredAppts = appts
+diff --git a/components/LeadCTA.tsx b/components/LeadCTA.tsx
+index 83e4d44..1be0ed5 100644
+--- a/components/LeadCTA.tsx
++++ b/components/LeadCTA.tsx
+@@ -1,7 +1,9 @@
+ "use client";
+ 
+ import * as React from "react";
++import { usePathname } from "next/navigation";
+ 
++import { trackEvent } from "@/lib/analytics";
+ import { BRAND } from "@/lib/data";
+ import { buildLeadWhatsappUrl, buildWhatsappUrl, getStoredUtm, type LeadPayload } from "@/lib/utm";
+ import { LinkButton } from "@/components/ui";
+@@ -25,6 +27,7 @@ type LeadCTAProps = {
+ };
+ 
+ export function LeadCTA({ interest, label, variant = "primary", className, onClick, leadPayload }: LeadCTAProps) {
++  const pathname = usePathname();
+   const [href, setHref] = React.useState(BRAND.whatsappUrl);
+ 
+   React.useEffect(() => {
+@@ -38,8 +41,17 @@ export function LeadCTA({ interest, label, variant = "primary", className, onCli
+     setHref(buildWhatsappUrl(BRAND.whatsappUrl, utm, INTEREST_MESSAGE[interest]));
+   }, [interest, leadPayload]);
+ 
++  const handleClick: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
++    trackEvent("cta_click", {
++      interest,
++      page: pathname || "unknown"
++    });
++
++    onClick?.(event);
++  };
++
+   return (
+-    <LinkButton href={href} target="_blank" rel="noreferrer" variant={variant} className={className} onClick={onClick}>
++    <LinkButton href={href} target="_blank" rel="noreferrer" variant={variant} className={className} onClick={handleClick}>
+       {label}
+     </LinkButton>
+   );
+diff --git a/components/demo-bootstrap.tsx b/components/demo-bootstrap.tsx
+index 96f88b3..84a105a 100644
+--- a/components/demo-bootstrap.tsx
++++ b/components/demo-bootstrap.tsx
+@@ -1,7 +1,8 @@
+ "use client";
+ 
+ import * as React from "react";
+-import { useSearchParams } from "next/navigation";
++import { usePathname, useSearchParams } from "next/navigation";
++import { trackEvent } from "@/lib/analytics";
+ import { ensureDemoSeed } from "@/lib/storage";
+ import { persistDemoToolsFlagIfEnabled, syncDemoToolsFlagFromQuery } from "@/lib/demoMode";
+ import { captureUtmFromUrl } from "@/lib/utm";
+@@ -12,6 +13,7 @@ import { captureUtmFromUrl } from "@/lib/utm";
+  */
+ export function DemoBootstrap() {
+   const searchParams = useSearchParams();
++  const pathname = usePathname();
+ 
+   React.useEffect(() => {
+     ensureDemoSeed();
+@@ -26,5 +28,10 @@ export function DemoBootstrap() {
+     captureUtmFromUrl(searchParams);
+   }, [searchParams]);
+ 
++  React.useEffect(() => {
++    if (!pathname) return;
++    trackEvent("page_view", { page: pathname });
++  }, [pathname]);
++
+   return null;
+ }
+diff --git a/lib/analytics.ts b/lib/analytics.ts
+index 40ae235..3983044 100644
+--- a/lib/analytics.ts
++++ b/lib/analytics.ts
+@@ -1,6 +1,12 @@
+ "use client";
+ 
+ type TrackEventPayload = Record<string, string | number | boolean | undefined>;
++type AnalyticsEvent = {
++  name: string;
++  payload: TrackEventPayload;
++  ts: string;
++  path?: string;
++};
+ 
+ declare global {
+   interface Window {
+@@ -12,11 +18,30 @@ declare global {
+ export function trackEvent(name: string, payload: TrackEventPayload = {}) {
+   if (typeof window === "undefined") return;
+ 
+-  if (typeof window.gtag === "function") {
+-    window.gtag("event", name, payload);
+-  }
++  try {
++    if (process.env.NODE_ENV !== "production") {
++      console.debug("[analytics]", name, payload);
++    }
++
++    if (typeof window.gtag === "function") {
++      window.gtag("event", name, payload);
++    }
++
++    if (Array.isArray(window.dataLayer)) {
++      window.dataLayer.push({ event: name, ...payload });
++    }
+ 
+-  if (Array.isArray(window.dataLayer)) {
+-    window.dataLayer.push({ event: name, ...payload });
++    if (process.env.NODE_ENV === "production" && typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
++      const event: AnalyticsEvent = {
++        name,
++        payload,
++        ts: new Date().toISOString(),
++        path: window.location?.pathname
++      };
++      const body = new Blob([JSON.stringify(event)], { type: "application/json" });
++      navigator.sendBeacon("/api/analytics", body);
++    }
++  } catch {
++    // Never break app flow for analytics.
+   }
+ }

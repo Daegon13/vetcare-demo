@@ -93,6 +93,7 @@ export default function AdminV1Page() {
     reloadFromStorage();
     setQ("");
     setLeads(getLeads());
+    trackEvent("demo_reset", { page: "/adminv1" });
   }
 
   const filteredAppts = appts
