@@ -37,7 +37,9 @@ export function buildPageMetadata({
   const canonical = new URL(normalizedPath, siteUrl).toString();
 
   return {
-    title,
+    title: {
+      absolute: title
+    },
     description,
     robots: getRobotsMetadata(),
     alternates: {
