@@ -1,14 +1,70 @@
-# VetCare deploy fix (Vercel)
+# VetCare Demo Kit
 
-This drop-in fixes:
-- Missing export `buildLeadWhatsappUrl` + types `LeadPayload`/`LeadInterest` in `lib/utm.ts`.
-- Service icon paths use `.webp` in `app/servicios/page.tsx`.
+Este repositorio contiene una **demo comercial interactiva** para clínicas veterinarias.
 
-## How to apply
-Copy/overwrite the files into your repo preserving folders:
-- `lib/utm.ts`
-- `app/servicios/page.tsx`
+## ¿Qué es esta demo?
 
-Then run:
-- `npm run build`
-- commit + push
+- Una experiencia navegable para mostrar el flujo punta a punta de una operación veterinaria moderna (captación, agenda, urgencias y seguimiento).
+- Un entorno orientado a ventas y validación con datos mock persistidos localmente para que se sienta real en una reunión o video.
+- Una base técnica preparada para escalar a integraciones reales (login, calendario real, mensajería, CRM, analytics productivo).
+
+## ¿Qué NO es esta demo? (alcance)
+
+- No es un sistema clínico productivo ni reemplaza criterio veterinario.
+- No incluye autenticación robusta, permisos por rol, auditoría, backups, ni integraciones de producción activas.
+- No emite tickets reales de guardia ni procesa pagos reales.
+- No reemplaza implementación, QA y hardening antes de salir a producción.
+
+## Flujo recomendado para mostrar (60–120s)
+
+> Objetivo: contar una historia breve de “problema → operación → resultado”.
+
+1. **Inicio (10–15s):** mostrar home y propuesta de valor.
+2. **Agenda (20–30s):** crear/confirmar un turno para evidenciar rapidez operativa.
+3. **Urgencias/Triage (20–30s):** cargar síntomas y ver prioridad estimada.
+4. **Portal mi mascota / historial (15–25s):** mostrar continuidad de información.
+5. **Panel admin demo (15–20s):** validar vista de operación (agenda + triage + campañas/reset demo).
+6. **Cierre CTA (5–10s):** invitar a implementación y siguiente reunión.
+
+## Features clave para mencionar en la demo
+
+- Triage orientativo para priorización de urgencias.
+- Agenda operativa con reserva/confirmación/cancelación.
+- Vista de urgencias recientes y prioridad.
+- Historial y datos de mascota (portal “Mi mascota”).
+- Panel admin demo para operación diaria.
+- Persistencia local para continuidad de la historia de demo.
+- Enlaces/UTM para campañas comerciales.
+- CTA de contacto para implementación.
+
+## Modo demo tools
+
+El proyecto permite habilitar herramientas internas de demo (por ejemplo `/adminv1`) por **query param** y/o **env var**.
+
+### Opción A: por URL
+
+- Abrí cualquier página con `?demo=1` o `?demo=true`.
+- Ejemplo: `http://localhost:3000/?demo=1`
+- Para desactivar explícitamente: `?demo=0` o `?demo=false`.
+
+### Opción B: por variable de entorno
+
+Configurar en `.env.local` o en el proveedor de deploy:
+
+```bash
+NEXT_PUBLIC_DEMO_TOOLS=true
+```
+
+### Prioridad de activación
+
+1. `NEXT_PUBLIC_DEMO_TOOLS` (build-time)
+2. `?demo=1|true` o `?demo=0|false`
+3. estado persistido en `localStorage`
+
+Además, para rutas admin, el middleware también persiste la bandera en cookie y restringe `/adminv1` cuando demo tools no está habilitado.
+
+## Demo script + checklist de grabación
+
+Para un guion listo para grabar y checklist de video, ver:
+
+- `docs/DEMO_SCRIPT.md`
