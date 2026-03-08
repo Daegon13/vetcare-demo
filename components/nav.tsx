@@ -9,7 +9,7 @@ import { BRAND } from "@/lib/data";
 import { resetDemo } from "@/lib/storage";
 import { trackEvent } from "@/lib/analytics";
 import { ThemeToggle } from "./theme-toggle";
-import { isDemoToolsEnabled } from "@/lib/demoMode";
+import { getDemoToolsState, persistDemoToolsFlag } from "@/lib/demoMode";
 import { buildWhatsappUrl, getStoredUtm } from "@/lib/utm";
 import { addLead } from "@/lib/leads";
 
@@ -27,7 +27,8 @@ const links = [
 export function Nav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const demoToolsEnabled = isDemoToolsEnabled(searchParams);
+  const demoToolsState = getDemoToolsState(searchParams);
+  const demoToolsEnabled = demoToolsState.enabled;
   const [whatsappUrl, setWhatsappUrl] = React.useState(BRAND.whatsappUrl);
 
   function withDemo(href: string) {
@@ -68,8 +69,19 @@ export function Nav() {
 
   function onResetDemo() {
     resetDemo();
+
+    // Keep demo tools active after reload.
+    if (demoToolsEnabled) {
+      persistDemoToolsFlag(true);
+    }
+
+    const nextUrl = new URL(window.location.href);
+    if (demoToolsEnabled && demoToolsState.queryEnabled !== false) {
+      nextUrl.searchParams.set("demo", "1");
+    }
+
     // Client pages read storage on mount; full reload guarantees fresh state everywhere.
-    window.location.reload();
+    window.location.assign(nextUrl.toString());
   }
 
   function onWhatsappClick() {

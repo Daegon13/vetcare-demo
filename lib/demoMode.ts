@@ -26,6 +26,62 @@ function writeStoredFlag(enabled: boolean) {
   }
 }
 
+function readQueryFlag(searchParams?: URLSearchParams | null): boolean | null {
+  const demoValue = searchParams?.get("demo")?.toLowerCase() ?? "";
+  if (truthyValues.has(demoValue)) return true;
+  if (falsyValues.has(demoValue)) return false;
+  return null;
+}
+
+function readEnvFlag(): boolean | null {
+  const envValue = process.env.NEXT_PUBLIC_DEMO_TOOLS?.toLowerCase() ?? "";
+  if (truthyValues.has(envValue)) return true;
+  if (falsyValues.has(envValue)) return false;
+  return null;
+}
+
+export function getDemoToolsState(searchParams?: URLSearchParams | null) {
+  const envEnabled = readEnvFlag();
+  const queryEnabled = readQueryFlag(searchParams);
+  const storedEnabled = readStoredFlag();
+
+  if (envEnabled !== null) {
+    return {
+      enabled: envEnabled,
+      source: "env" as const,
+      queryEnabled,
+      storedEnabled
+    };
+  }
+
+  if (queryEnabled !== null) {
+    return {
+      enabled: queryEnabled,
+      source: "query" as const,
+      queryEnabled,
+      storedEnabled
+    };
+  }
+
+  return {
+    enabled: storedEnabled,
+    source: "storage" as const,
+    queryEnabled,
+    storedEnabled
+  };
+}
+
+export function persistDemoToolsFlag(enabled: boolean) {
+  writeStoredFlag(enabled);
+}
+
+export function persistDemoToolsFlagIfEnabled(searchParams?: URLSearchParams | null) {
+  const state = getDemoToolsState(searchParams);
+  if (state.enabled) {
+    writeStoredFlag(true);
+  }
+}
+
 /**
  * Demo tools are meant for internal testing.
  *
@@ -35,19 +91,11 @@ function writeStoredFlag(enabled: boolean) {
  *  3) stored localStorage flag (so navigation doesn't drop demo tools)
  */
 export function isDemoToolsEnabled(searchParams?: URLSearchParams | null): boolean {
-  const envValue = process.env.NEXT_PUBLIC_DEMO_TOOLS?.toLowerCase() ?? "";
-  if (truthyValues.has(envValue)) return true;
-  if (falsyValues.has(envValue)) return false;
+  const state = getDemoToolsState(searchParams);
 
-  const demoValue = searchParams?.get("demo")?.toLowerCase() ?? "";
-  if (truthyValues.has(demoValue)) {
-    writeStoredFlag(true);
-    return true;
-  }
-  if (falsyValues.has(demoValue)) {
-    writeStoredFlag(false);
-    return false;
+  if (state.source === "query") {
+    writeStoredFlag(state.enabled);
   }
 
-  return readStoredFlag();
+  return state.enabled;
 }
