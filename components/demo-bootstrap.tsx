@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
 import { ensureDemoSeed } from "@/lib/storage";
 import { persistDemoToolsFlagIfEnabled, syncDemoToolsFlagFromQuery } from "@/lib/demoMode";
 import { captureUtmFromUrl } from "@/lib/utm";
@@ -12,6 +13,7 @@ import { captureUtmFromUrl } from "@/lib/utm";
  */
 export function DemoBootstrap() {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   React.useEffect(() => {
     ensureDemoSeed();
@@ -25,6 +27,11 @@ export function DemoBootstrap() {
   React.useEffect(() => {
     captureUtmFromUrl(searchParams);
   }, [searchParams]);
+
+  React.useEffect(() => {
+    if (!pathname) return;
+    trackEvent("page_view", { page: pathname });
+  }, [pathname]);
 
   return null;
 }
