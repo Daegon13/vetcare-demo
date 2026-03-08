@@ -1,18 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { BRAND } from "@/lib/data";
-import { Container, LinkButton, Badge } from "@/components/ui";
+import { Container, Badge } from "@/components/ui";
+import { LeadCTA } from "@/components/LeadCTA";
 import { trackEvent } from "@/lib/analytics";
 import { addLead } from "@/lib/leads";
-import { buildLeadWhatsappUrl, getStoredUtm, type LeadPayload } from "@/lib/utm";
+import { getStoredUtm, type LeadPayload } from "@/lib/utm";
 
 type StoredLead = LeadPayload & {
   leadId?: string;
 };
 
 export default function GraciasPage() {
-  const [whatsappUrl, setWhatsappUrl] = React.useState(BRAND.whatsappUrl);
+  const [leadPayload, setLeadPayload] = React.useState<StoredLead | undefined>(undefined);
 
   React.useEffect(() => {
     const utm = getStoredUtm();
@@ -25,7 +25,7 @@ export default function GraciasPage() {
       }
 
       const lead = JSON.parse(raw) as StoredLead;
-      setWhatsappUrl(buildLeadWhatsappUrl(BRAND.whatsappUrl, utm, lead));
+      setLeadPayload(lead);
 
       trackEvent("lead_thanks_view", { leadId: lead.leadId, ...(utm ?? {}) });
 
@@ -45,7 +45,7 @@ export default function GraciasPage() {
       }
     } catch {
       trackEvent("lead_thanks_view", { ...(utm ?? {}) });
-      setWhatsappUrl(BRAND.whatsappUrl);
+      setLeadPayload(undefined);
     }
   }, []);
 
@@ -62,15 +62,13 @@ export default function GraciasPage() {
           Gracias por completar la precalificación. Si querés acelerar, abrí WhatsApp y te respondemos con el plan ideal.
         </p>
         <div className="flex justify-center">
-          <LinkButton
-            href={whatsappUrl}
-            target="_blank"
-            rel="noreferrer"
+          <LeadCTA
+            interest="general"
+            label="Abrir WhatsApp"
             onClick={onWhatsappClick}
+            leadPayload={leadPayload}
             className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
-          >
-            Abrir WhatsApp
-          </LinkButton>
+          />
         </div>
       </Container>
     </div>

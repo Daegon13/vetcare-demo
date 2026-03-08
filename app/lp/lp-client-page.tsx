@@ -3,9 +3,10 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { BRAND } from "@/lib/data";
-import { Container, LinkButton, Card, CardContent, Badge } from "@/components/ui";
+import { Container, Card, CardContent, Badge } from "@/components/ui";
+import { LeadCTA } from "@/components/LeadCTA";
 import { trackEvent } from "@/lib/analytics";
-import { buildLeadWhatsappUrl, buildWhatsappUrl, captureUtmFromUrl, getStoredUtm, type LeadInterest } from "@/lib/utm";
+import { buildLeadWhatsappUrl, captureUtmFromUrl, getStoredUtm, type LeadInterest } from "@/lib/utm";
 import { addLead } from "@/lib/leads";
 
 type PlanOption = {
@@ -59,12 +60,10 @@ export default function LandingPage() {
   const [ciudad, setCiudad] = React.useState("");
   const [whatsapp, setWhatsapp] = React.useState("");
   const [interes, setInteres] = React.useState<LeadInterest[]>(["turnos"]);
-  const [whatsappUrl, setWhatsappUrl] = React.useState(BRAND.whatsappUrl);
 
   React.useEffect(() => {
     captureUtmFromUrl(new URLSearchParams(window.location.search));
     const utm = getStoredUtm();
-    setWhatsappUrl(buildWhatsappUrl(BRAND.whatsappUrl, utm, "Mi interés: implementación."));
     trackEvent("landing_view", { location: "lp", ...(utm ?? {}) });
   }, []);
 
@@ -133,15 +132,12 @@ export default function LandingPage() {
             VetCare te da una experiencia clara para captar leads desde anuncios: agenda, urgencias y seguimiento en un flujo que convierte.
           </p>
           <div className="flex flex-wrap justify-center gap-2">
-            <LinkButton
-              href={whatsappUrl}
-              target="_blank"
-              rel="noreferrer"
+            <LeadCTA
+              interest="general"
+              label="Hablar por WhatsApp"
               onClick={onWhatsappClick}
               className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
-            >
-              Hablar por WhatsApp
-            </LinkButton>
+            />
           </div>
         </section>
 

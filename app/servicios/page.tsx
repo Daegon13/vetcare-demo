@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { Container, Card, CardContent, Badge, LinkButton } from "@/components/ui";
+import { Container, Card, CardContent, Badge } from "@/components/ui";
+import { LeadCTA } from "@/components/LeadCTA";
 import { BRAND, SERVICES } from "@/lib/data";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
@@ -112,13 +113,14 @@ export default function ServicesPage() {
                       </div>
                     </div>
 
-                    <LinkButton href={BRAND.whatsappUrl} target="_blank" rel="noreferrer" className="w-fit">
-                      Consultar por WhatsApp
-                    </LinkButton>
                   </CardContent>
                 </Card>
               );
             })}
+          </div>
+
+          <div className="flex justify-start">
+            <LeadCTA interest="servicios" label="Consultar servicios por WhatsApp" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300" />
           </div>
         </section>
       </Container>

@@ -7,6 +7,7 @@ import { buildPageMetadata } from "@/lib/seo";
 import { Container, Card, CardContent, LinkButton, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { HeroVisual } from "@/components/hero-visual";
+import { LeadCTA } from "@/components/LeadCTA";
 
 export const metadata: Metadata = buildPageMetadata({
   title: `${BRAND.name} | Demo veterinaria con turnos y urgencias`,
@@ -74,9 +75,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
               <LinkButton href="/urgencias" variant="outline">
                 Evaluar urgencia
               </LinkButton>
-              <LinkButton href={BRAND.implementationCtaUrl} target="_blank" rel="noreferrer" variant="outline">
-                {BRAND.implementationCtaLabel}
-              </LinkButton>
+              <LeadCTA interest="general" label="Hablar por WhatsApp" variant="outline" />
               {demoToolsEnabled ? (
                 <LinkButton href="/adminv1" variant="ghost">
                   Ver panel admin
