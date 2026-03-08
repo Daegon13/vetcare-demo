@@ -3,10 +3,11 @@
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
 import { BRAND, SERVICES } from "@/lib/data";
+import { LeadCTA } from "@/components/LeadCTA";
 import type { Appointment, ServiceId } from "@/lib/types";
 import { buildDailySlots, getService, makeICS } from "@/lib/schedule";
 import { loadAppointments, restoreDemoData, saveAppointments } from "@/lib/storage";
-import { formatDateLong, toWhatsAppLink, uid } from "@/lib/utils";
+import { formatDateLong, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { EmptyState } from "@/components/empty";
@@ -126,10 +127,6 @@ function AgendaPageInner() {
     setTimeout(() => URL.revokeObjectURL(url), 1500);
   }
 
-  const waText = justCreated
-    ? `Hola! Quiero confirmar un turno:\n- Servicio: ${SERVICES.find(s => s.id === justCreated.serviceId)?.name}\n- Fecha: ${justCreated.dateISO}\n- Hora: ${justCreated.time}\n- Mascota: ${justCreated.petName}\n- Titular: ${justCreated.ownerName}`
-    : `Hola! Quiero agendar un turno.`;
-
   return (
     <Container className="py-10">
       <SectionHeading
@@ -207,12 +204,7 @@ function AgendaPageInner() {
                 <Button onClick={createAppointment} disabled={!canSubmit()} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
                   Confirmar (demo)
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => window.open(toWhatsAppLink(BRAND.whatsapp, waText), "_blank")}
-                >
-                  Enviar por WhatsApp
-                </Button>
+                <LeadCTA interest="turnos" label="Enviar por WhatsApp" variant="outline" />
                 {justCreated ? (
                   <Button variant="ghost" onClick={() => downloadICS(justCreated)}>
                     Añadir al calendario (.ics)

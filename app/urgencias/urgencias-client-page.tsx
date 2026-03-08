@@ -1,13 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { BRAND } from "@/lib/data";
 import type { PetSpecies, TriageCase, TriagePriority } from "@/lib/types";
 import { loadTriage, restoreDemoData, saveTriage } from "@/lib/storage";
-import { toWhatsAppLink, uid } from "@/lib/utils";
+import { uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { EmptyState } from "@/components/empty";
+import { LeadCTA } from "@/components/LeadCTA";
 import { Ambulance } from "lucide-react";
 
 const SYMPTOMS = [
@@ -89,10 +89,6 @@ export default function UrgenciasPage() {
     return "good";
   }
 
-  const waText = created
-    ? `URGENTE / TRIAGE\nMascota: ${created.petName} (${created.species})\nTitular: ${created.ownerName}\nSíntomas: ${created.symptoms.map(id => SYMPTOMS.find(s => s.id === id)?.label ?? id).join(", ")}${created.freeText ? `\nDetalle: ${created.freeText}` : ""}`
-    : "Hola! Quiero consultar por una urgencia.";
-
   return (
     <Container className="py-10">
       <SectionHeading
@@ -161,9 +157,7 @@ export default function UrgenciasPage() {
               <Button onClick={submit} disabled={!canSubmit()} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
                 Calcular prioridad
               </Button>
-              <Button variant="outline" onClick={() => window.open(toWhatsAppLink(BRAND.whatsapp, waText), "_blank")}>
-                Escribir por WhatsApp
-              </Button>
+              <LeadCTA interest="urgencias" label="Escribir por WhatsApp" variant="outline" />
             </div>
 
             {created ? (
