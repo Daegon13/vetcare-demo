@@ -16,6 +16,21 @@ const SOLUTIONS = [
 
 const QUICK_DEMO_STEPS = ["Elegí servicio", "Evaluá urgencia", "Mirá mi mascota"];
 
+const IMPLEMENTATION_BLOCKS = [
+  {
+    title: "Para quién es",
+    text: "Clínicas y veterinarias que quieren convertir más consultas sin sumar carga operativa al equipo."
+  },
+  {
+    title: "Qué incluye",
+    text: "Una experiencia comercial completa con agenda online, urgencias guiadas y portal con seguimiento para tutores."
+  },
+  {
+    title: "Cómo se entrega",
+    text: "Configuramos la demo con tu propuesta de valor y la dejamos lista para usar en campañas y WhatsApp."
+  }
+];
+
 export default function LandingPage() {
   React.useEffect(() => {
     captureUtmFromUrl(new URLSearchParams(window.location.search));
@@ -83,6 +98,29 @@ export default function LandingPage() {
               </li>
             ))}
           </ol>
+        </section>
+
+        <section className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-graphite-900 sm:p-6" aria-label="Implementación">
+          <h2 className="text-2xl font-extrabold">Implementación</h2>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {IMPLEMENTATION_BLOCKS.map((block) => (
+              <article key={block.title} className="rounded-xl bg-black/5 p-4 dark:bg-white/10">
+                <h3 className="text-base font-bold sm:text-lg">{block.title}</h3>
+                <p className="mt-2 text-sm text-black/70 dark:text-white/75 sm:text-base">{block.text}</p>
+              </article>
+            ))}
+          </div>
+          <p className="text-sm font-semibold text-black/75 dark:text-white/80 sm:text-base">
+            Adaptable a la marca y operación de tu veterinaria.
+          </p>
+          <div>
+            <LeadCTA
+              interest="general"
+              label="WhatsApp / Quiero esto para mi veterinaria"
+              onClick={onWhatsappClick}
+              className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
+            />
+          </div>
         </section>
       </Container>
     </div>
