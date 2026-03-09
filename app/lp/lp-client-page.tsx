@@ -61,7 +61,7 @@ export default function LandingPage() {
       <Container className="grid max-w-4xl gap-8 sm:gap-10">
         <section className="grid gap-4 text-center">
           <Badge className="mx-auto w-fit">Landing para campañas</Badge>
-          <h1 className="text-3xl font-black tracking-tight sm:text-5xl">Más pacientes desde anuncios, sin fricción para tu veterinaria.</h1>
+          <h1 className="text-3xl font-black tracking-tight sm:text-5xl">Más pacientes desde anuncios, al momento para tu veterinaria.</h1>
           <p className="mx-auto max-w-2xl text-sm text-black/65 dark:text-white/70 sm:text-lg">
             Activá turnos, urgencias y seguimiento digital con una implementación simple y enfocada en conversión.
           </p>
