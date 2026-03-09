@@ -122,7 +122,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
       </div>
 
       <Container className="py-6 sm:py-8">
-        <GuidedDemoStrip />
+        <GuidedDemoStrip description="Empezá por agenda, seguí con urgencias y cerrá el recorrido en Mi Mascota." />
       </Container>
 
       <Container className="py-8 sm:py-10">

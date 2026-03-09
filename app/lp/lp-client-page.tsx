@@ -63,7 +63,12 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <GuidedDemoStrip id="demo" eyebrow="RECORRIDO DEMO" title="Probá la demo en 3 pasos" />
+        <GuidedDemoStrip
+          id="demo"
+          eyebrow="RECORRIDO DEMO"
+          title="Probá la demo en 3 pasos"
+          description="Hacé clic en cada paso y validá la experiencia completa en menos de 2 minutos."
+        />
 
         <section className="grid gap-3 rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-graphite-900 sm:p-6" aria-label="Qué resuelve">
           <h2 className="text-2xl font-extrabold">Qué resuelve</h2>

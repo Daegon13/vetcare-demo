@@ -34,6 +34,7 @@ type GuidedDemoStripProps = {
   id?: string;
   eyebrow?: string;
   title?: string;
+  description?: string;
   steps?: DemoStep[];
 };
 
@@ -42,11 +43,13 @@ export function GuidedDemoStrip({
   id,
   eyebrow = "DEMO GUIADA",
   title = "Probá la demo en 3 pasos",
+  description = "Seguí este recorrido para ver en minutos el flujo completo de la demo.",
   steps = DEFAULT_DEMO_STEPS
 }: GuidedDemoStripProps) {
   return (
     <section
       id={id}
+      aria-label={title}
       className={cn(
         "rounded-2xl border border-black/5 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900 sm:p-6",
         className
@@ -55,6 +58,7 @@ export function GuidedDemoStrip({
       <div className="mb-4 grid gap-1">
         <p className="text-xs font-semibold tracking-wide text-cyanSoft-500">{eyebrow}</p>
         <h2 className="text-2xl font-black tracking-tight">{title}</h2>
+        <p className="text-sm text-black/60 dark:text-white/70">{description}</p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
