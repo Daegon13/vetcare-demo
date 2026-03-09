@@ -8,6 +8,7 @@ import { Container, Card, CardContent, LinkButton, Badge } from "@/components/ui
 import { SectionHeading } from "@/components/section";
 import { HeroVisual } from "@/components/hero-visual";
 import { LeadCTA } from "@/components/LeadCTA";
+import { GuidedDemoStrip } from "@/components/guided-demo-strip";
 
 export const metadata: Metadata = buildPageMetadata({
   title: `${BRAND.name} | Demo veterinaria con turnos y urgencias`,
@@ -119,6 +120,10 @@ export default function HomePage({ searchParams }: HomePageProps) {
           </div>
         </Container>
       </div>
+
+      <Container className="py-6 sm:py-8">
+        <GuidedDemoStrip />
+      </Container>
 
       <Container className="py-8 sm:py-10">
         <SectionHeading
