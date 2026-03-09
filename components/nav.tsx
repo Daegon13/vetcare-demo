@@ -108,9 +108,11 @@ export function Nav() {
             <div className="text-sm font-extrabold tracking-tight">{BRAND.name}</div>
             <div className="-mt-0.5 text-[11px] text-black/55 dark:text-white/65">{BRAND.tagline}</div>
           </div>
-          <span className="hidden rounded-full border border-cyanSoft-400/70 bg-cyanSoft-50 px-2 py-0.5 text-[10px] font-black tracking-wide text-graphite-900 md:inline-flex dark:bg-cyanSoft-400/20 dark:text-cyanSoft-100">
-            DEMO
-          </span>
+          {demoToolsEnabled ? (
+            <span className="hidden rounded-full border border-cyanSoft-400/70 bg-cyanSoft-50 px-2 py-0.5 text-[10px] font-black tracking-wide text-graphite-900 md:inline-flex dark:bg-cyanSoft-400/20 dark:text-cyanSoft-100">
+              DEMO
+            </span>
+          ) : null}
         </Link>
 
         <nav className="hidden max-w-[calc(100vw-34rem)] flex-1 items-center gap-1 overflow-x-auto whitespace-nowrap lg:flex">
@@ -143,7 +145,7 @@ export function Nav() {
           ) : null}
 
           <LinkButton href={withDemo("/agenda")} className="hidden whitespace-nowrap sm:inline-flex" variant="outline">
-            Reservar turno
+            {demoToolsEnabled ? "Reservar turno" : "Agenda una demo"}
           </LinkButton>
 
           {demoToolsEnabled ? <ThemeToggle /> : null}
