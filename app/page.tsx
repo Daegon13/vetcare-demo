@@ -15,7 +15,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/"
 });
 
-const FEATURES: { title: string; desc: string; img?: string }[] = [
+const BASE_FEATURES: { title: string; desc: string; img?: string }[] = [
   {
     img: "/brand/feature-appointments.webp",
     title: "Turnos sin fricción",
@@ -30,11 +30,6 @@ const FEATURES: { title: string; desc: string; img?: string }[] = [
     img: "/brand/feature-portal.webp",
     title: "Portal del cliente",
     desc: "Vacunas, próximos vencimientos e historial mock vía API."
-  },
-  {
-    img: "/brand/feature-admin.webp",
-    title: "Admin v1 útil",
-    desc: "Ver/confirmar/cancelar, triage entrante, campañas y reset demo."
   },
   { title: "Modo demo persistente", desc: "Todo se guarda en localStorage para que se note “real”." },
   { title: "Deploy rápido", desc: "Next + Tailwind listo para Vercel sin configuración extra." }
@@ -53,6 +48,16 @@ export default function HomePage({ searchParams }: HomePageProps) {
     }
   }
   const demoToolsEnabled = isDemoToolsEnabled(params);
+  const features = demoToolsEnabled
+    ? [
+        ...BASE_FEATURES,
+        {
+          img: "/brand/feature-admin.webp",
+          title: "Admin v1 útil",
+          desc: "Ver/confirmar/cancelar, triage entrante, campañas y reset demo."
+        }
+      ]
+    : BASE_FEATURES;
 
   return (
     <div>
@@ -160,7 +165,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
         />
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f, i) => (
+          {features.map((f, i) => (
             <Card key={i} className="overflow-hidden">
               <CardContent className="grid gap-3">
                 {f.img ? (
