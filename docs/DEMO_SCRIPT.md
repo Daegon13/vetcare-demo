@@ -4,10 +4,10 @@
 
 ### Bloque 1 — Problema y promesa (0:00–0:15)
 
-**Pantalla:** Home.
+**Pantalla:** Home (`/`).
 
 **Narrativa sugerida:**
-"Esta demo muestra cómo una veterinaria puede ordenar captación, agenda y urgencias en una sola experiencia digital, sin fricción para el cliente." 
+"Esta demo muestra cómo una veterinaria puede ordenar captación, agenda y urgencias en una sola experiencia digital, sin fricción para el cliente."
 
 ---
 
@@ -18,7 +18,7 @@
 **Acción:** crear un turno demo en pocos clics.
 
 **Narrativa sugerida:**
-"Acá el tutor agenda rápido: selecciona servicio, horario y confirma. El equipo reduce llamadas y gana previsibilidad operativa." 
+"Acá el tutor agenda rápido: selecciona servicio, horario y confirma. El equipo reduce llamadas y gana previsibilidad operativa."
 
 ---
 
@@ -29,7 +29,7 @@
 **Acción:** cargar síntomas y mostrar prioridad estimada.
 
 **Narrativa sugerida:**
-"Si entra una urgencia, el sistema ayuda a priorizar con un triage orientativo para decidir el siguiente paso de atención." 
+"Si entra una urgencia, el sistema ayuda a priorizar con un triage orientativo para decidir el siguiente paso de atención."
 
 ---
 
@@ -40,7 +40,7 @@
 **Acción:** mostrar datos e historial para seguimiento.
 
 **Narrativa sugerida:**
-"Toda la información relevante queda visible para continuidad: historial, contexto y seguimiento del paciente." 
+"Toda la información relevante queda visible para continuidad: historial, contexto y seguimiento del paciente."
 
 ---
 
@@ -51,9 +51,16 @@
 **Acción:** mostrar vista rápida de operación y finalizar en CTA.
 
 **Narrativa sugerida:**
-"En el panel demo vemos agenda, triage y campañas en una sola vista. Si te interesa, el próximo paso es definir integración real y plan de implementación." 
+"En el panel demo vemos agenda, triage y campañas en una sola vista. Si te interesa, el próximo paso es definir integración real y plan de implementación."
 
-## Features que conviene nombrar explícitamente
+## Versión ultra breve (para reels o teaser de 45–60s)
+
+1. Home (propuesta de valor)
+2. Agenda (1 acción real: crear turno)
+3. Urgencias (1 acción real: priorización)
+4. CTA final de implementación
+
+## Qué mencionar sí o sí (features)
 
 - Agenda (reserva, confirmación y cancelación).
 - Triage de urgencias (orientativo).
@@ -86,8 +93,34 @@
 - Mostrar 1–2 interacciones reales por módulo (no solo scroll).
 - Cerrar con **CTA final claro**: “Agendemos implementación / piloto con tu clínica”.
 
-## Activación rápida de demo tools antes de grabar
+## Modo demo tools
 
-- URL: `?demo=1` (ejemplo: `http://localhost:3000/?demo=1`).
-- Entorno: `NEXT_PUBLIC_DEMO_TOOLS=true`.
-- Verificación: acceso disponible a `/adminv1`.
+### Activación por URL
+
+- Agregar `?demo=1` o `?demo=true`.
+- Para apagar explícitamente: `?demo=0` o `?demo=false`.
+
+### Activación por entorno
+
+```bash
+NEXT_PUBLIC_DEMO_TOOLS=true
+```
+
+### Prioridad aplicada
+
+1. `NEXT_PUBLIC_DEMO_TOOLS`
+2. Query param `?demo=`
+3. Persistencia local (`localStorage`)
+
+### Verificación rápida
+
+- Confirmar acceso a `/adminv1`.
+- Si no abre, volver a `/` con `?demo=1` y refrescar.
+
+## Pre-flight checklist (antes de darle “grabar”)
+
+- Abrir una ventana limpia del navegador (sin pestañas ruidosas).
+- Confirmar `?demo=1` o `NEXT_PUBLIC_DEMO_TOOLS=true`.
+- Verificar acceso a `/adminv1` antes de iniciar la captura.
+- Tener preparado el CTA final en una frase corta.
+- Ensayar una pasada completa de 60–120s sin cortes.
