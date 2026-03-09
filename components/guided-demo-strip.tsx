@@ -1,14 +1,14 @@
 import { LinkButton } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
-type DemoStep = {
+export type DemoStep = {
   label: string;
   description: string;
   ctaLabel: string;
   href: string;
 };
 
-const DEMO_STEPS: DemoStep[] = [
+const DEFAULT_DEMO_STEPS: DemoStep[] = [
   {
     label: "Reservá un turno",
     description: "Simulá la experiencia de un tutor en menos de un minuto, desde el servicio hasta la confirmación.",
@@ -29,16 +29,36 @@ const DEMO_STEPS: DemoStep[] = [
   }
 ];
 
-export function GuidedDemoStrip({ className, id }: { className?: string; id?: string }) {
+type GuidedDemoStripProps = {
+  className?: string;
+  id?: string;
+  eyebrow?: string;
+  title?: string;
+  steps?: DemoStep[];
+};
+
+export function GuidedDemoStrip({
+  className,
+  id,
+  eyebrow = "DEMO GUIADA",
+  title = "Probá la demo en 3 pasos",
+  steps = DEFAULT_DEMO_STEPS
+}: GuidedDemoStripProps) {
   return (
-    <section id={id} className={cn("rounded-2xl border border-black/5 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900 sm:p-6", className)}>
+    <section
+      id={id}
+      className={cn(
+        "rounded-2xl border border-black/5 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900 sm:p-6",
+        className
+      )}
+    >
       <div className="mb-4 grid gap-1">
-        <p className="text-xs font-semibold tracking-wide text-cyanSoft-500">DEMO GUIADA</p>
-        <h2 className="text-2xl font-black tracking-tight">Probá la demo en 3 pasos</h2>
+        <p className="text-xs font-semibold tracking-wide text-cyanSoft-500">{eyebrow}</p>
+        <h2 className="text-2xl font-black tracking-tight">{title}</h2>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
-        {DEMO_STEPS.map((step, index) => (
+        {steps.map((step, index) => (
           <article key={step.label} className="grid gap-3 rounded-xl bg-black/5 p-4 dark:bg-white/10">
             <p className="text-xs font-bold text-black/60 dark:text-white/60">PASO {index + 1}</p>
             <h3 className="text-base font-extrabold leading-tight">{step.label}</h3>
