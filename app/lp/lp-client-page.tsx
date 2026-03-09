@@ -83,7 +83,7 @@ export default function LandingPage() {
                 </CardContent>
               </Card>
             ))}
-          </div>
+          </ul>
         </section>
 
         <section id="demo" className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-graphite-900 sm:p-6">
