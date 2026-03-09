@@ -53,6 +53,13 @@
 **Narrativa sugerida:**
 "En el panel demo vemos agenda, triage y campañas en una sola vista. Si te interesa, el próximo paso es definir integración real y plan de implementación."
 
+## Versión ultra breve (para reels o teaser de 45–60s)
+
+1. Home (propuesta de valor)
+2. Agenda (1 acción real: crear turno)
+3. Urgencias (1 acción real: priorización)
+4. CTA final de implementación
+
 ## Qué mencionar sí o sí (features)
 
 - Agenda (reserva, confirmación y cancelación).
@@ -109,3 +116,11 @@ NEXT_PUBLIC_DEMO_TOOLS=true
 
 - Confirmar acceso a `/adminv1`.
 - Si no abre, volver a `/` con `?demo=1` y refrescar.
+
+## Pre-flight checklist (antes de darle “grabar”)
+
+- Abrir una ventana limpia del navegador (sin pestañas ruidosas).
+- Confirmar `?demo=1` o `NEXT_PUBLIC_DEMO_TOOLS=true`.
+- Verificar acceso a `/adminv1` antes de iniciar la captura.
+- Tener preparado el CTA final en una frase corta.
+- Ensayar una pasada completa de 60–120s sin cortes.
