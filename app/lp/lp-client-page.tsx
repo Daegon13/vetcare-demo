@@ -7,6 +7,7 @@ import { LeadCTA } from "@/components/LeadCTA";
 import { trackEvent } from "@/lib/analytics";
 import { captureUtmFromUrl, getStoredUtm } from "@/lib/utm";
 import { addLead } from "@/lib/leads";
+import { GuidedDemoStrip } from "@/components/guided-demo-strip";
 
 const SOLUTIONS = [
   "Turnos: reservas online claras para reducir llamados y captar consultas 24/7.",
@@ -14,7 +15,6 @@ const SOLUTIONS = [
   "Seguimiento y portal: historial y estado de la mascota en un solo lugar para fidelizar clientes."
 ];
 
-const QUICK_DEMO_STEPS = ["Elegí servicio", "Evaluá urgencia", "Mirá mi mascota"];
 
 export default function LandingPage() {
   React.useEffect(() => {
@@ -63,6 +63,13 @@ export default function LandingPage() {
           </div>
         </section>
 
+        <GuidedDemoStrip
+          id="demo"
+          eyebrow="RECORRIDO DEMO"
+          title="Probá la demo en 3 pasos"
+          description="Hacé clic en cada paso y validá la experiencia completa en menos de 2 minutos."
+        />
+
         <section className="grid gap-3 rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-graphite-900 sm:p-6" aria-label="Qué resuelve">
           <h2 className="text-2xl font-extrabold">Qué resuelve</h2>
           <ul className="grid gap-2 text-sm text-black/70 dark:text-white/75 sm:text-base">
@@ -72,17 +79,6 @@ export default function LandingPage() {
               </li>
             ))}
           </ul>
-        </section>
-
-        <section id="demo" className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-graphite-900 sm:p-6">
-          <h2 className="text-2xl font-extrabold">Probalo en 30 segundos</h2>
-          <ol className="grid gap-2 text-sm text-black/70 dark:text-white/75 sm:text-base">
-            {QUICK_DEMO_STEPS.map((step, index) => (
-              <li key={step} className="rounded-xl bg-black/5 px-3 py-2 dark:bg-white/10">
-                <span className="font-bold">Paso {index + 1}:</span> {step}
-              </li>
-            ))}
-          </ol>
         </section>
       </Container>
     </div>
