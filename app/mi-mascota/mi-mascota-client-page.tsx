@@ -5,7 +5,7 @@ import { BRAND } from "@/lib/data";
 import type { PetProfile, Vaccine } from "@/lib/types";
 import { loadPet, savePet } from "@/lib/storage";
 import { formatDateLong, toWhatsAppLink, uid } from "@/lib/utils";
-import { Container, Card, CardContent, CardHeader, Field, Input, Select, Button, Badge } from "@/components/ui";
+import { Container, Card, CardContent, CardHeader, Field, Input, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 
@@ -45,7 +45,14 @@ function soon(dateISO?: string) {
   const d = new Date(dateISO + "T00:00:00");
   const now = new Date();
   const diff = d.getTime() - now.getTime();
-  return diff <= 1000 * 60 * 60 * 24 * 30;
+  return diff >= 0 && diff <= 1000 * 60 * 60 * 24 * 30;
+}
+
+function overdue(dateISO?: string) {
+  if (!dateISO) return false;
+  const d = new Date(dateISO + "T00:00:00");
+  const now = new Date();
+  return d.getTime() < now.getTime();
 }
 
 export default function MiMascotaPage() {
@@ -56,156 +63,166 @@ export default function MiMascotaPage() {
   const [vDate, setVDate] = React.useState("");
   const [vNext, setVNext] = React.useState("");
 
-
   function persist(next: PetProfile) {
     setPet(next);
     savePet(next);
   }
 
-  function update<K extends keyof PetProfile>(key: K, value: PetProfile[K]) {
-    if (!pet) return;
-    persist({ ...pet, [key]: value });
-  }
-
   function addVaccine() {
-    if (!pet) return;
     if (!vName.trim() || !vDate) return;
     const v: Vaccine = { id: uid("v"), name: vName.trim(), dateISO: vDate, nextDueISO: vNext || undefined };
     persist({ ...pet, vaccines: [v, ...pet.vaccines] });
-    setVName(""); setVDate(""); setVNext("");
+    setVName("");
+    setVDate("");
+    setVNext("");
   }
 
   function removeVaccine(id: string) {
-    if (!pet) return;
     persist({ ...pet, vaccines: pet.vaccines.filter(v => v.id !== id) });
   }
 
-  const dueSoon = pet?.vaccines.some(v => soon(v.nextDueISO)) ?? false;
-  const nextVaccine = pet?.vaccines
-    .filter(v => !!v.nextDueISO)
+  const overdueCount = pet.vaccines.filter(v => overdue(v.nextDueISO)).length;
+  const dueSoonCount = pet.vaccines.filter(v => soon(v.nextDueISO)).length;
+  const hasOverdue = overdueCount > 0;
+  const nextVaccine = pet.vaccines
+    .filter(v => !!v.nextDueISO && !overdue(v.nextDueISO))
     .slice()
     .sort((a, b) => (a.nextDueISO ?? "").localeCompare(b.nextDueISO ?? ""))[0];
-  const waText = pet
-    ? `Hola! Quiero agendar/control para ${pet.petName}.\nEspecie: ${pet.species}.\nVacunas próximas: ${pet.vaccines
-        .filter(v => soon(v.nextDueISO))
-        .map(v => `${v.name} (${v.nextDueISO})`)
-        .join(", ") || "N/A"}`
-    : "Hola! Quiero agendar un control.";
+
+  const waText = `Hola! Quiero agendar/control para ${pet.petName}.\nEspecie: ${pet.species}.\nVacunas próximas: ${pet.vaccines
+    .filter(v => soon(v.nextDueISO))
+    .map(v => `${v.name} (${v.nextDueISO})`)
+    .join(", ") || "N/A"}`;
 
   return (
     <Container className="py-10">
       <SectionHeading
         eyebrow="Portal"
         title="Mi Mascota"
-        desc="Ficha clínica clara para el tutor: estado general, vacunas próximas, vencimientos e historial reciente."
+        desc="Una vista clara del portal del tutor con estado general, próximos cuidados e historial clínico esencial de la mascota."
       />
-
-      <div className="mt-8 flex flex-wrap gap-2">
-        <CommercialImplementationCTA />
-      </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
           <CardHeader className="flex items-center justify-between">
             <div className="grid">
-              <div className="text-sm font-extrabold">Ficha de {pet?.petName ?? "Mascota"}</div>
+              <div className="text-sm font-extrabold">Ficha de {pet.petName}</div>
               <div className="text-sm text-black/60">Resumen de salud y seguimiento preventivo</div>
             </div>
-            {dueSoon ? <Badge tone="warn">Requiere seguimiento</Badge> : <Badge tone="good">Estado general estable</Badge>}
+            {hasOverdue ? <Badge tone="bad">Hay vacunas vencidas</Badge> : dueSoonCount > 0 ? <Badge tone="warn">Requiere seguimiento</Badge> : <Badge tone="good">Estado general estable</Badge>}
           </CardHeader>
           <CardContent className="grid gap-4">
-              <>
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-black/10 bg-white p-4">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Estado general</div>
-                    <div className="mt-1 text-sm font-extrabold">{dueSoon ? "Con recordatorio cercano" : "Controles al día"}</div>
-                  </div>
-                  <div className="rounded-2xl border border-black/10 bg-white p-4">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Próxima vacuna</div>
-                    <div className="mt-1 text-sm font-extrabold">{nextVaccine?.name ?? "Sin pendientes"}</div>
-                    <div className="text-xs text-black/55">{nextVaccine?.nextDueISO ? formatDateLong(nextVaccine.nextDueISO) : "No hay vencimientos cargados"}</div>
-                  </div>
-                  <div className="rounded-2xl border border-black/10 bg-white p-4">
-                    <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Vencimientos próximos</div>
-                    <div className="mt-1 text-sm font-extrabold">{pet.vaccines.filter(v => soon(v.nextDueISO)).length}</div>
-                    <div className="text-xs text-black/55">en los próximos 30 días</div>
-                  </div>
+            <div className="grid gap-3 sm:grid-cols-4">
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Estado general</div>
+                <div className="mt-1 text-sm font-extrabold">{hasOverdue ? "Con vencimientos a regularizar" : dueSoonCount > 0 ? "Con recordatorio cercano" : "Controles al día"}</div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Próxima vacuna</div>
+                <div className="mt-1 text-sm font-extrabold">{nextVaccine?.name ?? "Sin pendientes"}</div>
+                <div className="text-xs text-black/55">
+                  {nextVaccine?.nextDueISO ? formatDateLong(nextVaccine.nextDueISO) : hasOverdue ? "Hay controles vencidos para revisar" : "No hay vencimientos cargados"}
                 </div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Vencimientos próximos</div>
+                <div className="mt-1 text-sm font-extrabold">{dueSoonCount}</div>
+                <div className="text-xs text-black/55">en los próximos 30 días</div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Vencidas</div>
+                <div className="mt-1 text-sm font-extrabold">{overdueCount}</div>
+                <div className="text-xs text-black/55">requieren regularización</div>
+              </div>
+            </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="Nombre">
-                    <Input value={pet.petName} onChange={e => update("petName", e.target.value)} />
-                  </Field>
-                  <Field label="Especie">
-                    <Select value={pet.species} onChange={e => update("species", e.target.value as any)}>
-                      <option>Perro</option>
-                      <option>Gato</option>
-                      <option>Otro</option>
-                    </Select>
-                  </Field>
-                  <Field label="Raza (opcional)">
-                    <Input value={pet.breed ?? ""} onChange={e => update("breed", e.target.value)} />
-                  </Field>
-                  <Field label="Año nacimiento (opcional)">
-                    <Input type="number" value={pet.birthYear ?? ""} onChange={e => update("birthYear", e.target.value ? Number(e.target.value) : undefined)} />
-                  </Field>
-                  <Field label="Peso kg (opcional)">
-                    <Input type="number" step="0.1" value={pet.weightKg ?? ""} onChange={e => update("weightKg", e.target.value ? Number(e.target.value) : undefined)} />
-                  </Field>
-                  <Field label="Alergias (opcional)">
-                    <Input value={pet.allergies ?? ""} onChange={e => update("allergies", e.target.value)} />
-                  </Field>
-                </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Nombre</div>
+                <div className="mt-1 text-sm font-semibold">{pet.petName}</div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Especie</div>
+                <div className="mt-1 text-sm font-semibold">{pet.species}</div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Raza</div>
+                <div className="mt-1 text-sm font-semibold">{pet.breed || "No informada"}</div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Año de nacimiento</div>
+                <div className="mt-1 text-sm font-semibold">{pet.birthYear || "No informado"}</div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Peso</div>
+                <div className="mt-1 text-sm font-semibold">{pet.weightKg ? `${pet.weightKg} kg` : "No informado"}</div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Alergias</div>
+                <div className="mt-1 text-sm font-semibold">{pet.allergies || "Sin alergias reportadas"}</div>
+              </div>
+            </div>
 
-                <div className="rounded-2xl border border-black/10 bg-white p-4 grid gap-2">
-                  <div className="text-sm font-extrabold">Vacunas y vencimientos</div>
-                  <div className="grid gap-2">
-                    {pet.vaccines.length === 0 ? (
-                      <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
-                        Esta ficha todavía no tiene vacunas registradas.
-                      </div>
-                    ) : (
-                      pet.vaccines.map(v => (
-                        <div key={v.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-black/5 px-3 py-2">
-                          <div className="grid">
-                            <div className="text-sm font-semibold">{v.name}</div>
-                            <div className="text-xs text-black/55">
-                              Dosis: {formatDateLong(v.dateISO)} {v.nextDueISO ? `· Próx: ${formatDateLong(v.nextDueISO)}` : ""}
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {soon(v.nextDueISO) ? <Badge tone="warn">Por vencer</Badge> : <Badge tone="neutral">Vigente</Badge>}
-                            <button
-                              className="rounded-xl bg-white px-3 py-2 text-xs font-semibold border border-black/10 hover:bg-black/5"
-                              onClick={() => removeVaccine(v.id)}
-                            >
-                              Quitar
-                            </button>
-                          </div>
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => window.open(toWhatsAppLink(BRAND.whatsapp, waText), "_blank")} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
+                Solicitar recordatorio por WhatsApp
+              </Button>
+              <CommercialImplementationCTA />
+            </div>
+
+            <div className="grid gap-2 rounded-2xl border border-black/10 bg-white p-4">
+              <div className="text-sm font-extrabold">Vacunas y vencimientos</div>
+              <div className="grid gap-2">
+                {pet.vaccines.length === 0 ? (
+                  <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
+                    Esta ficha todavía no tiene vacunas registradas.
+                  </div>
+                ) : (
+                  pet.vaccines.map(v => (
+                    <div key={v.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-black/5 px-3 py-2">
+                      <div className="grid">
+                        <div className="text-sm font-semibold">{v.name}</div>
+                        <div className="text-xs text-black/55">
+                          Dosis: {formatDateLong(v.dateISO)} {v.nextDueISO ? `· Próx: ${formatDateLong(v.nextDueISO)}` : ""}
                         </div>
-                      ))
-                    )}
-                  </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {overdue(v.nextDueISO) ? (
+                          <Badge tone="bad">Vencida</Badge>
+                        ) : soon(v.nextDueISO) ? (
+                          <Badge tone="warn">Por vencer</Badge>
+                        ) : v.nextDueISO ? (
+                          <Badge tone="neutral">Vigente</Badge>
+                        ) : (
+                          <Badge tone="neutral">Sin próximo</Badge>
+                        )}
+                        <button
+                          className="rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold hover:bg-black/5"
+                          onClick={() => removeVaccine(v.id)}
+                        >
+                          Quitar
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
 
-                  <div className="mt-2 grid gap-3 sm:grid-cols-3">
-                    <Field label="Nombre vacuna">
-                      <Input value={vName} onChange={e => setVName(e.target.value)} placeholder="Ej: Antirrábica" />
-                    </Field>
-                    <Field label="Fecha">
-                      <Input type="date" value={vDate} onChange={e => setVDate(e.target.value)} />
-                    </Field>
-                    <Field label="Próximo vencimiento (opcional)">
-                      <Input type="date" value={vNext} onChange={e => setVNext(e.target.value)} />
-                    </Field>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button onClick={addVaccine} variant="outline">Agregar vacuna</Button>
-                    <Button onClick={() => window.open(toWhatsAppLink(BRAND.whatsapp, waText), "_blank")} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
-                      Solicitar recordatorio por WhatsApp
-                    </Button>
-                  </div>
-                </div>
-              </>
+              <div className="mt-2 grid gap-3 sm:grid-cols-3">
+                <Field label="Nombre vacuna">
+                  <Input value={vName} onChange={e => setVName(e.target.value)} placeholder="Ej: Antirrábica" />
+                </Field>
+                <Field label="Fecha">
+                  <Input type="date" value={vDate} onChange={e => setVDate(e.target.value)} />
+                </Field>
+                <Field label="Próximo vencimiento (opcional)">
+                  <Input type="date" value={vNext} onChange={e => setVNext(e.target.value)} />
+                </Field>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={addVaccine} variant="outline">Agregar vacuna</Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -216,7 +233,7 @@ export default function MiMascotaPage() {
           </CardHeader>
           <CardContent className="grid gap-3">
             {history.map(h => (
-              <div key={h.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
+              <div key={h.id} className="grid gap-1 rounded-2xl border border-black/10 bg-white p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="text-sm font-extrabold">{h.title}</div>
                   <Badge tone="neutral">{h.dateISO}</Badge>
@@ -226,9 +243,7 @@ export default function MiMascotaPage() {
               </div>
             ))}
 
-            <div className="text-xs text-black/50">
-              Vista pensada para que el tutor entienda rápido evolución, controles y próximos pasos.
-            </div>
+            <div className="text-xs text-black/50">Resumen clínico breve para seguimiento cotidiano del tutor.</div>
           </CardContent>
         </Card>
       </div>
