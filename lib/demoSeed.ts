@@ -101,7 +101,7 @@ export function buildDemoSeed(): DemoSeedData {
       species: "Perro",
       ownerName: "Diego Alonso",
       phone: "+598 99 800 121",
-      symptoms: ["vómitos", "apatía"],
+      symptoms: ["vomito", "fiebre"],
       freeText: "No quiere comer desde ayer.",
       priority: "media",
       recommendedAction: "Traer hoy para evaluación clínica y control de hidratación."
@@ -113,7 +113,7 @@ export function buildDemoSeed(): DemoSeedData {
       species: "Gato",
       ownerName: "Valentina Cabrera",
       phone: "+598 95 777 220",
-      symptoms: ["dificultad respiratoria", "tos"],
+      symptoms: ["respira", "fiebre"],
       freeText: "Respira rápido y está escondida.",
       priority: "alta",
       recommendedAction: "Acudir de inmediato a urgencias para estabilización."

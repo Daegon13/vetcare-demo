@@ -3,13 +3,11 @@
 import * as React from "react";
 import { BRAND } from "@/lib/data";
 import type { PetProfile, Vaccine } from "@/lib/types";
-import { loadPet, restoreDemoData, savePet } from "@/lib/storage";
+import { loadPet, savePet } from "@/lib/storage";
 import { formatDateLong, toWhatsAppLink, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
-import { EmptyState } from "@/components/empty";
-import { Syringe } from "lucide-react";
 
 type HistoryItem = { id: string; dateISO: string; title: string; notes: string };
 
@@ -24,7 +22,8 @@ function soon(dateISO?: string) {
 export default function MiMascotaPage() {
   const [pet, setPet] = React.useState<PetProfile | null>(null);
   const [history, setHistory] = React.useState<HistoryItem[]>([]);
-  const [loadingHistory, setLoadingHistory] = React.useState(false);
+  const [loadingHistory, setLoadingHistory] = React.useState(true);
+  const [petReady, setPetReady] = React.useState(false);
 
   const [vName, setVName] = React.useState("");
   const [vDate, setVDate] = React.useState("");
@@ -33,6 +32,7 @@ export default function MiMascotaPage() {
   React.useEffect(() => {
     const p = loadPet();
     setPet(p);
+    setPetReady(true);
   }, []);
 
   React.useEffect(() => {
@@ -98,11 +98,15 @@ export default function MiMascotaPage() {
               <div className="text-sm font-extrabold">Perfil</div>
               <div className="text-sm text-black/60">Información disponible en este dispositivo</div>
             </div>
-            {dueSoon ? <Badge tone="warn">Vacuna por vencer</Badge> : <Badge tone="good">Al día</Badge>}
+            {!petReady ? <Badge tone="neutral">Cargando perfil</Badge> : dueSoon ? <Badge tone="warn">Vacuna por vencer</Badge> : <Badge tone="good">Al día</Badge>}
           </CardHeader>
           <CardContent className="grid gap-4">
-            {!pet ? (
-              <div className="text-sm text-black/60">Cargando…</div>
+            {!pet || !petReady ? (
+              <div className="grid gap-3">
+                <div className="h-10 w-full animate-pulse rounded-xl bg-black/5" />
+                <div className="h-10 w-full animate-pulse rounded-xl bg-black/5" />
+                <div className="h-28 w-full animate-pulse rounded-2xl bg-black/5" />
+              </div>
             ) : (
               <>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -134,17 +138,9 @@ export default function MiMascotaPage() {
                   <div className="text-sm font-extrabold">Vacunas</div>
                   <div className="grid gap-2">
                     {pet.vaccines.length === 0 ? (
-                      <EmptyState
-                        title="No hay vacunas cargadas"
-                        description="Cargá ejemplos para ver un carnet con vacunas y próximos vencimientos."
-                illustrationSrc="/brand/feature-portal.webp"
-                        icon={Syringe}
-                        actionLabel="Cargar ejemplos"
-                        onAction={() => {
-                          restoreDemoData();
-                          setPet(loadPet());
-                        }}
-                      />
+                      <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
+                        No hay vacunas cargadas todavía para esta mascota.
+                      </div>
                     ) : (
                       pet.vaccines.map(v => (
                         <div key={v.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-black/5 px-3 py-2">
@@ -198,7 +194,11 @@ export default function MiMascotaPage() {
           </CardHeader>
           <CardContent className="grid gap-3">
             {loadingHistory ? (
-              <div className="text-sm text-black/60">Cargando historial…</div>
+              <div className="grid gap-3">
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+              </div>
             ) : (
               history.map(h => (
                 <div key={h.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">

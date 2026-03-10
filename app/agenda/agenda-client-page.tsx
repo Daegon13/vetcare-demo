@@ -7,12 +7,10 @@ import { LeadCTA } from "@/components/LeadCTA";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import type { Appointment, ServiceId } from "@/lib/types";
 import { buildDailySlots, getService, makeICS } from "@/lib/schedule";
-import { loadAppointments, restoreDemoData, saveAppointments } from "@/lib/storage";
+import { loadAppointments, saveAppointments } from "@/lib/storage";
 import { formatDateLong, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
-import { EmptyState } from "@/components/empty";
-import { CalendarX2 } from "lucide-react";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
@@ -22,23 +20,7 @@ export default function AgendaPage() {
   // Si se usa directamente en el componente de página, el build en Vercel falla.
   return (
     <React.Suspense
-      fallback={
-        <Container className="py-10">
-          <SectionHeading
-            eyebrow="Agenda"
-            title="Reservá un turno"
-            desc="Cargando agenda…"
-          />
-          <div className="mt-8 grid gap-4 lg:grid-cols-5">
-            <Card className="lg:col-span-3">
-              <CardContent className="p-6 text-sm text-black/60">Preparando disponibilidad…</CardContent>
-            </Card>
-            <Card className="lg:col-span-2">
-              <CardContent className="p-6 text-sm text-black/60">Cargando turnos guardados…</CardContent>
-            </Card>
-          </div>
-        </Container>
-      }
+      fallback={<AgendaPageSkeleton />}
     >
       <AgendaPageInner />
     </React.Suspense>
@@ -57,11 +39,13 @@ function AgendaPageInner() {
   const [phone, setPhone] = React.useState("");
   const [notes, setNotes] = React.useState("");
   const [appts, setAppts] = React.useState<Appointment[]>([]);
+  const [ready, setReady] = React.useState(false);
   const [justCreated, setJustCreated] = React.useState<Appointment | null>(null);
 
   React.useEffect(() => {
     const items = loadAppointments();
     setAppts(items);
+    setReady(true);
   }, []);
 
   React.useEffect(() => {
@@ -238,18 +222,15 @@ function AgendaPageInner() {
             <div className="text-sm text-black/60">Disponible en este dispositivo</div>
           </CardHeader>
           <CardContent className="grid gap-3">
-            {appts.length === 0 ? (
-              <EmptyState
-                title="Todavía no hay turnos creados"
-                description="Podés cargar ejemplos para visualizar reservas y acciones disponibles en este módulo."
-                illustrationSrc="/brand/feature-appointments.webp"
-                icon={CalendarX2}
-                actionLabel="Cargar ejemplos"
-                onAction={() => {
-                  restoreDemoData();
-                  setAppts(loadAppointments());
-                }}
-              />
+            {!ready ? (
+              <div className="grid gap-3">
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+              </div>
+            ) : appts.length === 0 ? (
+              <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
+                Aún no hay turnos en este dispositivo. Creá uno nuevo para empezar.
+              </div>
             ) : (
               appts
                 .slice()
@@ -286,6 +267,39 @@ function AgendaPageInner() {
                   </div>
                 ))
             )}
+          </CardContent>
+        </Card>
+      </div>
+    </Container>
+  );
+}
+
+
+function AgendaPageSkeleton() {
+  return (
+    <Container className="py-10">
+      <SectionHeading
+        eyebrow="Agenda"
+        title="Reservá un turno"
+        desc="Disponibilidad y reservas sincronizadas en la demo."
+      />
+      <div className="mt-8 grid gap-4 lg:grid-cols-5">
+        <Card className="lg:col-span-3">
+          <CardContent className="p-6">
+            <div className="grid gap-3">
+              <div className="h-5 w-56 animate-pulse rounded bg-black/10" />
+              <div className="h-10 w-full animate-pulse rounded-xl bg-black/5" />
+              <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="lg:col-span-2">
+          <CardContent className="p-6">
+            <div className="grid gap-3">
+              <div className="h-5 w-44 animate-pulse rounded bg-black/10" />
+              <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+              <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+            </div>
           </CardContent>
         </Card>
       </div>
