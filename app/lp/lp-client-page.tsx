@@ -58,7 +58,7 @@ export default function LandingPage() {
               className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
             />
             <LinkButton href="#demo-rapido" variant="outline" onClick={onDemoClick}>
-              Ver demo guiada en 3 pasos
+Ver recorrido guiado en 3 pasos
             </LinkButton>
           </div>
         </section>
@@ -76,7 +76,7 @@ export default function LandingPage() {
             ))}
           </ul>
           <p className="text-xs text-black/55 dark:text-white/65">
-            Demo orientativa. En producción se integra con tus canales, reglas y operación diaria.
+            Recorrido de referencia para visualizar la propuesta y definir una implementación a medida.
           </p>
         </section>
 

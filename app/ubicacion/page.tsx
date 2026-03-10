@@ -18,7 +18,7 @@ export default function UbicacionPage() {
       <SectionHeading
         eyebrow="Ubicación"
         title="Estamos cerca y con horarios claros"
-        desc="En producción: mapa embebido, click-to-call y navegación."
+        desc="Encontranos fácil y coordiná tu visita en minutos."
       />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
@@ -32,9 +32,9 @@ export default function UbicacionPage() {
           </CardHeader>
           <CardContent className="grid gap-3">
             <div className="rounded-2xl border border-dashed border-black/15 bg-warm-50 p-6">
-              <div className="text-sm font-extrabold">Mapa (placeholder)</div>
+              <div className="text-sm font-extrabold">Mapa de referencia</div>
               <p className="text-sm text-black/60 mt-1">
-                En demo lo dejamos liviano. En un deploy real se integra Google Maps / Mapbox o un iframe.
+                Usá el acceso directo para abrir la ubicación y llegar por la ruta más conveniente.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -60,7 +60,7 @@ export default function UbicacionPage() {
           <CardContent className="grid gap-3">
             <div className="rounded-2xl border border-black/10 bg-white p-4">
               <div className="text-sm font-semibold">Estacionamiento</div>
-              <div className="text-sm text-black/60">Texto de demo: zona con estacionamiento cercano.</div>
+              <div className="text-sm text-black/60">Zona con estacionamiento cercano.</div>
             </div>
             <div className="rounded-2xl border border-black/10 bg-white p-4">
               <div className="text-sm font-semibold">Accesibilidad</div>
@@ -68,7 +68,7 @@ export default function UbicacionPage() {
             </div>
             <div className="rounded-2xl border border-black/10 bg-white p-4">
               <div className="text-sm font-semibold">Guardia</div>
-              <div className="text-sm text-black/60">Usar /urgencias para triage y contacto rápido.</div>
+              <div className="text-sm text-black/60">Si necesitás atención prioritaria, podés iniciar una evaluación rápida desde Urgencias.</div>
             </div>
           </CardContent>
         </Card>

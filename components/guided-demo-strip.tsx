@@ -41,9 +41,9 @@ type GuidedDemoStripProps = {
 export function GuidedDemoStrip({
   className,
   id,
-  eyebrow = "DEMO GUIADA",
-  title = "Probá la demo en 3 pasos",
-  description = "Seguí este recorrido para ver en minutos el flujo completo de la demo.",
+  eyebrow = "RECORRIDO GUIADO",
+  title = "Conocé VetCare en 3 pasos",
+  description = "Seguí este recorrido para ver en minutos el flujo completo de atención.",
   steps = DEFAULT_DEMO_STEPS
 }: GuidedDemoStripProps) {
   return (

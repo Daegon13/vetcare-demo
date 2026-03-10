@@ -24,7 +24,7 @@ export default function EquipoPage() {
       <SectionHeading
         eyebrow="Equipo"
         title="Personas reales, trato humano"
-        desc="Texto de demo para transmitir confianza y profesionalismo."
+        desc="Equipo enfocado en atención cercana, seguimiento y confianza clínica."
       />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
