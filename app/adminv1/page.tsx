@@ -179,7 +179,7 @@ export default function AdminV1Page() {
         <SectionHeading
           eyebrow="Admin v1"
           title="Panel de operación (modo demo)"
-          desc="Para mostrar “cómo funcionaría”. Estados, triage entrante, perfil de mascota y campañas."
+          desc="Demo orientativa para visualizar la operación diaria: turnos, urgencias, seguimiento y campañas en un solo panel."
         />
         <div className="flex gap-2 flex-wrap">
           <Button variant="outline" onClick={demoReset}>Reset demo</Button>
@@ -247,7 +247,7 @@ export default function AdminV1Page() {
             <CardHeader className="flex items-center justify-between gap-4 flex-wrap">
               <div className="grid">
                 <div className="text-sm font-extrabold">Turnos</div>
-                <div className="text-sm text-black/60">Cambiar estado: pendiente → confirmado → atendido</div>
+                <div className="text-sm text-black/60">Gestión simple del estado de cada turno con contexto de cliente y mascota.</div>
               </div>
               <div className="text-xs text-black/50">Local: {BRAND.address}</div>
             </CardHeader>
@@ -288,7 +288,7 @@ export default function AdminV1Page() {
           <Card>
             <CardHeader>
               <div className="text-sm font-extrabold">Triage entrante</div>
-              <div className="text-sm text-black/60">Borrar caso simula “atendido” (demo).</div>
+              <div className="text-sm text-black/60">Permite ordenar casos entrantes y marcar resolución dentro del flujo demo.</div>
             </CardHeader>
             <CardContent className="grid gap-3">
               {filteredTriage.length === 0 ? (
@@ -327,7 +327,7 @@ export default function AdminV1Page() {
             <CardHeader className="flex items-center justify-between gap-3 flex-wrap">
               <div className="grid">
                 <div className="text-sm font-extrabold">Mascota demo</div>
-                <div className="text-sm text-black/60">Edición rápida para que el lead vea “perfil”.</div>
+                <div className="text-sm text-black/60">Vista de seguimiento para mostrar historial y próximos cuidados de la mascota.</div>
               </div>
               <LinkButton href="/mi-mascota" variant="outline">Abrir portal</LinkButton>
             </CardHeader>
@@ -439,7 +439,7 @@ export default function AdminV1Page() {
             <Card className="lg:col-span-2">
               <CardHeader>
                 <div className="text-sm font-extrabold">Nueva campaña</div>
-                <div className="text-sm text-black/60">Guardado local (demo)</div>
+                <div className="text-sm text-black/60">Programación demostrativa de campañas para distintos públicos y canales.</div>
               </CardHeader>
               <CardContent className="grid gap-3">
                 <Field label="Título">
@@ -482,7 +482,7 @@ export default function AdminV1Page() {
             <CardHeader className="flex items-center justify-between gap-3 flex-wrap">
               <div className="grid">
                 <div className="text-sm font-extrabold">Leads</div>
-                <div className="text-sm text-black/60">Inbox demo local con exportación.</div>
+                <div className="text-sm text-black/60">Registro centralizado de contactos para seguimiento comercial.</div>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" variant="outline" onClick={onExportCSV}>Export CSV</Button>
@@ -525,7 +525,7 @@ export default function AdminV1Page() {
       </div>
 
       <div className="mt-10 text-xs text-black/50">
-        Nota: Este panel es demostrativo. En producción: login, roles, auditoría, backups, métricas y calendario real.
+        Demo orientativa. En producción: login, roles, auditoría, backups, métricas y calendario real.
       </div>
     </Container>
   );
