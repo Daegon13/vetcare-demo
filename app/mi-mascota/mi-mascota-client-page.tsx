@@ -97,12 +97,8 @@ export default function MiMascotaPage() {
       <SectionHeading
         eyebrow="Portal"
         title="Mi Mascota"
-        desc="Ficha clínica clara para el tutor: estado general, vacunas próximas, vencimientos e historial reciente."
+        desc="Una vista clara del portal del tutor con estado general, próximos cuidados e historial clínico esencial de la mascota."
       />
-
-      <div className="mt-8 flex flex-wrap gap-2">
-        <CommercialImplementationCTA />
-      </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
@@ -157,6 +153,13 @@ export default function MiMascotaPage() {
                   </Field>
                 </div>
 
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={() => window.open(toWhatsAppLink(BRAND.whatsapp, waText), "_blank")} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
+                    Solicitar recordatorio por WhatsApp
+                  </Button>
+                  <CommercialImplementationCTA />
+                </div>
+
                 <div className="rounded-2xl border border-black/10 bg-white p-4 grid gap-2">
                   <div className="text-sm font-extrabold">Vacunas y vencimientos</div>
                   <div className="grid gap-2">
@@ -200,9 +203,6 @@ export default function MiMascotaPage() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Button onClick={addVaccine} variant="outline">Agregar vacuna</Button>
-                    <Button onClick={() => window.open(toWhatsAppLink(BRAND.whatsapp, waText), "_blank")} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
-                      Solicitar recordatorio por WhatsApp
-                    </Button>
                   </div>
                 </div>
               </>
@@ -226,9 +226,7 @@ export default function MiMascotaPage() {
               </div>
             ))}
 
-            <div className="text-xs text-black/50">
-              Vista pensada para que el tutor entienda rápido evolución, controles y próximos pasos.
-            </div>
+            <div className="text-xs text-black/50">Resumen clínico breve para seguimiento cotidiano del tutor.</div>
           </CardContent>
         </Card>
       </div>

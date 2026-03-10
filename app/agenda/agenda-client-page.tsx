@@ -163,8 +163,32 @@ function AgendaPageInner() {
       <SectionHeading
         eyebrow="Agenda"
         title="Reservá un turno"
-        desc="Elegí servicio, horario y datos de contacto en un flujo simple. Disponibilidad actualizada y próximos turnos a la vista."
+        desc="Disponibilidad confirmada para hoy y próximos días, con agenda activa y próximos turnos visibles desde el primer segundo."
       />
+
+      <div className="mt-6 grid gap-3 md:grid-cols-3">
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Disponibilidad inicial</div>
+            <div className="mt-1 text-sm font-extrabold">Turnos desde hoy</div>
+            <div className="text-sm text-black/60">Bloques listos para reservar en menos de 1 minuto.</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Canales de confirmación</div>
+            <div className="mt-1 text-sm font-extrabold">Portal + WhatsApp</div>
+            <div className="text-sm text-black/60">CTA principal para reserva y contacto directo al equipo.</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="p-4">
+            <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Próximos turnos</div>
+            <div className="mt-1 text-sm font-extrabold">Vista operativa inmediata</div>
+            <div className="text-sm text-black/60">La recepción visualiza la carga del día sin esperar estados vacíos.</div>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
@@ -230,10 +254,10 @@ function AgendaPageInner() {
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <Button onClick={createAppointment} disabled={!canSubmit()} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
+                <Button onClick={createAppointment} disabled={!canSubmit()} className="h-11 px-5 bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
                   Confirmar turno
                 </Button>
-                <LeadCTA interest="turnos" label="Enviar por WhatsApp" variant="outline" />
+                <LeadCTA interest="turnos" label="Consultar por WhatsApp" variant="outline" />
                 {justCreated ? (
                   <Button variant="ghost" onClick={() => downloadICS(justCreated)}>
                     Añadir al calendario (.ics)
@@ -268,10 +292,15 @@ function AgendaPageInner() {
           </CardHeader>
           <CardContent className="grid gap-3">
             {!ready ? (
-              <div className="grid gap-3">
-                <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
-                <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
-                <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
+              <div className="grid gap-3" aria-label="Cargando próximos turnos">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="rounded-2xl border border-black/10 bg-white p-4">
+                    <div className="h-4 w-24 animate-pulse rounded bg-black/10" />
+                    <div className="mt-2 h-3 w-11/12 animate-pulse rounded bg-black/5" />
+                    <div className="mt-2 h-3 w-8/12 animate-pulse rounded bg-black/5" />
+                    <div className="mt-3 h-7 w-20 animate-pulse rounded-xl bg-black/10" />
+                  </div>
+                ))}
               </div>
             ) : (
               upcomingVisible.map(a => (
@@ -325,7 +354,7 @@ function AgendaPageSkeleton() {
       <SectionHeading
         eyebrow="Agenda"
         title="Reservá un turno"
-        desc="Disponibilidad actual y próximos turnos listos para reservar."
+        desc="Agenda profesional con disponibilidad activa, bloques sugeridos y seguimiento de turnos desde la primera carga."
       />
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
