@@ -8,6 +8,7 @@ import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textare
 import { SectionHeading } from "@/components/section";
 import { EmptyState } from "@/components/empty";
 import { LeadCTA } from "@/components/LeadCTA";
+import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import { Ambulance } from "lucide-react";
 
 const SYMPTOMS = [
@@ -158,6 +159,7 @@ export default function UrgenciasPage() {
                 Calcular prioridad
               </Button>
               <LeadCTA interest="urgencias" label="Escribir por WhatsApp" variant="outline" />
+              <CommercialImplementationCTA />
             </div>
             <div className="text-xs text-black/45">Modo demo: el resultado no genera ticket real de guardia.</div>
 

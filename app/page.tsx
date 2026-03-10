@@ -9,6 +9,7 @@ import { SectionHeading } from "@/components/section";
 import { HeroVisual } from "@/components/hero-visual";
 import { LeadCTA } from "@/components/LeadCTA";
 import { GuidedDemoStrip } from "@/components/guided-demo-strip";
+import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 
 export const metadata: Metadata = buildPageMetadata({
   title: `${BRAND.name} | Demo veterinaria con turnos y urgencias`,
@@ -202,9 +203,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
           <LinkButton href="/servicios" variant="outline">
             Ver servicios
           </LinkButton>
-          <LinkButton href={BRAND.implementationCtaUrl} target="_blank" rel="noreferrer" variant="outline">
-            {BRAND.implementationCtaLabel}
-          </LinkButton>
+          <CommercialImplementationCTA />
           <LinkButton href="/mi-mascota" variant="outline">
             Abrir Mi Mascota
           </LinkButton>

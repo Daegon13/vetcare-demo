@@ -8,6 +8,7 @@ import { loadAppointments, loadCampaigns, loadPet, loadTriage, resetDemo, saveAp
 import { cn, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Button, Badge, Field, Input, Select, Textarea, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import { clearLeads, exportLeadsCSV, exportLeadsJSON, getLeads, type LeadEvent } from "@/lib/leads";
 import { trackEvent } from "@/lib/analytics";
 
@@ -185,6 +186,7 @@ export default function AdminV1Page() {
           <Button variant="outline" onClick={demoReset}>Reset demo</Button>
           <LinkButton href="/adminv1/marketing" variant="outline">Enlaces de marketing</LinkButton>
           <LinkButton href="/agenda" variant="outline">Ir a Agenda</LinkButton>
+          <CommercialImplementationCTA />
         </div>
       </div>
 

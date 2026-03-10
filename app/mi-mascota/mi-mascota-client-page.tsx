@@ -7,6 +7,7 @@ import { loadPet, restoreDemoData, savePet } from "@/lib/storage";
 import { formatDateLong, toWhatsAppLink, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import { EmptyState } from "@/components/empty";
 import { Syringe } from "lucide-react";
 
@@ -86,7 +87,11 @@ export default function MiMascotaPage() {
         desc="Perfil simple con vacunas e historial. En una versión real se autentica por WhatsApp o email."
       />
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-5">
+      <div className="mt-8 flex flex-wrap gap-2">
+        <CommercialImplementationCTA />
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
           <CardHeader className="flex items-center justify-between">
             <div className="grid">
