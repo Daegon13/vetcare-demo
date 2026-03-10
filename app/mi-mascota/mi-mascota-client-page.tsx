@@ -81,13 +81,13 @@ export default function MiMascotaPage() {
     persist({ ...pet, vaccines: pet.vaccines.filter(v => v.id !== id) });
   }
 
-  const dueSoon = pet.vaccines.some(v => soon(v.nextDueISO));
+  const overdueCount = pet.vaccines.filter(v => overdue(v.nextDueISO)).length;
+  const dueSoonCount = pet.vaccines.filter(v => soon(v.nextDueISO)).length;
+  const hasOverdue = overdueCount > 0;
   const nextVaccine = pet.vaccines
-    .filter(v => !!v.nextDueISO)
+    .filter(v => !!v.nextDueISO && !overdue(v.nextDueISO))
     .slice()
     .sort((a, b) => (a.nextDueISO ?? "").localeCompare(b.nextDueISO ?? ""))[0];
-  const dueSoonCount = pet.vaccines.filter(v => soon(v.nextDueISO)).length;
-  const overdueCount = pet.vaccines.filter(v => overdue(v.nextDueISO)).length;
 
   const waText = `Hola! Quiero agendar/control para ${pet.petName}.\nEspecie: ${pet.species}.\nVacunas próximas: ${pet.vaccines
     .filter(v => soon(v.nextDueISO))
@@ -109,19 +109,19 @@ export default function MiMascotaPage() {
               <div className="text-sm font-extrabold">Ficha de {pet.petName}</div>
               <div className="text-sm text-black/60">Resumen de salud y seguimiento preventivo</div>
             </div>
-            {dueSoon ? <Badge tone="warn">Requiere seguimiento</Badge> : <Badge tone="good">Estado general estable</Badge>}
+            {hasOverdue ? <Badge tone="bad">Hay vacunas vencidas</Badge> : dueSoonCount > 0 ? <Badge tone="warn">Requiere seguimiento</Badge> : <Badge tone="good">Estado general estable</Badge>}
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-3 sm:grid-cols-4">
               <div className="rounded-2xl border border-black/10 bg-white p-4">
                 <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Estado general</div>
-                <div className="mt-1 text-sm font-extrabold">{dueSoon ? "Con recordatorio cercano" : "Controles al día"}</div>
+                <div className="mt-1 text-sm font-extrabold">{hasOverdue ? "Con vencimientos a regularizar" : dueSoonCount > 0 ? "Con recordatorio cercano" : "Controles al día"}</div>
               </div>
               <div className="rounded-2xl border border-black/10 bg-white p-4">
                 <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Próxima vacuna</div>
                 <div className="mt-1 text-sm font-extrabold">{nextVaccine?.name ?? "Sin pendientes"}</div>
                 <div className="text-xs text-black/55">
-                  {nextVaccine?.nextDueISO ? formatDateLong(nextVaccine.nextDueISO) : "No hay vencimientos cargados"}
+                  {nextVaccine?.nextDueISO ? formatDateLong(nextVaccine.nextDueISO) : hasOverdue ? "Hay controles vencidos para revisar" : "No hay vencimientos cargados"}
                 </div>
               </div>
               <div className="rounded-2xl border border-black/10 bg-white p-4">
@@ -191,8 +191,10 @@ export default function MiMascotaPage() {
                           <Badge tone="bad">Vencida</Badge>
                         ) : soon(v.nextDueISO) ? (
                           <Badge tone="warn">Por vencer</Badge>
-                        ) : (
+                        ) : v.nextDueISO ? (
                           <Badge tone="neutral">Vigente</Badge>
+                        ) : (
+                          <Badge tone="neutral">Sin próximo</Badge>
                         )}
                         <button
                           className="rounded-xl border border-black/10 bg-white px-3 py-2 text-xs font-semibold hover:bg-black/5"

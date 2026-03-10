@@ -170,6 +170,7 @@ function AgendaPageInner() {
             <div className="text-sm font-extrabold">Disponibilidad inmediata</div>
             <Badge tone="neutral">{formatDateLong(dateISO)}</Badge>
           </div>
+          <div className="mt-2 text-xs text-black/55">Seleccioná un bloque sugerido para avanzar más rápido con la reserva.</div>
           <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
             {quickSlots.length > 0 ? (
               quickSlots.map(s => (
@@ -301,13 +302,11 @@ function AgendaPageInner() {
               <div key={a.id} className="grid gap-1 rounded-2xl border border-black/10 bg-white p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-sm font-extrabold">{a.petName}</div>
-                  {showingDemo ? (
-                    <Badge tone="neutral">demo</Badge>
-                  ) : (
+                  {!showingDemo ? (
                     <Badge tone={a.status === "cancelado" ? "bad" : a.status === "confirmado" ? "good" : "neutral"}>
                       {a.status}
                     </Badge>
-                  )}
+                  ) : null}
                 </div>
                 <div className="text-sm text-black/70">{SERVICES.find(s => s.id === a.serviceId)?.name} · {a.dateISO} · {a.time}</div>
                 <div className="text-xs text-black/55">Titular: {a.ownerName} · Tel: {a.phone}</div>
@@ -351,6 +350,7 @@ function AgendaPageSkeleton() {
         <Card>
           <CardContent className="p-4">
             <div className="h-5 w-52 animate-pulse rounded bg-black/10" />
+            <div className="mt-2 text-xs text-black/55">Seleccioná un bloque sugerido para avanzar más rápido con la reserva.</div>
             <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="h-10 animate-pulse rounded-xl bg-black/5" />
