@@ -97,7 +97,7 @@ export function Nav() {
     trackEvent("lead_saved", { channel: "whatsapp_click", location: "navbar", ...(utm ?? {}) });
   }
 
-  const navLinks = demoToolsEnabled ? [...links, { href: "/adminv1", label: "Admin v1" }] : links;
+  const navLinks = demoToolsEnabled ? [...links, { href: "/adminv1", label: "Panel de gestión" }] : links;
 
   return (
     <div className="sticky top-0 z-30 border-b border-black/5 bg-warm-100/85 text-graphite-900 backdrop-blur dark:border-white/10 dark:bg-graphite-950/85 dark:text-white">
@@ -110,7 +110,7 @@ export function Nav() {
           </div>
           {demoToolsEnabled ? (
             <span className="hidden rounded-full border border-cyanSoft-400/70 bg-cyanSoft-50 px-2 py-0.5 text-[10px] font-black tracking-wide text-graphite-900 md:inline-flex dark:bg-cyanSoft-400/20 dark:text-cyanSoft-100">
-              DEMO
+              RECORRIDO
             </span>
           ) : null}
         </Link>
@@ -140,12 +140,12 @@ export function Nav() {
               onClick={onResetDemo}
               className="hidden whitespace-nowrap rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-semibold hover:bg-black/5 md:inline-flex dark:border-white/15 dark:bg-graphite-900 dark:hover:bg-white/10"
             >
-              Reset demo
+              Reiniciar datos
             </button>
           ) : null}
 
           <LinkButton href={withDemo("/agenda")} className="hidden whitespace-nowrap sm:inline-flex" variant="outline">
-            {demoToolsEnabled ? "Reservar turno" : "Agenda una demo"}
+            {demoToolsEnabled ? "Reservar turno" : "Solicitar asesoría"}
           </LinkButton>
 
           {demoToolsEnabled ? <ThemeToggle /> : null}

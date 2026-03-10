@@ -133,7 +133,7 @@ function AgendaPageInner() {
       <SectionHeading
         eyebrow="Agenda"
         title="Reservá un turno"
-        desc="Elegí servicio y horario disponible en pocos pasos. Esta agenda es una demo con disponibilidad simulada según duración + buffer."
+        desc="Elegí servicio y horario disponible en pocos pasos, con una experiencia clara para tutores y equipo."
       />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
@@ -181,7 +181,7 @@ function AgendaPageInner() {
               <div className="text-xs text-black/50">
                 Tip: los turnos ocupados se bloquean automáticamente por duración + buffer.
               </div>
-              <div className="text-xs text-black/45">Demo activa: no se envían mensajes reales ni se cobran reservas.</div>
+              <div className="text-xs text-black/45">Las reservas se coordinan y confirman por los canales de contacto habituales.</div>
             </div>
 
             <div className="grid gap-3 pt-2">
@@ -193,7 +193,7 @@ function AgendaPageInner() {
                 <Field label="Tu nombre">
                   <Input value={ownerName} onChange={e => setOwnerName(e.target.value)} placeholder="Ej: Sofía" />
                 </Field>
-                <Field label="WhatsApp / Teléfono" hint="solo demo">
+                <Field label="WhatsApp / Teléfono" hint="te contactaremos por este medio">
                   <Input value={phone} onChange={e => setPhone(e.target.value)} placeholder="Ej: 09 123 456" />
                 </Field>
                 <div />
@@ -204,7 +204,7 @@ function AgendaPageInner() {
 
               <div className="flex flex-wrap gap-2">
                 <Button onClick={createAppointment} disabled={!canSubmit()} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
-                  Confirmar (demo)
+                  Confirmar turno
                 </Button>
                 <LeadCTA interest="turnos" label="Enviar por WhatsApp" variant="outline" />
                 <CommercialImplementationCTA />
@@ -218,12 +218,12 @@ function AgendaPageInner() {
               {justCreated ? (
                 <Card className="bg-emerald-50 ring-emerald-200/60">
                   <CardContent className="grid gap-1">
-                    <div className="text-sm font-extrabold">Turno creado (modo demo)</div>
+                    <div className="text-sm font-extrabold">Turno reservado</div>
                     <div className="text-sm text-black/70">
                       {SERVICES.find(s => s.id === justCreated.serviceId)?.name} · {justCreated.dateISO} · {justCreated.time}
                     </div>
                     <div className="text-xs text-black/55">
-                      En un sitio real: acá se envía confirmación por WhatsApp/SMS + email y se sincroniza con Google Calendar del local.
+                      Te enviaremos confirmación y recordatorio por tu canal de contacto preferido.
                     </div>
                   </CardContent>
                 </Card>
@@ -235,16 +235,16 @@ function AgendaPageInner() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <div className="text-sm font-extrabold">Turnos guardados en este navegador</div>
-            <div className="text-sm text-black/60">localStorage (demo)</div>
+            <div className="text-sm text-black/60">Disponible en este dispositivo</div>
           </CardHeader>
           <CardContent className="grid gap-3">
             {appts.length === 0 ? (
               <EmptyState
                 title="Todavía no hay turnos creados"
-                description="Podés cargar datos demo para ver reservas y acciones reales en este módulo."
+                description="Podés cargar ejemplos para visualizar reservas y acciones disponibles en este módulo."
                 illustrationSrc="/brand/feature-appointments.webp"
                 icon={CalendarX2}
-                actionLabel="Cargar demo"
+                actionLabel="Cargar ejemplos"
                 onAction={() => {
                   restoreDemoData();
                   setAppts(loadAppointments());

@@ -33,8 +33,8 @@ const FAQ = [
     a: "En el portal vas a ver historial, próximos vencimientos y recordatorios para mantener el plan preventivo al día."
   },
   {
-    q: "¿Esto ya está funcionando o es una demo?",
-    a: `Esta experiencia es una demo de ${BRAND.name}: muestra el flujo completo de agenda, urgencias y portal con datos simulados para evaluar implementación.`
+    q: "¿Cómo puedo evaluar si encaja con mi veterinaria?",
+    a: `Podés recorrer agenda, urgencias y portal para conocer la experiencia completa y validar si se adapta a tu forma de trabajo.`
   }
 ];
 
@@ -44,7 +44,7 @@ export default function FAQPage() {
       <SectionHeading
         eyebrow="FAQ"
         title="Preguntas frecuentes"
-        desc="Texto pensado para bajar fricción y cerrar la reserva."
+        desc="Respuestas claras para decidir con confianza el próximo paso."
       />
 
       <div className="mt-8 grid gap-3">

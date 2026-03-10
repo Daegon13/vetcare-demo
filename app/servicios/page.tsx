@@ -46,7 +46,7 @@ export default function ServicesPage() {
           <Badge className="w-fit">SERVICIOS</Badge>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Atención clínica, preventiva y estética</h1>
           <p className="max-w-2xl text-sm sm:text-base text-black/65 dark:text-white/70">
-            Elegí el tipo de atención, revisá tiempos estimados y reservá en minutos. Valores y disponibilidad mostrados en esta vista son de demostración.
+            Elegí el tipo de atención, revisá tiempos estimados y reservá en minutos. Los valores publicados son de referencia y pueden variar según evaluación clínica.
           </p>
           <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
             <li>• Turnos con duración real por servicio para evitar sobrecarga en recepción.</li>
@@ -80,8 +80,7 @@ export default function ServicesPage() {
           </div>
 
           <p className="text-xs text-black/55 dark:text-white/60">
-            Nota: estos íconos se esperan en <code>public/brand/icons</code>. Si todavía no los exportaste, mirá
-            <code> public/brand/icons/README.md</code>.
+            Catálogo visual de prestaciones para facilitar la elección del servicio adecuado.
           </p>
         </section>
 

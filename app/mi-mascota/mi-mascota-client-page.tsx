@@ -84,7 +84,7 @@ export default function MiMascotaPage() {
       <SectionHeading
         eyebrow="Portal"
         title="Mi Mascota"
-        desc="Perfil simple con vacunas e historial. En una versión real se autentica por WhatsApp o email."
+        desc="Perfil simple con vacunas e historial para seguimiento claro del plan de salud."
       />
 
       <div className="mt-8 flex flex-wrap gap-2">
@@ -96,7 +96,7 @@ export default function MiMascotaPage() {
           <CardHeader className="flex items-center justify-between">
             <div className="grid">
               <div className="text-sm font-extrabold">Perfil</div>
-              <div className="text-sm text-black/60">guardado en localStorage (demo)</div>
+              <div className="text-sm text-black/60">Información disponible en este dispositivo</div>
             </div>
             {dueSoon ? <Badge tone="warn">Vacuna por vencer</Badge> : <Badge tone="good">Al día</Badge>}
           </CardHeader>
@@ -136,10 +136,10 @@ export default function MiMascotaPage() {
                     {pet.vaccines.length === 0 ? (
                       <EmptyState
                         title="No hay vacunas cargadas"
-                        description="Cargá datos demo para ver un carnet con vacunas y próximos vencimientos."
+                        description="Cargá ejemplos para ver un carnet con vacunas y próximos vencimientos."
                 illustrationSrc="/brand/feature-portal.webp"
                         icon={Syringe}
-                        actionLabel="Cargar demo"
+                        actionLabel="Cargar ejemplos"
                         onAction={() => {
                           restoreDemoData();
                           setPet(loadPet());
@@ -193,8 +193,8 @@ export default function MiMascotaPage() {
 
         <Card className="lg:col-span-2">
           <CardHeader>
-            <div className="text-sm font-extrabold">Historial clínico (mock)</div>
-            <div className="text-sm text-black/60">viene de /api/history</div>
+            <div className="text-sm font-extrabold">Historial clínico</div>
+            <div className="text-sm text-black/60">Últimos eventos clínicos registrados</div>
           </CardHeader>
           <CardContent className="grid gap-3">
             {loadingHistory ? (
@@ -213,7 +213,7 @@ export default function MiMascotaPage() {
             )}
 
             <div className="text-xs text-black/50">
-              En una versión real: historial protegido (login), adjuntos, recetas, y recordatorios automáticos.
+              Incluye una vista clara de evolución clínica, controles y seguimiento preventivo.
             </div>
           </CardContent>
         </Card>

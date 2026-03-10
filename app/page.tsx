@@ -38,8 +38,8 @@ const FEATURES: { title: string; desc: string; img?: string }[] = [
     title: "Panel operativo claro",
     desc: "Gestión diaria de turnos, urgencias y seguimiento comercial en un solo lugar."
   },
-  { title: "Recorrido demostrativo", desc: "Los datos de ejemplo se conservan para mostrar el flujo punta a punta." },
-  { title: "Implementación acompañada", desc: "La base está lista para adaptarse a tu forma de trabajo y salir a producción." }
+  { title: "Recorrido completo", desc: "Visión integral de la experiencia de atención de punta a punta." },
+  { title: "Implementación acompañada", desc: "Base flexible para adaptarse a la operación diaria de cada veterinaria." }
 ];
 
 type HomePageProps = {
@@ -90,7 +90,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
               ) : null}
             </div>
             <div className="text-xs text-black/45 dark:text-white/55">
-              Demo orientativa: muestra el recorrido completo con datos simulados antes de pasar a producción.
+              Conocé el flujo completo de atención en pocos minutos.
             </div>
             <div className="text-xs text-black/50 dark:text-white/60">
               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
@@ -128,9 +128,9 @@ export default function HomePage({ searchParams }: HomePageProps) {
 
       <Container className="py-8 sm:py-10">
         <SectionHeading
-          eyebrow="Demo en acción"
+          eyebrow="Experiencia en acción"
           title="Así se ve en la práctica"
-          desc="Vista rápida de agenda, urgencias y portal con datos de la demo."
+          desc="Vista rápida de agenda, urgencias y portal en una experiencia integral."
         />
         <div className="mt-6">
           <HeroVisual />
@@ -169,8 +169,8 @@ export default function HomePage({ searchParams }: HomePageProps) {
       <Container className="py-12">
         <SectionHeading
           eyebrow="Diferenciales"
-          title="Una demo que se siente lista para vender"
-          desc="Mensaje claro, recorrido ágil y una experiencia demostrativa que ayuda a cerrar conversaciones comerciales."
+          title="Una experiencia lista para presentar"
+          desc="Mensaje claro, recorrido ágil y una propuesta que facilita conversaciones comerciales."
         />
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

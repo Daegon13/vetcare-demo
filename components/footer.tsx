@@ -8,7 +8,7 @@ export function Footer() {
         <div className="grid gap-2">
           <div className="text-sm font-extrabold">{BRAND.name}</div>
           <p className="text-sm text-black/60 max-w-md">
-            Demo de sitio para veterinaria: agenda, triage, portal de mascota y admin. Todo funciona con datos locales (modo demo).
+            Plataforma digital para veterinarias: agenda online, priorización de urgencias, portal para tutores y gestión diaria del equipo.
           </p>
         </div>
         <div className="grid gap-3 sm:justify-items-end">
@@ -29,7 +29,7 @@ export function Footer() {
         </div>
       </Container>
       <div className="border-t border-black/5 py-4 text-center text-xs text-black/50">
-        VetCare Demo · Datos simulados para evaluación comercial · {new Date().getFullYear()}
+        VetCare · Experiencia demostrativa para evaluación comercial · {new Date().getFullYear()}
       </div>
     </footer>
   );

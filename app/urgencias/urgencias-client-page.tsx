@@ -95,7 +95,7 @@ export default function UrgenciasPage() {
       <SectionHeading
         eyebrow="Urgencias"
         title="Evaluación rápida (triage)"
-        desc="Contanos síntomas y te mostramos prioridad estimada para decidir el próximo paso. Es una demo orientativa y no reemplaza atención veterinaria."
+        desc="Contanos síntomas y te mostramos una prioridad estimada para decidir el próximo paso. Esta guía no reemplaza la atención veterinaria profesional."
       />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
@@ -161,7 +161,7 @@ export default function UrgenciasPage() {
               <LeadCTA interest="urgencias" label="Escribir por WhatsApp" variant="outline" />
               <CommercialImplementationCTA />
             </div>
-            <div className="text-xs text-black/45">Modo demo: el resultado no genera ticket real de guardia.</div>
+            <div className="text-xs text-black/45">El resultado orienta la decisión inicial y sugiere contacto inmediato cuando corresponde.</div>
 
             {created ? (
               <Card className="bg-white ring-1 ring-black/5">
@@ -172,7 +172,7 @@ export default function UrgenciasPage() {
                   </div>
                   <p className="text-sm text-black/70">{created.recommendedAction}</p>
                   <div className="text-xs text-black/50">
-                    Nota: en una versión real, esto crea un ticket de guardia y notifica al equipo.
+                    Consejo: ante cualquier empeoramiento, contactanos por WhatsApp para atención prioritaria.
                   </div>
                 </CardContent>
               </Card>
@@ -183,16 +183,16 @@ export default function UrgenciasPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <div className="text-sm font-extrabold">Casos recientes</div>
-            <div className="text-sm text-black/60">guardados en localStorage (demo)</div>
+            <div className="text-sm text-black/60">Guardados en este dispositivo</div>
           </CardHeader>
           <CardContent className="grid gap-3">
             {cases.length === 0 ? (
               <EmptyState
                 title="No hay casos todavía"
-                description="Cargá datos demo para visualizar urgencias recientes y prioridades."
+                description="Cargá ejemplos para visualizar urgencias recientes y prioridades."
                 illustrationSrc="/brand/feature-triage.webp"
                 icon={Ambulance}
-                actionLabel="Cargar demo"
+                actionLabel="Cargar ejemplos"
                 onAction={() => {
                   restoreDemoData();
                   setCases(loadTriage());

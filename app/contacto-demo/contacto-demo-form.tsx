@@ -112,7 +112,7 @@ export function ContactoDemoForm() {
 
       {submitted ? (
         <div className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          ¡Gracias! Tu interés quedó guardado en la demo y ya podés continuar por WhatsApp con tu información precargada.
+          ¡Gracias! Recibimos tu interés y ya podés continuar por WhatsApp con tu información precargada.
         </div>
       ) : null}
     </form>
