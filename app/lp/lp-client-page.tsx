@@ -9,9 +9,9 @@ import { captureUtmFromUrl, getStoredUtm } from "@/lib/utm";
 import { addLead } from "@/lib/leads";
 
 const SOLUTIONS = [
-  "Turnos: reservas online para reducir llamados y llenar agenda con menos fricción.",
-  "Urgencias: triage guiado para priorizar casos y responder más rápido.",
-  "Seguimiento/portal: tutores con historial y estado de su mascota en un solo lugar."
+  "Experiencia clara para clientes: reservas online simples para reducir llamados y ordenar la agenda.",
+  "Centralización de consultas: triage guiado y contacto rápido desde un mismo recorrido.",
+  "Flujo adaptable a cada veterinaria: servicios, mensajes y operación ajustados a tu forma de trabajo."
 ];
 
 export default function LandingPage() {
@@ -43,12 +43,12 @@ export default function LandingPage() {
     <div className="bg-gradient-to-b from-white to-warm-100 py-10 dark:from-graphite-950 dark:to-graphite-900 sm:py-14">
       <Container className="grid max-w-4xl gap-8 sm:gap-10">
         <section className="grid gap-4 text-center">
-          <Badge className="mx-auto w-fit">Landing para campañas</Badge>
+          <Badge className="mx-auto w-fit">Demo lista para campañas</Badge>
           <h1 className="text-3xl font-black tracking-tight sm:text-5xl">
             Convertí anuncios en turnos reales para tu veterinaria.
           </h1>
           <p className="mx-auto max-w-2xl text-sm text-black/65 dark:text-white/70 sm:text-lg">
-            Menos pasos, menos fricción y más conversaciones por WhatsApp con intención de reserva.
+            Mostrá una propuesta profesional, humana y clara para convertir interés en conversaciones por WhatsApp con intención de reserva.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <LeadCTA
@@ -75,6 +75,9 @@ export default function LandingPage() {
               </li>
             ))}
           </ul>
+          <p className="text-xs text-black/55 dark:text-white/65">
+            Demo orientativa. En producción se integra con tus canales, reglas y operación diaria.
+          </p>
         </section>
 
         <GuidedDemoStrip

@@ -30,15 +30,15 @@ const FEATURES: { title: string; desc: string; img?: string }[] = [
   {
     img: "/brand/feature-portal.webp",
     title: "Portal del cliente",
-    desc: "Vacunas, próximos vencimientos e historial mock vía API."
+    desc: "Vacunas, próximos vencimientos e historial en una vista simple para el tutor."
   },
   {
     img: "/brand/feature-admin.webp",
-    title: "Admin v1 útil",
-    desc: "Ver/confirmar/cancelar, triage entrante, campañas y reset demo."
+    title: "Panel operativo claro",
+    desc: "Gestión diaria de turnos, urgencias y seguimiento comercial en un solo lugar."
   },
-  { title: "Modo demo persistente", desc: "Todo se guarda en localStorage para que se note “real”." },
-  { title: "Deploy rápido", desc: "Next + Tailwind listo para Vercel sin configuración extra." }
+  { title: "Recorrido demostrativo", desc: "Los datos de ejemplo se conservan para mostrar el flujo punta a punta." },
+  { title: "Implementación acompañada", desc: "La base está lista para adaptarse a tu forma de trabajo y salir a producción." }
 ];
 
 type HomePageProps = {
@@ -89,7 +89,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
               ) : null}
             </div>
             <div className="text-xs text-black/45 dark:text-white/55">
-              Vista demo interactiva: datos simulados para mostrar el flujo completo antes de implementar.
+              Demo orientativa: muestra el recorrido completo con datos simulados antes de pasar a producción.
             </div>
             <div className="text-xs text-black/50 dark:text-white/60">
               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
@@ -137,6 +137,14 @@ export default function HomePage({ searchParams }: HomePageProps) {
       </Container>
 
       <Container className="py-4 sm:py-6">
+        <div className="mb-4 rounded-2xl border border-cyanSoft-200/70 bg-cyanSoft-50/70 p-5 dark:border-cyanSoft-400/20 dark:bg-cyanSoft-400/10">
+          <div className="text-sm font-extrabold">Confianza para vender con claridad</div>
+          <ul className="mt-2 grid gap-1 text-sm text-black/65 dark:text-white/75">
+            <li>• Experiencia clara para clientes desde la reserva hasta el seguimiento.</li>
+            <li>• Centralización de consultas en un único recorrido para el equipo.</li>
+            <li>• Flujo adaptable a cada veterinaria según operación, servicios y canales.</li>
+          </ul>
+        </div>
         <div className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900 sm:grid-cols-2">
           <div>
             <div className="text-sm font-extrabold">Implementación rápida</div>
@@ -161,7 +169,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
         <SectionHeading
           eyebrow="Diferenciales"
           title="Una demo que se siente lista para vender"
-          desc="Copy claro, flujo rápido, y lógica real de turnos. Ideal para cerrar un lead con una prueba concreta."
+          desc="Mensaje claro, recorrido ágil y una experiencia demostrativa que ayuda a cerrar conversaciones comerciales."
         />
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
