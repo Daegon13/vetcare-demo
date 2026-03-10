@@ -78,13 +78,10 @@ function AgendaPageInner() {
   const [phone, setPhone] = React.useState("");
   const [notes, setNotes] = React.useState("");
   const [appts, setAppts] = React.useState<Appointment[]>([]);
-  const [ready, setReady] = React.useState(false);
   const [justCreated, setJustCreated] = React.useState<Appointment | null>(null);
 
   React.useEffect(() => {
-    const items = loadAppointments();
-    setAppts(items);
-    setReady(true);
+    setAppts(loadAppointments());
   }, []);
 
   React.useEffect(() => {
@@ -93,6 +90,7 @@ function AgendaPageInner() {
   }, [serviceId, dateISO]);
 
   const slots = React.useMemo(() => buildDailySlots(dateISO, serviceId, appts), [dateISO, serviceId, appts]);
+  const quickSlots = React.useMemo(() => slots.filter(s => s.isAvailable).slice(0, 6), [slots]);
   const svc = React.useMemo(() => getService(serviceId), [serviceId]);
   const upcomingReal = React.useMemo(
     () => appts.slice().sort((a, b) => (a.dateISO + a.time).localeCompare(b.dateISO + b.time)),
@@ -166,29 +164,36 @@ function AgendaPageInner() {
         desc="Disponibilidad confirmada para hoy y próximos días, con agenda activa y próximos turnos visibles desde el primer segundo."
       />
 
-      <div className="mt-6 grid gap-3 md:grid-cols-3">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Disponibilidad inicial</div>
-            <div className="mt-1 text-sm font-extrabold">Turnos desde hoy</div>
-            <div className="text-sm text-black/60">Bloques listos para reservar en menos de 1 minuto.</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Canales de confirmación</div>
-            <div className="mt-1 text-sm font-extrabold">Portal + WhatsApp</div>
-            <div className="text-sm text-black/60">CTA principal para reserva y contacto directo al equipo.</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Próximos turnos</div>
-            <div className="mt-1 text-sm font-extrabold">Vista operativa inmediata</div>
-            <div className="text-sm text-black/60">La recepción visualiza la carga del día sin esperar estados vacíos.</div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="mt-6">
+        <CardContent className="p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="text-sm font-extrabold">Disponibilidad inmediata</div>
+            <Badge tone="neutral">{formatDateLong(dateISO)}</Badge>
+          </div>
+          <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
+            {quickSlots.length > 0 ? (
+              quickSlots.map(s => (
+                <button
+                  key={s.time}
+                  onClick={() => setTime(s.time)}
+                  className={[
+                    "h-10 rounded-xl border text-sm font-semibold transition",
+                    time === s.time
+                      ? "border-cyanSoft-400/60 bg-cyanSoft-50 ring-2 ring-cyanSoft-200"
+                      : "border-black/10 bg-white hover:bg-black/5"
+                  ].join(" ")}
+                >
+                  {s.time}
+                </button>
+              ))
+            ) : (
+              <div className="col-span-full rounded-xl border border-black/10 bg-black/[0.02] p-3 text-sm text-black/60">
+                No hay bloques disponibles para este servicio en la fecha seleccionada.
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
@@ -215,15 +220,17 @@ function AgendaPageInner() {
 
             <div className="grid gap-2">
               <div className="text-sm font-extrabold">Paso 2 — Seleccioná un horario</div>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
                 {slots.map(s => (
                   <button
                     key={s.time}
                     disabled={!s.isAvailable}
                     onClick={() => setTime(s.time)}
                     className={[
-                      "h-10 rounded-xl text-sm font-semibold transition border",
-                      s.isAvailable ? "border-black/10 bg-white hover:bg-black/5" : "border-black/5 bg-black/5 text-black/30 cursor-not-allowed",
+                      "h-10 rounded-xl border text-sm font-semibold transition",
+                      s.isAvailable
+                        ? "border-black/10 bg-white hover:bg-black/5"
+                        : "cursor-not-allowed border-black/5 bg-black/5 text-black/30",
                       time === s.time ? "ring-2 ring-cyanSoft-200 border-cyanSoft-400/60" : ""
                     ].join(" ")}
                     title={s.reason ?? ""}
@@ -253,7 +260,7 @@ function AgendaPageInner() {
                 </Field>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <Button onClick={createAppointment} disabled={!canSubmit()} className="h-11 px-5 bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
                   Confirmar turno
                 </Button>
@@ -275,9 +282,7 @@ function AgendaPageInner() {
                     <div className="text-sm text-black/70">
                       {SERVICES.find(s => s.id === justCreated.serviceId)?.name} · {justCreated.dateISO} · {justCreated.time}
                     </div>
-                    <div className="text-xs text-black/55">
-                      Te enviaremos confirmación y recordatorio por tu canal de contacto preferido.
-                    </div>
+                    <div className="text-xs text-black/55">Te enviaremos confirmación y recordatorio por tu canal de contacto preferido.</div>
                   </CardContent>
                 </Card>
               ) : null}
@@ -291,56 +296,42 @@ function AgendaPageInner() {
             <div className="text-sm text-black/60">Vista rápida para tutor y recepción</div>
           </CardHeader>
           <CardContent className="grid gap-3">
-            {!ready ? (
-              <div className="grid gap-3" aria-label="Cargando próximos turnos">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="rounded-2xl border border-black/10 bg-white p-4">
-                    <div className="h-4 w-24 animate-pulse rounded bg-black/10" />
-                    <div className="mt-2 h-3 w-11/12 animate-pulse rounded bg-black/5" />
-                    <div className="mt-2 h-3 w-8/12 animate-pulse rounded bg-black/5" />
-                    <div className="mt-3 h-7 w-20 animate-pulse rounded-xl bg-black/10" />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              upcomingVisible.map(a => (
-                <div key={a.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-sm font-extrabold">{a.petName}</div>
-                    {showingDemo ? (
-                      <Badge tone="neutral">demo</Badge>
-                    ) : (
-                      <Badge tone={a.status === "cancelado" ? "bad" : a.status === "confirmado" ? "good" : "neutral"}>
-                        {a.status}
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="text-sm text-black/70">
-                    {SERVICES.find(s => s.id === a.serviceId)?.name} · {a.dateISO} · {a.time}
-                  </div>
-                  <div className="text-xs text-black/55">Titular: {a.ownerName} · Tel: {a.phone}</div>
-
-                  {!showingDemo ? (
-                    <div className="flex flex-wrap gap-2 pt-2">
-                      <button
-                        className="rounded-xl bg-black/5 px-3 py-2 text-xs font-semibold hover:bg-black/10"
-                        onClick={() => downloadICS(a)}
-                      >
-                        .ics
-                      </button>
-                      {a.status !== "cancelado" ? (
-                        <button
-                          className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-800 hover:bg-rose-100"
-                          onClick={() => cancelAppointment(a.id)}
-                        >
-                          Cancelar
-                        </button>
-                      ) : null}
-                    </div>
-                  ) : null}
+            {showingDemo ? <Badge tone="neutral">Agenda de ejemplo cargada</Badge> : null}
+            {upcomingVisible.map(a => (
+              <div key={a.id} className="grid gap-1 rounded-2xl border border-black/10 bg-white p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-sm font-extrabold">{a.petName}</div>
+                  {showingDemo ? (
+                    <Badge tone="neutral">demo</Badge>
+                  ) : (
+                    <Badge tone={a.status === "cancelado" ? "bad" : a.status === "confirmado" ? "good" : "neutral"}>
+                      {a.status}
+                    </Badge>
+                  )}
                 </div>
-              ))
-            )}
+                <div className="text-sm text-black/70">{SERVICES.find(s => s.id === a.serviceId)?.name} · {a.dateISO} · {a.time}</div>
+                <div className="text-xs text-black/55">Titular: {a.ownerName} · Tel: {a.phone}</div>
+
+                {!showingDemo ? (
+                  <div className="flex flex-wrap gap-2 pt-2">
+                    <button
+                      className="rounded-xl bg-black/5 px-3 py-2 text-xs font-semibold hover:bg-black/10"
+                      onClick={() => downloadICS(a)}
+                    >
+                      .ics
+                    </button>
+                    {a.status !== "cancelado" ? (
+                      <button
+                        className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-800 hover:bg-rose-100"
+                        onClick={() => cancelAppointment(a.id)}
+                      >
+                        Cancelar
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>
@@ -356,13 +347,25 @@ function AgendaPageSkeleton() {
         title="Reservá un turno"
         desc="Agenda profesional con disponibilidad activa, bloques sugeridos y seguimiento de turnos desde la primera carga."
       />
+      <div className="mt-6">
+        <Card>
+          <CardContent className="p-4">
+            <div className="h-5 w-52 animate-pulse rounded bg-black/10" />
+            <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-10 animate-pulse rounded-xl bg-black/5" />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
           <CardContent className="p-6">
             <div className="grid gap-3">
               <div className="h-5 w-56 animate-pulse rounded bg-black/10" />
               <div className="h-10 w-full animate-pulse rounded-xl bg-black/5" />
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
                 {Array.from({ length: 10 }).map((_, i) => (
                   <div key={i} className="h-10 animate-pulse rounded-xl bg-black/5" />
                 ))}
