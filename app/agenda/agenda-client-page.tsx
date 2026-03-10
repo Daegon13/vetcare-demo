@@ -14,14 +14,53 @@ import { SectionHeading } from "@/components/section";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
+function buildDemoUpcomingAppointments(): Appointment[] {
+  const day = (offset: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    return d.toISOString().slice(0, 10);
+  };
+
+  return [
+    {
+      id: "demo_ap_1",
+      createdAt: new Date().toISOString(),
+      dateISO: day(0),
+      time: "11:00",
+      serviceId: "consulta",
+      petName: "Mora",
+      ownerName: "Paula Díaz",
+      phone: "09 222 113",
+      status: "confirmado"
+    },
+    {
+      id: "demo_ap_2",
+      createdAt: new Date().toISOString(),
+      dateISO: day(0),
+      time: "16:30",
+      serviceId: "vacunacion",
+      petName: "Simón",
+      ownerName: "Agustín Pérez",
+      phone: "09 714 540",
+      status: "pendiente"
+    },
+    {
+      id: "demo_ap_3",
+      createdAt: new Date().toISOString(),
+      dateISO: day(1),
+      time: "10:30",
+      serviceId: "control",
+      petName: "Kira",
+      ownerName: "Natalia Silva",
+      phone: "09 665 390",
+      status: "pendiente"
+    }
+  ];
+}
+
 export default function AgendaPage() {
-  // Next.js (App Router) requiere que `useSearchParams()` se ejecute dentro de un
-  // límite de Suspense para evitar el CSR bailout durante el prerender.
-  // Si se usa directamente en el componente de página, el build en Vercel falla.
   return (
-    <React.Suspense
-      fallback={<AgendaPageSkeleton />}
-    >
+    <React.Suspense fallback={<AgendaPageSkeleton />}>
       <AgendaPageInner />
     </React.Suspense>
   );
@@ -55,6 +94,13 @@ function AgendaPageInner() {
 
   const slots = React.useMemo(() => buildDailySlots(dateISO, serviceId, appts), [dateISO, serviceId, appts]);
   const svc = React.useMemo(() => getService(serviceId), [serviceId]);
+  const upcomingReal = React.useMemo(
+    () => appts.slice().sort((a, b) => (a.dateISO + a.time).localeCompare(b.dateISO + b.time)),
+    [appts]
+  );
+  const upcomingDemo = React.useMemo(() => buildDemoUpcomingAppointments(), []);
+  const showingDemo = upcomingReal.length === 0;
+  const upcomingVisible = showingDemo ? upcomingDemo : upcomingReal;
 
   function persist(next: Appointment[]) {
     setAppts(next);
@@ -227,27 +273,25 @@ function AgendaPageInner() {
                 <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
                 <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
               </div>
-            ) : appts.length === 0 ? (
-              <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
-                Todavía no hay reservas registradas. Podés crear un turno en segundos desde este panel.
-              </div>
             ) : (
-              appts
-                .slice()
-                .sort((a, b) => (a.dateISO + a.time).localeCompare(b.dateISO + b.time))
-                .map(a => (
-                  <div key={a.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="text-sm font-extrabold">{a.petName}</div>
+              upcomingVisible.map(a => (
+                <div key={a.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="text-sm font-extrabold">{a.petName}</div>
+                    {showingDemo ? (
+                      <Badge tone="neutral">demo</Badge>
+                    ) : (
                       <Badge tone={a.status === "cancelado" ? "bad" : a.status === "confirmado" ? "good" : "neutral"}>
                         {a.status}
                       </Badge>
-                    </div>
-                    <div className="text-sm text-black/70">
-                      {SERVICES.find(s => s.id === a.serviceId)?.name} · {a.dateISO} · {a.time}
-                    </div>
-                    <div className="text-xs text-black/55">Titular: {a.ownerName} · Tel: {a.phone}</div>
+                    )}
+                  </div>
+                  <div className="text-sm text-black/70">
+                    {SERVICES.find(s => s.id === a.serviceId)?.name} · {a.dateISO} · {a.time}
+                  </div>
+                  <div className="text-xs text-black/55">Titular: {a.ownerName} · Tel: {a.phone}</div>
 
+                  {!showingDemo ? (
                     <div className="flex flex-wrap gap-2 pt-2">
                       <button
                         className="rounded-xl bg-black/5 px-3 py-2 text-xs font-semibold hover:bg-black/10"
@@ -264,8 +308,9 @@ function AgendaPageInner() {
                         </button>
                       ) : null}
                     </div>
-                  </div>
-                ))
+                  ) : null}
+                </div>
+              ))
             )}
           </CardContent>
         </Card>
@@ -273,7 +318,6 @@ function AgendaPageInner() {
     </Container>
   );
 }
-
 
 function AgendaPageSkeleton() {
   return (

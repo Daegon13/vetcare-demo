@@ -49,19 +49,13 @@ function soon(dateISO?: string) {
 }
 
 export default function MiMascotaPage() {
-  const [pet, setPet] = React.useState<PetProfile | null>(null);
+  const [pet, setPet] = React.useState<PetProfile>(() => loadPet());
   const [history] = React.useState<HistoryItem[]>(getDemoHistory);
-  const [petReady, setPetReady] = React.useState(false);
 
   const [vName, setVName] = React.useState("");
   const [vDate, setVDate] = React.useState("");
   const [vNext, setVNext] = React.useState("");
 
-  React.useEffect(() => {
-    const p = loadPet();
-    setPet(p);
-    setPetReady(true);
-  }, []);
 
   function persist(next: PetProfile) {
     setPet(next);
@@ -117,16 +111,9 @@ export default function MiMascotaPage() {
               <div className="text-sm font-extrabold">Ficha de {pet?.petName ?? "Mascota"}</div>
               <div className="text-sm text-black/60">Resumen de salud y seguimiento preventivo</div>
             </div>
-            {!petReady ? <Badge tone="neutral">Perfil en preparación</Badge> : dueSoon ? <Badge tone="warn">Requiere seguimiento</Badge> : <Badge tone="good">Estado general estable</Badge>}
+            {dueSoon ? <Badge tone="warn">Requiere seguimiento</Badge> : <Badge tone="good">Estado general estable</Badge>}
           </CardHeader>
           <CardContent className="grid gap-4">
-            {!pet || !petReady ? (
-              <div className="grid gap-3">
-                <div className="h-10 w-full animate-pulse rounded-xl bg-black/5" />
-                <div className="h-10 w-full animate-pulse rounded-xl bg-black/5" />
-                <div className="h-28 w-full animate-pulse rounded-2xl bg-black/5" />
-              </div>
-            ) : (
               <>
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className="rounded-2xl border border-black/10 bg-white p-4">
@@ -219,7 +206,6 @@ export default function MiMascotaPage() {
                   </div>
                 </div>
               </>
-            )}
           </CardContent>
         </Card>
 
