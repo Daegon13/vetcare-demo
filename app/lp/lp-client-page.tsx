@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Container, Badge, LinkButton } from "@/components/ui";
 import { LeadCTA } from "@/components/LeadCTA";
+import { GuidedDemoStrip } from "@/components/guided-demo-strip";
 import { trackEvent } from "@/lib/analytics";
 import { captureUtmFromUrl, getStoredUtm } from "@/lib/utm";
 import { addLead } from "@/lib/leads";
@@ -11,12 +12,6 @@ const SOLUTIONS = [
   "Turnos: reservas online para reducir llamados y llenar agenda con menos fricción.",
   "Urgencias: triage guiado para priorizar casos y responder más rápido.",
   "Seguimiento/portal: tutores con historial y estado de su mascota en un solo lugar."
-];
-
-const QUICK_DEMO_STEPS = [
-  { title: "Paso 1", text: "Elegí servicio" },
-  { title: "Paso 2", text: "Evaluá urgencia" },
-  { title: "Paso 3", text: "Mirá mi mascota" }
 ];
 
 export default function LandingPage() {
@@ -82,23 +77,10 @@ export default function LandingPage() {
           </ul>
         </section>
 
-        <section
+        <GuidedDemoStrip
           id="demo-rapido"
-          className="grid gap-4 rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-graphite-900 sm:p-6"
-          aria-label="Probalo en 30 segundos"
-        >
-          <h2 className="text-2xl font-extrabold">Probalo en 30 segundos</h2>
-          <div className="grid gap-3 sm:grid-cols-3">
-            {QUICK_DEMO_STEPS.map((step) => (
-              <article key={step.title} className="rounded-xl bg-black/5 p-4 dark:bg-white/10">
-                <p className="text-sm font-semibold uppercase tracking-wide text-black/65 dark:text-white/70">
-                  {step.title}
-                </p>
-                <p className="mt-1 text-base font-bold">{step.text}</p>
-              </article>
-            ))}
-          </div>
-        </section>
+          description="Empezá por agenda, seguí con urgencias y cerrá el recorrido en Mi Mascota."
+        />
       </Container>
     </div>
   );
