@@ -14,9 +14,9 @@ const SOLUTIONS = [
 ];
 
 const QUICK_DEMO_STEPS = [
-  { title: "Paso 1", text: "Elegí servicio", href: "/agenda" },
-  { title: "Paso 2", text: "Evaluá urgencia", href: "/urgencias" },
-  { title: "Paso 3", text: "Mirá mi mascota", href: "/mi-mascota" }
+  { title: "Paso 1", text: "Elegí servicio" },
+  { title: "Paso 2", text: "Evaluá urgencia" },
+  { title: "Paso 3", text: "Mirá mi mascota" }
 ];
 
 export default function LandingPage() {
@@ -53,7 +53,7 @@ export default function LandingPage() {
             Convertí anuncios en turnos reales para tu veterinaria.
           </h1>
           <p className="mx-auto max-w-2xl text-sm text-black/65 dark:text-white/70 sm:text-lg">
-            Una experiencia corta y guiada para que cada clic llegue a WhatsApp con intención de reserva.
+            Menos pasos, menos fricción y más conversaciones por WhatsApp con intención de reserva.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <LeadCTA
@@ -63,7 +63,7 @@ export default function LandingPage() {
               className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
             />
             <LinkButton href="#demo-rapido" variant="outline" onClick={onDemoClick}>
-              Ver demo guiada
+              Ver demo en 30 segundos
             </LinkButton>
           </div>
         </section>
@@ -95,9 +95,6 @@ export default function LandingPage() {
                   {step.title}
                 </p>
                 <p className="mt-1 text-base font-bold">{step.text}</p>
-                <LinkButton href={step.href} variant="ghost" className="mt-3 px-0" onClick={onDemoClick}>
-                  Ir ahora
-                </LinkButton>
               </article>
             ))}
           </div>
