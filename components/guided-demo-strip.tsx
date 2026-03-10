@@ -10,20 +10,20 @@ export type DemoStep = {
 
 const DEFAULT_DEMO_STEPS: DemoStep[] = [
   {
-    label: "Reservá un turno",
-    description: "Simulá la experiencia de un tutor en menos de un minuto, desde el servicio hasta la confirmación.",
+    label: "Agenda online",
+    description: "Mostrá cómo un tutor puede reservar en menos de un minuto, desde el servicio hasta la confirmación.",
     ctaLabel: "Ir a Agenda",
     href: "/agenda"
   },
   {
-    label: "Evaluá una urgencia",
-    description: "Probá el triage guiado para ver cómo prioriza síntomas y sugiere el siguiente paso.",
+    label: "Urgencias guiadas",
+    description: "Probá el triage guiado para priorizar síntomas y orientar al tutor en segundos.",
     ctaLabel: "Ir a Urgencias",
     href: "/urgencias"
   },
   {
-    label: "Mirá el portal de Mi Mascota",
-    description: "Revisá vacunas, vencimientos e historial para mostrar continuidad de atención al tutor.",
+    label: "Portal con seguimiento",
+    description: "Revisá vacunas, vencimientos e historial para mostrar continuidad de atención y fidelización.",
     ctaLabel: "Abrir Mi Mascota",
     href: "/mi-mascota"
   }
