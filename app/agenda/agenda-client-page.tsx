@@ -39,11 +39,13 @@ function AgendaPageInner() {
   const [phone, setPhone] = React.useState("");
   const [notes, setNotes] = React.useState("");
   const [appts, setAppts] = React.useState<Appointment[]>([]);
+  const [ready, setReady] = React.useState(false);
   const [justCreated, setJustCreated] = React.useState<Appointment | null>(null);
 
   React.useEffect(() => {
     const items = loadAppointments();
     setAppts(items);
+    setReady(true);
   }, []);
 
   React.useEffect(() => {
@@ -220,7 +222,12 @@ function AgendaPageInner() {
             <div className="text-sm text-black/60">Disponible en este dispositivo</div>
           </CardHeader>
           <CardContent className="grid gap-3">
-            {appts.length === 0 ? (
+            {!ready ? (
+              <div className="grid gap-3">
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+              </div>
+            ) : appts.length === 0 ? (
               <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
                 Aún no hay turnos en este dispositivo. Creá uno nuevo para empezar.
               </div>

@@ -197,9 +197,9 @@ export default function AdminV1Page() {
           <div className="text-xs font-semibold text-black/50">Turnos</div>
           <div className="text-2xl font-black">{ready ? apptStats.total : "…"}</div>
           <div className="flex gap-2 flex-wrap">
-            <Badge tone={statTone(apptStats.pending)}>Pend: {apptStats.pending}</Badge>
-            <Badge tone={statTone(apptStats.confirmed)}>Conf: {apptStats.confirmed}</Badge>
-            <Badge tone={apptStats.cancelled ? "warn" : "neutral"}>Canc: {apptStats.cancelled}</Badge>
+            <Badge tone={ready ? statTone(apptStats.pending) : "neutral"}>Pend: {ready ? apptStats.pending : "…"}</Badge>
+            <Badge tone={ready ? statTone(apptStats.confirmed) : "neutral"}>Conf: {ready ? apptStats.confirmed : "…"}</Badge>
+            <Badge tone={ready ? (apptStats.cancelled ? "warn" : "neutral") : "neutral"}>Canc: {ready ? apptStats.cancelled : "…"}</Badge>
           </div>
         </CardContent></Card>
 
@@ -207,9 +207,9 @@ export default function AdminV1Page() {
           <div className="text-xs font-semibold text-black/50">Triage</div>
           <div className="text-2xl font-black">{ready ? triageStats.total : "…"}</div>
           <div className="flex gap-2 flex-wrap">
-            <Badge tone={triageStats.alta ? "bad" : "neutral"}>Alta: {triageStats.alta}</Badge>
-            <Badge tone={triageStats.media ? "warn" : "neutral"}>Media: {triageStats.media}</Badge>
-            <Badge tone={triageStats.baja ? "good" : "neutral"}>Baja: {triageStats.baja}</Badge>
+            <Badge tone={ready ? (triageStats.alta ? "bad" : "neutral") : "neutral"}>Alta: {ready ? triageStats.alta : "…"}</Badge>
+            <Badge tone={ready ? (triageStats.media ? "warn" : "neutral") : "neutral"}>Media: {ready ? triageStats.media : "…"}</Badge>
+            <Badge tone={ready ? (triageStats.baja ? "good" : "neutral") : "neutral"}>Baja: {ready ? triageStats.baja : "…"}</Badge>
           </div>
         </CardContent></Card>
 

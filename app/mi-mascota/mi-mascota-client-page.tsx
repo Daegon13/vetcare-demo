@@ -98,7 +98,7 @@ export default function MiMascotaPage() {
               <div className="text-sm font-extrabold">Perfil</div>
               <div className="text-sm text-black/60">Información disponible en este dispositivo</div>
             </div>
-            {dueSoon ? <Badge tone="warn">Vacuna por vencer</Badge> : <Badge tone="good">Al día</Badge>}
+            {!petReady ? <Badge tone="neutral">Cargando perfil</Badge> : dueSoon ? <Badge tone="warn">Vacuna por vencer</Badge> : <Badge tone="good">Al día</Badge>}
           </CardHeader>
           <CardContent className="grid gap-4">
             {!pet || !petReady ? (
