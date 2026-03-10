@@ -181,7 +181,7 @@ function AgendaPageInner() {
               <div className="text-xs text-black/50">
                 Tip: los turnos ocupados se bloquean automáticamente por duración + buffer.
               </div>
-              <div className="text-xs text-black/45">Esta es una vista demostrativa; no se realizan cobros automáticos desde este flujo.</div>
+              <div className="text-xs text-black/45">Las reservas se coordinan y confirman por los canales de contacto habituales.</div>
             </div>
 
             <div className="grid gap-3 pt-2">

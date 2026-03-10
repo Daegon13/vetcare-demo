@@ -38,7 +38,7 @@ const FEATURES: { title: string; desc: string; img?: string }[] = [
     title: "Panel operativo claro",
     desc: "Gestión diaria de turnos, urgencias y seguimiento comercial en un solo lugar."
   },
-  { title: "Recorrido demostrativo", desc: "Recorrido completo para visualizar la experiencia de atención de punta a punta." },
+  { title: "Recorrido completo", desc: "Visión integral de la experiencia de atención de punta a punta." },
   { title: "Implementación acompañada", desc: "Base flexible para adaptarse a la operación diaria de cada veterinaria." }
 ];
 
@@ -90,7 +90,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
               ) : null}
             </div>
             <div className="text-xs text-black/45 dark:text-white/55">
-              Experiencia demostrativa para conocer el recorrido completo de atención en pocos minutos.
+              Conocé el flujo completo de atención en pocos minutos.
             </div>
             <div className="text-xs text-black/50 dark:text-white/60">
               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}

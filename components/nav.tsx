@@ -97,7 +97,7 @@ export function Nav() {
     trackEvent("lead_saved", { channel: "whatsapp_click", location: "navbar", ...(utm ?? {}) });
   }
 
-  const navLinks = demoToolsEnabled ? [...links, { href: "/adminv1", label: "Admin v1" }] : links;
+  const navLinks = demoToolsEnabled ? [...links, { href: "/adminv1", label: "Panel de gestión" }] : links;
 
   return (
     <div className="sticky top-0 z-30 border-b border-black/5 bg-warm-100/85 text-graphite-900 backdrop-blur dark:border-white/10 dark:bg-graphite-950/85 dark:text-white">
@@ -110,7 +110,7 @@ export function Nav() {
           </div>
           {demoToolsEnabled ? (
             <span className="hidden rounded-full border border-cyanSoft-400/70 bg-cyanSoft-50 px-2 py-0.5 text-[10px] font-black tracking-wide text-graphite-900 md:inline-flex dark:bg-cyanSoft-400/20 dark:text-cyanSoft-100">
-              VISTA
+              RECORRIDO
             </span>
           ) : null}
         </Link>
