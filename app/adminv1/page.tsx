@@ -178,12 +178,12 @@ export default function AdminV1Page() {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <SectionHeading
           eyebrow="Admin v1"
-          title="Panel de operación (modo demo)"
-          desc="Demo orientativa para visualizar la operación diaria: turnos, urgencias, seguimiento y campañas en un solo panel."
+          title="Panel operativo (demo orientativa)"
+          desc="Vista integral de operación diaria: turnos, urgencias, seguimiento y campañas en un solo panel."
         />
         <div className="flex gap-2 flex-wrap">
           <Button variant="outline" onClick={demoReset}>Reset demo</Button>
-          <LinkButton href="/adminv1/marketing" variant="outline">Marketing links</LinkButton>
+          <LinkButton href="/adminv1/marketing" variant="outline">Enlaces de marketing</LinkButton>
           <LinkButton href="/agenda" variant="outline">Ir a Agenda</LinkButton>
         </div>
       </div>
@@ -439,7 +439,7 @@ export default function AdminV1Page() {
             <Card className="lg:col-span-2">
               <CardHeader>
                 <div className="text-sm font-extrabold">Nueva campaña</div>
-                <div className="text-sm text-black/60">Programación demostrativa de campañas para distintos públicos y canales.</div>
+                <div className="text-sm text-black/60">Planificación de campañas para distintos públicos y canales.</div>
               </CardHeader>
               <CardContent className="grid gap-3">
                 <Field label="Título">
@@ -470,7 +470,7 @@ export default function AdminV1Page() {
                   Crear campaña
                 </Button>
                 <div className="text-xs text-black/50">
-                  En producción: se integra con WhatsApp Business API, email provider y seguimiento de conversiones.
+                  En producción: integración con WhatsApp Business API, proveedor de email y seguimiento de conversiones.
                 </div>
               </CardContent>
             </Card>
@@ -487,7 +487,7 @@ export default function AdminV1Page() {
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" variant="outline" onClick={onExportCSV}>Export CSV</Button>
                 <Button size="sm" variant="outline" onClick={onExportJSON}>Export JSON</Button>
-                <Button size="sm" className="bg-rose-50 text-rose-800 hover:bg-rose-100" onClick={onClearLeads}>Clear leads</Button>
+                <Button size="sm" className="bg-rose-50 text-rose-800 hover:bg-rose-100" onClick={onClearLeads}>Limpiar leads</Button>
               </div>
             </CardHeader>
             <CardContent className="grid gap-3 overflow-x-auto">
@@ -498,9 +498,9 @@ export default function AdminV1Page() {
                   <thead>
                     <tr className="border-b border-black/10 text-xs uppercase text-black/50">
                       <th className="px-2 py-2">Fecha</th>
-                      <th className="px-2 py-2">Page</th>
+                      <th className="px-2 py-2">Origen</th>
                       <th className="px-2 py-2">Canal</th>
-                      <th className="px-2 py-2">Interest</th>
+                      <th className="px-2 py-2">Interés</th>
                       <th className="px-2 py-2">utm_campaign</th>
                       <th className="px-2 py-2">Nota</th>
                     </tr>
@@ -525,7 +525,7 @@ export default function AdminV1Page() {
       </div>
 
       <div className="mt-10 text-xs text-black/50">
-        Demo orientativa. En producción: login, roles, auditoría, backups, métricas y calendario real.
+        Demo orientativa. En producción: login, roles, permisos, auditoría, backups, métricas y calendario real.
       </div>
     </Container>
   );

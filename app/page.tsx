@@ -30,12 +30,12 @@ const FEATURES: { title: string; desc: string; img?: string }[] = [
   {
     img: "/brand/feature-portal.webp",
     title: "Portal del cliente",
-    desc: "Vacunas, próximos vencimientos e historial mock vía API."
+    desc: "Vacunas, próximos vencimientos e historial en una vista simple para el tutor."
   },
   {
     img: "/brand/feature-admin.webp",
-    title: "Admin v1 útil",
-    desc: "Ver/confirmar/cancelar, triage entrante, campañas y reset demo."
+    title: "Panel operativo claro",
+    desc: "Gestión diaria de turnos, urgencias y seguimiento comercial en un solo lugar."
   },
   { title: "Recorrido demostrativo", desc: "Los datos de ejemplo se conservan para mostrar el flujo punta a punta." },
   { title: "Implementación acompañada", desc: "La base está lista para adaptarse a tu forma de trabajo y salir a producción." }
@@ -89,7 +89,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
               ) : null}
             </div>
             <div className="text-xs text-black/45 dark:text-white/55">
-              Demo interactiva orientativa: muestra la experiencia completa con datos simulados antes de implementar.
+              Demo orientativa: muestra el recorrido completo con datos simulados antes de pasar a producción.
             </div>
             <div className="text-xs text-black/50 dark:text-white/60">
               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
