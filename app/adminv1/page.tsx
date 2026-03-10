@@ -26,6 +26,7 @@ export default function AdminV1Page() {
   const [pet, setPet] = React.useState<PetProfile | null>(null);
   const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
   const [leads, setLeads] = React.useState<LeadEvent[]>([]);
+  const [ready, setReady] = React.useState(false);
 
   const [q, setQ] = React.useState("");
 
@@ -38,6 +39,7 @@ export default function AdminV1Page() {
 
   React.useEffect(() => {
     reloadFromStorage();
+    setReady(true);
   }, []);
 
   function persistAppts(next: Appointment[]) {
@@ -193,7 +195,7 @@ export default function AdminV1Page() {
       <div className="mt-6 grid gap-3 md:grid-cols-4">
         <Card><CardContent className="grid gap-1">
           <div className="text-xs font-semibold text-black/50">Turnos</div>
-          <div className="text-2xl font-black">{apptStats.total}</div>
+          <div className="text-2xl font-black">{ready ? apptStats.total : "…"}</div>
           <div className="flex gap-2 flex-wrap">
             <Badge tone={statTone(apptStats.pending)}>Pend: {apptStats.pending}</Badge>
             <Badge tone={statTone(apptStats.confirmed)}>Conf: {apptStats.confirmed}</Badge>
@@ -203,7 +205,7 @@ export default function AdminV1Page() {
 
         <Card><CardContent className="grid gap-1">
           <div className="text-xs font-semibold text-black/50">Triage</div>
-          <div className="text-2xl font-black">{triageStats.total}</div>
+          <div className="text-2xl font-black">{ready ? triageStats.total : "…"}</div>
           <div className="flex gap-2 flex-wrap">
             <Badge tone={triageStats.alta ? "bad" : "neutral"}>Alta: {triageStats.alta}</Badge>
             <Badge tone={triageStats.media ? "warn" : "neutral"}>Media: {triageStats.media}</Badge>
@@ -213,13 +215,13 @@ export default function AdminV1Page() {
 
         <Card><CardContent className="grid gap-1">
           <div className="text-xs font-semibold text-black/50">Mascota demo</div>
-          <div className="text-2xl font-black">{pet?.petName ?? "—"}</div>
-          <div className="text-sm text-black/60">{pet?.species ?? ""}</div>
+          <div className="text-2xl font-black">{ready ? (pet?.petName ?? "—") : "…"}</div>
+          <div className="text-sm text-black/60">{ready ? (pet?.species ?? "") : "Cargando"}</div>
         </CardContent></Card>
 
         <Card><CardContent className="grid gap-1">
           <div className="text-xs font-semibold text-black/50">Campañas</div>
-          <div className="text-2xl font-black">{campaigns.length}</div>
+          <div className="text-2xl font-black">{ready ? campaigns.length : "…"}</div>
           <div className="text-sm text-black/60">WhatsApp · IG · Email</div>
         </CardContent></Card>
       </div>
@@ -254,7 +256,9 @@ export default function AdminV1Page() {
               <div className="text-xs text-black/50">Local: {BRAND.address}</div>
             </CardHeader>
             <CardContent className="grid gap-3">
-              {filteredAppts.length === 0 ? (
+              {!ready ? (
+                <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" />
+              ) : filteredAppts.length === 0 ? (
                 <div className="text-sm text-black/60">No hay turnos que coincidan.</div>
               ) : (
                 filteredAppts.map(a => (
@@ -293,7 +297,9 @@ export default function AdminV1Page() {
               <div className="text-sm text-black/60">Permite ordenar casos entrantes y marcar resolución dentro del flujo demo.</div>
             </CardHeader>
             <CardContent className="grid gap-3">
-              {filteredTriage.length === 0 ? (
+              {!ready ? (
+                <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" />
+              ) : filteredTriage.length === 0 ? (
                 <div className="text-sm text-black/60">No hay casos.</div>
               ) : (
                 filteredTriage.map(t => (
@@ -334,7 +340,7 @@ export default function AdminV1Page() {
               <LinkButton href="/mi-mascota" variant="outline">Abrir portal</LinkButton>
             </CardHeader>
             <CardContent className="grid gap-4">
-              {!pet ? <div className="text-sm text-black/60">Cargando…</div> : (
+              {!pet || !ready ? <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" /> : (
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field label="Nombre">
                     <Input value={pet.petName} onChange={e => persistPet({ ...pet, petName: e.target.value })} />
@@ -371,7 +377,9 @@ export default function AdminV1Page() {
                 <div className="text-sm text-black/60">Registro local e idempotente por evento: whatsapp_click y thank_you.</div>
               </CardHeader>
               <CardContent className="grid gap-3">
-                {leads.length === 0 ? (
+                {!ready ? (
+                  <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
+                ) : leads.length === 0 ? (
                   <div className="text-sm text-black/60">Aún no hay eventos de lead.</div>
                 ) : (
                   leads.map((event) => (
@@ -390,7 +398,9 @@ export default function AdminV1Page() {
                 <div className="text-sm text-black/60">Simulación de marketing: programar, copiar y “enviar”.</div>
               </CardHeader>
               <CardContent className="grid gap-3">
-                {campaigns.length === 0 ? (
+                {!ready ? (
+                  <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
+                ) : campaigns.length === 0 ? (
                   <div className="text-sm text-black/60">No hay campañas.</div>
                 ) : (
                   campaigns.map(c => (
@@ -493,7 +503,9 @@ export default function AdminV1Page() {
               </div>
             </CardHeader>
             <CardContent className="grid gap-3 overflow-x-auto">
-              {filteredLeads.length === 0 ? (
+              {!ready ? (
+                <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" />
+              ) : filteredLeads.length === 0 ? (
                 <div className="text-sm text-black/60">No hay leads para mostrar.</div>
               ) : (
                 <table className="min-w-full text-left text-sm">

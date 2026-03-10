@@ -77,31 +77,16 @@ export function ensureDemoSeed() {
 
   try {
     const demo = buildDemoSeed();
-    const alreadySeeded = safeGetRaw(KEY.seeded) === "1";
-
     const hasAppts = safeGetRaw(KEY.appts) !== null;
     const hasTriage = safeGetRaw(KEY.triage) !== null;
     const hasPet = safeGetRaw(KEY.pet) !== null;
     const hasCampaigns = safeGetRaw(KEY.campaigns) !== null;
 
-    const allMissing = !hasAppts && !hasTriage && !hasPet && !hasCampaigns;
-
-    if (!alreadySeeded && allMissing) {
-      safeSet(KEY.appts, demo.appointments);
-      safeSet(KEY.triage, demo.triage);
-      safeSet(KEY.pet, demo.pet);
-      safeSet(KEY.campaigns, demo.campaigns);
-      setSeededFlag();
-      return;
-    }
-
-    if (alreadySeeded) {
-      if (!hasAppts) safeSet(KEY.appts, demo.appointments);
-      if (!hasTriage) safeSet(KEY.triage, demo.triage);
-      if (!hasPet) safeSet(KEY.pet, demo.pet);
-      if (!hasCampaigns) safeSet(KEY.campaigns, demo.campaigns);
-      setSeededFlag();
-    }
+    if (!hasAppts) safeSet(KEY.appts, demo.appointments);
+    if (!hasTriage) safeSet(KEY.triage, demo.triage);
+    if (!hasPet) safeSet(KEY.pet, demo.pet);
+    if (!hasCampaigns) safeSet(KEY.campaigns, demo.campaigns);
+    setSeededFlag();
   } catch {
     // noop
   }

@@ -2,14 +2,12 @@
 
 import * as React from "react";
 import type { PetSpecies, TriageCase, TriagePriority } from "@/lib/types";
-import { loadTriage, restoreDemoData, saveTriage } from "@/lib/storage";
+import { loadTriage, saveTriage } from "@/lib/storage";
 import { uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
-import { EmptyState } from "@/components/empty";
 import { LeadCTA } from "@/components/LeadCTA";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
-import { Ambulance } from "lucide-react";
 
 const SYMPTOMS = [
   { id: "respira", label: "Dificultad respiratoria" },
@@ -51,9 +49,13 @@ export default function UrgenciasPage() {
   const [selected, setSelected] = React.useState<string[]>([]);
   const [freeText, setFreeText] = React.useState("");
   const [cases, setCases] = React.useState<TriageCase[]>([]);
+  const [ready, setReady] = React.useState(false);
   const [created, setCreated] = React.useState<TriageCase | null>(null);
 
-  React.useEffect(() => setCases(loadTriage()), []);
+  React.useEffect(() => {
+    setCases(loadTriage());
+    setReady(true);
+  }, []);
 
   function toggle(id: string) {
     setSelected(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
@@ -186,18 +188,16 @@ export default function UrgenciasPage() {
             <div className="text-sm text-black/60">Guardados en este dispositivo</div>
           </CardHeader>
           <CardContent className="grid gap-3">
-            {cases.length === 0 ? (
-              <EmptyState
-                title="No hay casos todavía"
-                description="Cargá ejemplos para visualizar urgencias recientes y prioridades."
-                illustrationSrc="/brand/feature-triage.webp"
-                icon={Ambulance}
-                actionLabel="Cargar ejemplos"
-                onAction={() => {
-                  restoreDemoData();
-                  setCases(loadTriage());
-                }}
-              />
+            {!ready ? (
+              <div className="grid gap-3">
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+              </div>
+            ) : cases.length === 0 ? (
+              <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
+                Aún no hay casos recientes en este dispositivo.
+              </div>
             ) : (
               cases.slice(0, 6).map(c => (
                 <div key={c.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
