@@ -76,7 +76,7 @@ export function getStoredUtm(): UTMData | null {
 }
 
 /**
- * Agrega UTMs al URL para mantener atribución (salvo forms.gle, que no soporta bien query).
+ * Agrega UTMs al URL para mantener atribución.
  */
 export function appendUtmToUrl(url: string, utm: UTMData | null): string {
   if (!utm) return url;
@@ -88,10 +88,6 @@ export function appendUtmToUrl(url: string, utm: UTMData | null): string {
     return url;
   }
 
-  // Evitar meter query en forms.gle (suele romper / perder tracking)
-  if (parsed.hostname === "forms.gle") {
-    return url;
-  }
 
   for (const key of UTM_KEYS) {
     const value = utm[key];

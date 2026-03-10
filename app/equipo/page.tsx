@@ -3,6 +3,7 @@ import { BRAND } from "@/lib/data";
 import { buildPageMetadata } from "@/lib/seo";
 import { Container, Card, CardContent, Badge, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 
 export const metadata: Metadata = buildPageMetadata({
   title: `Equipo veterinario | ${BRAND.name}`,
@@ -45,6 +46,7 @@ export default function EquipoPage() {
       <div className="mt-10 flex flex-wrap gap-2">
         <LinkButton href="/agenda" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Agendar</LinkButton>
         <LinkButton href="/faq" variant="outline">Preguntas frecuentes</LinkButton>
+        <CommercialImplementationCTA />
       </div>
     </Container>
   );

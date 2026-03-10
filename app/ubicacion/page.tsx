@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { BRAND } from "@/lib/data";
 import { buildPageMetadata } from "@/lib/seo";
 import { SectionHeading } from "@/components/section";
+import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import { Container, Card, CardContent, CardHeader, Badge, LinkButton } from "@/components/ui";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -46,6 +47,7 @@ export default function UbicacionPage() {
                 Abrir en Google Maps
               </LinkButton>
               <LinkButton href="/agenda" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Agendar</LinkButton>
+              <CommercialImplementationCTA />
             </div>
           </CardContent>
         </Card>

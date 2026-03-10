@@ -9,7 +9,7 @@ export const clinica = {
   whatsapp: "+59891234567",
   whatsappUrl: "https://wa.me/59891234567?text=Hola%20VetCare%2C%20quiero%20ver%20como%20funciona%20la%20demo.",
   ctaImplementacionLabel: "Quiero esto para mi veterinaria",
-  ctaImplementacionUrl: "https://forms.gle/demo-vetcare-interes",
+  ctaImplementacionUrl: "/contacto-demo",
   telefono: "+598 91 234 567",
   direccion: "Av. Principal 1234, Montevideo",
   horarios: "Lun a Sáb · 9:00–19:00"

@@ -4,6 +4,7 @@ import * as React from "react";
 import { useSearchParams } from "next/navigation";
 import { BRAND, SERVICES } from "@/lib/data";
 import { LeadCTA } from "@/components/LeadCTA";
+import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import type { Appointment, ServiceId } from "@/lib/types";
 import { buildDailySlots, getService, makeICS } from "@/lib/schedule";
 import { loadAppointments, restoreDemoData, saveAppointments } from "@/lib/storage";
@@ -206,6 +207,7 @@ function AgendaPageInner() {
                   Confirmar (demo)
                 </Button>
                 <LeadCTA interest="turnos" label="Enviar por WhatsApp" variant="outline" />
+                <CommercialImplementationCTA />
                 {justCreated ? (
                   <Button variant="ghost" onClick={() => downloadICS(justCreated)}>
                     Añadir al calendario (.ics)
