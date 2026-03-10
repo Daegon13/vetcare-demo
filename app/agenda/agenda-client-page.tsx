@@ -117,7 +117,7 @@ function AgendaPageInner() {
       <SectionHeading
         eyebrow="Agenda"
         title="Reservá un turno"
-        desc="Elegí servicio y horario disponible en pocos pasos, con una experiencia clara para tutores y equipo."
+        desc="Elegí servicio, horario y datos de contacto en un flujo simple. Disponibilidad actualizada y próximos turnos a la vista."
       />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
@@ -162,10 +162,7 @@ function AgendaPageInner() {
                   </button>
                 ))}
               </div>
-              <div className="text-xs text-black/50">
-                Tip: los turnos ocupados se bloquean automáticamente por duración + buffer.
-              </div>
-              <div className="text-xs text-black/45">Las reservas se coordinan y confirman por los canales de contacto habituales.</div>
+              <div className="text-xs text-black/50">La disponibilidad se ajusta automáticamente según duración del servicio y agenda activa.</div>
             </div>
 
             <div className="grid gap-3 pt-2">
@@ -186,17 +183,19 @@ function AgendaPageInner() {
                 </Field>
               </div>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button onClick={createAppointment} disabled={!canSubmit()} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
                   Confirmar turno
                 </Button>
                 <LeadCTA interest="turnos" label="Enviar por WhatsApp" variant="outline" />
-                <CommercialImplementationCTA />
                 {justCreated ? (
                   <Button variant="ghost" onClick={() => downloadICS(justCreated)}>
                     Añadir al calendario (.ics)
                   </Button>
                 ) : null}
+              </div>
+              <div className="pt-1">
+                <CommercialImplementationCTA />
               </div>
 
               {justCreated ? (
@@ -218,18 +217,19 @@ function AgendaPageInner() {
 
         <Card className="lg:col-span-2">
           <CardHeader>
-            <div className="text-sm font-extrabold">Turnos guardados en este navegador</div>
-            <div className="text-sm text-black/60">Disponible en este dispositivo</div>
+            <div className="text-sm font-extrabold">Próximos turnos</div>
+            <div className="text-sm text-black/60">Vista rápida para tutor y recepción</div>
           </CardHeader>
           <CardContent className="grid gap-3">
             {!ready ? (
               <div className="grid gap-3">
-                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
-                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+                <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
+                <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
+                <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
               </div>
             ) : appts.length === 0 ? (
               <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
-                Aún no hay turnos en este dispositivo. Creá uno nuevo para empezar.
+                Todavía no hay reservas registradas. Podés crear un turno en segundos desde este panel.
               </div>
             ) : (
               appts
@@ -281,7 +281,7 @@ function AgendaPageSkeleton() {
       <SectionHeading
         eyebrow="Agenda"
         title="Reservá un turno"
-        desc="Disponibilidad y reservas sincronizadas en la demo."
+        desc="Disponibilidad actual y próximos turnos listos para reservar."
       />
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
@@ -289,7 +289,12 @@ function AgendaPageSkeleton() {
             <div className="grid gap-3">
               <div className="h-5 w-56 animate-pulse rounded bg-black/10" />
               <div className="h-10 w-full animate-pulse rounded-xl bg-black/5" />
-              <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" />
+              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+                {Array.from({ length: 10 }).map((_, i) => (
+                  <div key={i} className="h-10 animate-pulse rounded-xl bg-black/5" />
+                ))}
+              </div>
+              <div className="h-28 w-full animate-pulse rounded-2xl bg-black/5" />
             </div>
           </CardContent>
         </Card>
@@ -297,8 +302,9 @@ function AgendaPageSkeleton() {
           <CardContent className="p-6">
             <div className="grid gap-3">
               <div className="h-5 w-44 animate-pulse rounded bg-black/10" />
-              <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
-              <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
+              <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
+              <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
+              <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
             </div>
           </CardContent>
         </Card>

@@ -5,24 +5,52 @@ import { BRAND } from "@/lib/data";
 import type { PetProfile, Vaccine } from "@/lib/types";
 import { loadPet, savePet } from "@/lib/storage";
 import { formatDateLong, toWhatsAppLink, uid } from "@/lib/utils";
-import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
+import { Container, Card, CardContent, CardHeader, Field, Input, Select, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 
 type HistoryItem = { id: string; dateISO: string; title: string; notes: string };
+
+function daysFromToday(days: number) {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+function getDemoHistory(): HistoryItem[] {
+  return [
+    {
+      id: "h_1",
+      dateISO: daysFromToday(-16),
+      title: "Control general anual",
+      notes: "Buen estado general. Se recomendó mantener rutina de actividad y control de peso trimestral."
+    },
+    {
+      id: "h_2",
+      dateISO: daysFromToday(-45),
+      title: "Refuerzo de vacunación",
+      notes: "Aplicación sin eventos adversos. Próxima dosis agendada en calendario preventivo."
+    },
+    {
+      id: "h_3",
+      dateISO: daysFromToday(-92),
+      title: "Consulta dermatológica",
+      notes: "Irritación leve resuelta con higiene tópica. Se indicó seguimiento preventivo."
+    }
+  ];
+}
 
 function soon(dateISO?: string) {
   if (!dateISO) return false;
   const d = new Date(dateISO + "T00:00:00");
   const now = new Date();
   const diff = d.getTime() - now.getTime();
-  return diff <= 1000 * 60 * 60 * 24 * 30; // 30 días
+  return diff <= 1000 * 60 * 60 * 24 * 30;
 }
 
 export default function MiMascotaPage() {
   const [pet, setPet] = React.useState<PetProfile | null>(null);
-  const [history, setHistory] = React.useState<HistoryItem[]>([]);
-  const [loadingHistory, setLoadingHistory] = React.useState(true);
+  const [history] = React.useState<HistoryItem[]>(getDemoHistory);
   const [petReady, setPetReady] = React.useState(false);
 
   const [vName, setVName] = React.useState("");
@@ -33,19 +61,6 @@ export default function MiMascotaPage() {
     const p = loadPet();
     setPet(p);
     setPetReady(true);
-  }, []);
-
-  React.useEffect(() => {
-    (async () => {
-      setLoadingHistory(true);
-      try {
-        const res = await fetch("/api/history", { cache: "no-store" });
-        const json = (await res.json()) as { items: HistoryItem[] };
-        setHistory(json.items ?? []);
-      } finally {
-        setLoadingHistory(false);
-      }
-    })();
   }, []);
 
   function persist(next: PetProfile) {
@@ -72,6 +87,10 @@ export default function MiMascotaPage() {
   }
 
   const dueSoon = pet?.vaccines.some(v => soon(v.nextDueISO)) ?? false;
+  const nextVaccine = pet?.vaccines
+    .filter(v => !!v.nextDueISO)
+    .slice()
+    .sort((a, b) => (a.nextDueISO ?? "").localeCompare(b.nextDueISO ?? ""))[0];
   const waText = pet
     ? `Hola! Quiero agendar/control para ${pet.petName}.\nEspecie: ${pet.species}.\nVacunas próximas: ${pet.vaccines
         .filter(v => soon(v.nextDueISO))
@@ -84,7 +103,7 @@ export default function MiMascotaPage() {
       <SectionHeading
         eyebrow="Portal"
         title="Mi Mascota"
-        desc="Perfil simple con vacunas e historial para seguimiento claro del plan de salud."
+        desc="Ficha clínica clara para el tutor: estado general, vacunas próximas, vencimientos e historial reciente."
       />
 
       <div className="mt-8 flex flex-wrap gap-2">
@@ -95,10 +114,10 @@ export default function MiMascotaPage() {
         <Card className="lg:col-span-3">
           <CardHeader className="flex items-center justify-between">
             <div className="grid">
-              <div className="text-sm font-extrabold">Perfil</div>
-              <div className="text-sm text-black/60">Información disponible en este dispositivo</div>
+              <div className="text-sm font-extrabold">Ficha de {pet?.petName ?? "Mascota"}</div>
+              <div className="text-sm text-black/60">Resumen de salud y seguimiento preventivo</div>
             </div>
-            {!petReady ? <Badge tone="neutral">Cargando perfil</Badge> : dueSoon ? <Badge tone="warn">Vacuna por vencer</Badge> : <Badge tone="good">Al día</Badge>}
+            {!petReady ? <Badge tone="neutral">Perfil en preparación</Badge> : dueSoon ? <Badge tone="warn">Requiere seguimiento</Badge> : <Badge tone="good">Estado general estable</Badge>}
           </CardHeader>
           <CardContent className="grid gap-4">
             {!pet || !petReady ? (
@@ -109,6 +128,23 @@ export default function MiMascotaPage() {
               </div>
             ) : (
               <>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-2xl border border-black/10 bg-white p-4">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Estado general</div>
+                    <div className="mt-1 text-sm font-extrabold">{dueSoon ? "Con recordatorio cercano" : "Controles al día"}</div>
+                  </div>
+                  <div className="rounded-2xl border border-black/10 bg-white p-4">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Próxima vacuna</div>
+                    <div className="mt-1 text-sm font-extrabold">{nextVaccine?.name ?? "Sin pendientes"}</div>
+                    <div className="text-xs text-black/55">{nextVaccine?.nextDueISO ? formatDateLong(nextVaccine.nextDueISO) : "No hay vencimientos cargados"}</div>
+                  </div>
+                  <div className="rounded-2xl border border-black/10 bg-white p-4">
+                    <div className="text-xs font-semibold uppercase tracking-wide text-black/50">Vencimientos próximos</div>
+                    <div className="mt-1 text-sm font-extrabold">{pet.vaccines.filter(v => soon(v.nextDueISO)).length}</div>
+                    <div className="text-xs text-black/55">en los próximos 30 días</div>
+                  </div>
+                </div>
+
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field label="Nombre">
                     <Input value={pet.petName} onChange={e => update("petName", e.target.value)} />
@@ -135,11 +171,11 @@ export default function MiMascotaPage() {
                 </div>
 
                 <div className="rounded-2xl border border-black/10 bg-white p-4 grid gap-2">
-                  <div className="text-sm font-extrabold">Vacunas</div>
+                  <div className="text-sm font-extrabold">Vacunas y vencimientos</div>
                   <div className="grid gap-2">
                     {pet.vaccines.length === 0 ? (
                       <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
-                        No hay vacunas cargadas todavía para esta mascota.
+                        Esta ficha todavía no tiene vacunas registradas.
                       </div>
                     ) : (
                       pet.vaccines.map(v => (
@@ -147,11 +183,11 @@ export default function MiMascotaPage() {
                           <div className="grid">
                             <div className="text-sm font-semibold">{v.name}</div>
                             <div className="text-xs text-black/55">
-                              Dosis: {v.dateISO} {v.nextDueISO ? `· Próx: ${v.nextDueISO}` : ""}
+                              Dosis: {formatDateLong(v.dateISO)} {v.nextDueISO ? `· Próx: ${formatDateLong(v.nextDueISO)}` : ""}
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            {soon(v.nextDueISO) ? <Badge tone="warn">Próxima</Badge> : <Badge tone="neutral">OK</Badge>}
+                            {soon(v.nextDueISO) ? <Badge tone="warn">Por vencer</Badge> : <Badge tone="neutral">Vigente</Badge>}
                             <button
                               className="rounded-xl bg-white px-3 py-2 text-xs font-semibold border border-black/10 hover:bg-black/5"
                               onClick={() => removeVaccine(v.id)}
@@ -178,7 +214,7 @@ export default function MiMascotaPage() {
                   <div className="flex flex-wrap gap-2">
                     <Button onClick={addVaccine} variant="outline">Agregar vacuna</Button>
                     <Button onClick={() => window.open(toWhatsAppLink(BRAND.whatsapp, waText), "_blank")} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
-                      Recordar por WhatsApp
+                      Solicitar recordatorio por WhatsApp
                     </Button>
                   </div>
                 </div>
@@ -190,30 +226,22 @@ export default function MiMascotaPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <div className="text-sm font-extrabold">Historial clínico</div>
-            <div className="text-sm text-black/60">Últimos eventos clínicos registrados</div>
+            <div className="text-sm text-black/60">Últimos eventos registrados</div>
           </CardHeader>
           <CardContent className="grid gap-3">
-            {loadingHistory ? (
-              <div className="grid gap-3">
-                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
-                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
-                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
-              </div>
-            ) : (
-              history.map(h => (
-                <div key={h.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="text-sm font-extrabold">{h.title}</div>
-                    <Badge tone="neutral">{h.dateISO}</Badge>
-                  </div>
-                  <div className="text-xs text-black/55">{formatDateLong(h.dateISO)}</div>
-                  <p className="text-sm text-black/70">{h.notes}</p>
+            {history.map(h => (
+              <div key={h.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="text-sm font-extrabold">{h.title}</div>
+                  <Badge tone="neutral">{h.dateISO}</Badge>
                 </div>
-              ))
-            )}
+                <div className="text-xs text-black/55">{formatDateLong(h.dateISO)}</div>
+                <p className="text-sm text-black/70">{h.notes}</p>
+              </div>
+            ))}
 
             <div className="text-xs text-black/50">
-              Incluye una vista clara de evolución clínica, controles y seguimiento preventivo.
+              Vista pensada para que el tutor entienda rápido evolución, controles y próximos pasos.
             </div>
           </CardContent>
         </Card>
