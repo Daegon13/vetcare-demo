@@ -58,7 +58,7 @@ export default function LandingPage() {
               className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
             />
             <LinkButton href="#demo-rapido" variant="outline" onClick={onDemoClick}>
-              Ver demo en 30 segundos
+              Ver demo guiada en 3 pasos
             </LinkButton>
           </div>
         </section>
