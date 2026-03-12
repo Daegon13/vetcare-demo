@@ -57,6 +57,23 @@ export default function UrgenciasPage() {
     setReady(true);
   }, []);
 
+  function when(iso: string) {
+    const diffMin = Math.max(1, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+    if (diffMin < 60) return `Hace ${diffMin} min`;
+    const diffH = Math.round(diffMin / 60);
+    if (diffH < 24) return `Hace ${diffH} h`;
+    return `Hace ${Math.round(diffH / 24)} d`;
+  }
+
+  const snapshot = React.useMemo(() => {
+    const recent = cases.slice(0, 5);
+    return {
+      alta: recent.filter(c => c.priority === "alta").length,
+      media: recent.filter(c => c.priority === "media").length,
+      baja: recent.filter(c => c.priority === "baja").length
+    };
+  }, [cases]);
+
   function toggle(id: string) {
     setSelected(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
   }
@@ -97,7 +114,7 @@ export default function UrgenciasPage() {
       <SectionHeading
         eyebrow="Urgencias"
         title="Evaluación rápida (triage)"
-        desc="Contanos síntomas y te mostramos una prioridad estimada para decidir el próximo paso. Esta guía no reemplaza la atención veterinaria profesional."
+        desc="Completá síntomas y obtené una prioridad orientativa al instante. Es una guía inicial para actuar rápido y coordinar la atención correcta."
       />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
@@ -163,7 +180,7 @@ export default function UrgenciasPage() {
               <LeadCTA interest="urgencias" label="Escribir por WhatsApp" variant="outline" />
               <CommercialImplementationCTA />
             </div>
-            <div className="text-xs text-black/45">El resultado orienta la decisión inicial y sugiere contacto inmediato cuando corresponde.</div>
+            <div className="text-xs text-black/45">Resultado orientativo para decidir rápido el próximo paso de atención.</div>
 
             {created ? (
               <Card className="bg-white ring-1 ring-black/5">
@@ -183,9 +200,16 @@ export default function UrgenciasPage() {
         </Card>
 
         <Card className="lg:col-span-2">
-          <CardHeader>
+          <CardHeader className="grid gap-2">
             <div className="text-sm font-extrabold">Casos recientes</div>
-            <div className="text-sm text-black/60">Guardados en este dispositivo</div>
+            <div className="text-sm text-black/60">Muestra en vivo del triage: prioridades detectadas y acción recomendada.</div>
+            {ready ? (
+              <div className="flex flex-wrap gap-2 text-xs">
+                <Badge tone="bad">Alta: {snapshot.alta}</Badge>
+                <Badge tone="warn">Media: {snapshot.media}</Badge>
+                <Badge tone="good">Baja: {snapshot.baja}</Badge>
+              </div>
+            ) : null}
           </CardHeader>
           <CardContent className="grid gap-3">
             {!ready ? (
@@ -194,10 +218,6 @@ export default function UrgenciasPage() {
                 <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
                 <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
               </div>
-            ) : cases.length === 0 ? (
-              <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
-                Aún no hay casos recientes en este dispositivo.
-              </div>
             ) : (
               cases.slice(0, 6).map(c => (
                 <div key={c.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
@@ -205,11 +225,12 @@ export default function UrgenciasPage() {
                     <div className="text-sm font-extrabold">{c.petName}</div>
                     <Badge tone={tone(c.priority)}>{c.priority}</Badge>
                   </div>
-                  <div className="text-xs text-black/55">{c.ownerName} · {c.phone}</div>
+                  <div className="text-xs text-black/55">{c.ownerName} · {c.phone} · {when(c.createdAt)}</div>
                   <div className="text-xs text-black/55">
                     {c.symptoms.slice(0, 2).map(id => SYMPTOMS.find(s => s.id === id)?.label ?? id).join(" · ")}
                     {c.symptoms.length > 2 ? " · ..." : ""}
                   </div>
+                  <div className="text-xs text-black/70">{c.recommendedAction}</div>
                 </div>
               ))
             )}
