@@ -24,6 +24,62 @@ const SYMPTOMS = [
   { id: "ojo", label: "Ojo irritado / secreción" }
 ];
 
+function demoRecentCases(): TriageCase[] {
+  const now = new Date();
+  const withOffset = (hoursAgo: number) => new Date(now.getTime() - hoursAgo * 60 * 60 * 1000).toISOString();
+
+  return [
+    {
+      id: "tr_demo_recent_1",
+      createdAt: withOffset(0.4),
+      petName: "Mora",
+      species: "Perro",
+      ownerName: "Paula G.",
+      phone: "+598 98 412 310",
+      symptoms: ["respira", "fiebre"],
+      freeText: "Jadea incluso en reposo.",
+      priority: "alta",
+      recommendedAction: "Atención inmediata: equipo listo para recibirla y estabilizarla al llegar."
+    },
+    {
+      id: "tr_demo_recent_2",
+      createdAt: withOffset(1.5),
+      petName: "Simón",
+      species: "Gato",
+      ownerName: "Mariana R.",
+      phone: "+598 94 508 772",
+      symptoms: ["vomito", "dolor"],
+      freeText: "Vomita desde la madrugada y está molesto.",
+      priority: "media",
+      recommendedAction: "Consulta en el día para cortar molestias y evitar que se deshidrate."
+    },
+    {
+      id: "tr_demo_recent_3",
+      createdAt: withOffset(3.2),
+      petName: "Nina",
+      species: "Perro",
+      ownerName: "Federico L.",
+      phone: "+598 99 220 145",
+      symptoms: ["cojera"],
+      freeText: "Apoya menos una pata tras correr.",
+      priority: "baja",
+      recommendedAction: "Control programado y pautas de cuidado en casa para seguimiento seguro."
+    },
+    {
+      id: "tr_demo_recent_4",
+      createdAt: withOffset(5),
+      petName: "Olivia",
+      species: "Gato",
+      ownerName: "Lucas P.",
+      phone: "+598 91 640 903",
+      symptoms: ["diarrea", "fiebre"],
+      freeText: "Decaída desde ayer.",
+      priority: "media",
+      recommendedAction: "Evaluación hoy con plan de hidratación y control por WhatsApp."
+    }
+  ];
+}
+
 function assess(symptoms: string[]): { priority: TriagePriority; action: string } {
   const severe = ["respira", "sangrado", "convulsiones", "inconsciente", "trauma", "vomito_sangre"];
   const moderate = ["vomito", "diarrea", "fiebre", "dolor"];
@@ -53,9 +109,24 @@ export default function UrgenciasPage() {
   const [created, setCreated] = React.useState<TriageCase | null>(null);
 
   React.useEffect(() => {
-    setCases(loadTriage());
+    const loaded = loadTriage();
+    if (loaded.length === 0) {
+      const seeded = demoRecentCases();
+      setCases(seeded);
+      saveTriage(seeded);
+    } else {
+      setCases(loaded);
+    }
     setReady(true);
   }, []);
+
+  function when(iso: string) {
+    const diffMin = Math.max(1, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+    if (diffMin < 60) return `Hace ${diffMin} min`;
+    const diffH = Math.round(diffMin / 60);
+    if (diffH < 24) return `Hace ${diffH} h`;
+    return `Hace ${Math.round(diffH / 24)} d`;
+  }
 
   function toggle(id: string) {
     setSelected(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
@@ -97,7 +168,7 @@ export default function UrgenciasPage() {
       <SectionHeading
         eyebrow="Urgencias"
         title="Evaluación rápida (triage)"
-        desc="Contanos síntomas y te mostramos una prioridad estimada para decidir el próximo paso. Esta guía no reemplaza la atención veterinaria profesional."
+        desc="Completá síntomas y obtené una prioridad orientativa al instante. Es una guía inicial para actuar rápido y coordinar la atención correcta."
       />
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
@@ -185,7 +256,7 @@ export default function UrgenciasPage() {
         <Card className="lg:col-span-2">
           <CardHeader>
             <div className="text-sm font-extrabold">Casos recientes</div>
-            <div className="text-sm text-black/60">Guardados en este dispositivo</div>
+            <div className="text-sm text-black/60">Actividad reciente de triage para visualizar prioridades y respuesta sugerida.</div>
           </CardHeader>
           <CardContent className="grid gap-3">
             {!ready ? (
@@ -194,10 +265,6 @@ export default function UrgenciasPage() {
                 <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
                 <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
               </div>
-            ) : cases.length === 0 ? (
-              <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/60">
-                Aún no hay casos recientes en este dispositivo.
-              </div>
             ) : (
               cases.slice(0, 6).map(c => (
                 <div key={c.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
@@ -205,11 +272,12 @@ export default function UrgenciasPage() {
                     <div className="text-sm font-extrabold">{c.petName}</div>
                     <Badge tone={tone(c.priority)}>{c.priority}</Badge>
                   </div>
-                  <div className="text-xs text-black/55">{c.ownerName} · {c.phone}</div>
+                  <div className="text-xs text-black/55">{c.ownerName} · {c.phone} · {when(c.createdAt)}</div>
                   <div className="text-xs text-black/55">
                     {c.symptoms.slice(0, 2).map(id => SYMPTOMS.find(s => s.id === id)?.label ?? id).join(" · ")}
                     {c.symptoms.length > 2 ? " · ..." : ""}
                   </div>
+                  <div className="text-xs text-black/70">{c.recommendedAction}</div>
                 </div>
               ))
             )}
