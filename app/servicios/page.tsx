@@ -29,12 +29,10 @@ const SERVICE_ICON_BY_ID: Record<string, string> = {
   vacunacion: "vacunacion",
   desparasitacion: "desparasitacion",
   cirugia: "cirugia",
-  // In our demo data, "estetica" is the closest match to "grooming".
   estetica: "grooming"
 };
 
 function iconSrc(key: string) {
-  // Icons live in /public/brand/icons. Prefer .webp (smaller), keep names stable.
   return `/brand/icons/${key}.webp`;
 }
 
@@ -46,19 +44,19 @@ export default function ServicesPage() {
           <Badge className="w-fit">SERVICIOS</Badge>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Atención clínica, preventiva y estética</h1>
           <p className="max-w-2xl text-sm sm:text-base text-black/65 dark:text-white/70">
-            Elegí el tipo de atención, revisá tiempos estimados y reservá en minutos. Los valores publicados son de referencia y pueden variar según evaluación clínica.
+            En {BRAND.name} brindamos atención veterinaria confiable, cercana y profesional. Conocé nuestras prestaciones, compará tiempos estimados y elegí la opción ideal para tu mascota.
           </p>
           <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
-            <li>• Turnos con duración real por servicio para evitar sobrecarga en recepción.</li>
-            <li>• Confirmaciones y recordatorios por WhatsApp para bajar ausencias.</li>
-            <li>• Historial de cada mascota para decisiones clínicas más rápidas.</li>
+            <li>• Turnos organizados por tipo de atención para una experiencia ágil y sin esperas innecesarias.</li>
+            <li>• Confirmaciones y recordatorios por WhatsApp para acompañarte en cada control.</li>
+            <li>• Seguimiento clínico continuo para cuidar la salud de tu mascota en el tiempo.</li>
           </ul>
         </section>
 
         <section className="grid gap-4 rounded-2xl border border-black/5 bg-white/70 p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900/70 sm:p-6">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-sm font-extrabold tracking-wide">Servicios (vista rápida)</h2>
-            <span className="text-xs text-black/50 dark:text-white/55">Iconos 1:1</span>
+            <h2 className="text-sm font-extrabold tracking-wide">Servicios destacados</h2>
+            <span className="text-xs text-black/50 dark:text-white/55">Clínica • Preventiva • Estética</span>
           </div>
 
           <div className="grid grid-cols-4 gap-3 sm:grid-cols-8">
@@ -80,7 +78,7 @@ export default function ServicesPage() {
           </div>
 
           <p className="text-xs text-black/55 dark:text-white/60">
-            Catálogo visual de prestaciones para facilitar la elección del servicio adecuado.
+            Explorá nuestras prestaciones principales y encontrá rápidamente la atención que tu mascota necesita.
           </p>
         </section>
 
@@ -105,11 +103,11 @@ export default function ServicesPage() {
 
                     <div className="grid grid-cols-3 gap-3 text-sm">
                       <div>
-                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">Agendar</div>
+                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">Duración</div>
                         <div className="font-bold">{s.durationMin} min</div>
                       </div>
                       <div>
-                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">Buffer</div>
+                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">Entre turnos</div>
                         <div className="font-bold">{s.bufferMin} min</div>
                       </div>
                       <div>
@@ -123,6 +121,10 @@ export default function ServicesPage() {
               );
             })}
           </div>
+
+          <p className="text-xs text-black/55 dark:text-white/60">
+            Valores orientativos sujetos a evaluación clínica y necesidades particulares de cada mascota.
+          </p>
 
           <div className="flex flex-wrap justify-start gap-2">
             <LeadCTA interest="servicios" label="Consultar servicios por WhatsApp" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300" />
