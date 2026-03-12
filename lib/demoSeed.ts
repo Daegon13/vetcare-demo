@@ -96,39 +96,63 @@ export function buildDemoSeed(): DemoSeedData {
   const triage: TriageCase[] = [
     {
       id: "tr_seed_1",
-      createdAt: asDateTimeISO(now, -3),
-      petName: "Rocky",
+      createdAt: asDateTimeISO(now, -0.4),
+      petName: "Mora",
       species: "Perro",
-      ownerName: "Diego Alonso",
-      phone: "+598 99 800 121",
-      symptoms: ["vomito", "fiebre"],
-      freeText: "No quiere comer desde ayer.",
-      priority: "media",
-      recommendedAction: "Traer hoy para evaluación clínica y control de hidratación."
+      ownerName: "Paula G.",
+      phone: "+598 98 412 310",
+      symptoms: ["respira", "fiebre"],
+      freeText: "Jadea incluso en reposo.",
+      priority: "alta",
+      recommendedAction: "Atención inmediata: equipo listo para recibirla y estabilizarla al llegar."
     },
     {
       id: "tr_seed_2",
-      createdAt: asDateTimeISO(now, -1),
-      petName: "Misha",
+      createdAt: asDateTimeISO(now, -1.5),
+      petName: "Simón",
       species: "Gato",
-      ownerName: "Valentina Cabrera",
-      phone: "+598 95 777 220",
-      symptoms: ["respira", "fiebre"],
-      freeText: "Respira rápido y está escondida.",
-      priority: "alta",
-      recommendedAction: "Acudir de inmediato a urgencias para estabilización."
+      ownerName: "Mariana R.",
+      phone: "+598 94 508 772",
+      symptoms: ["vomito", "dolor"],
+      freeText: "Vomita desde la madrugada y está molesto.",
+      priority: "media",
+      recommendedAction: "Consulta en el día para cortar molestias y evitar deshidratación."
     },
     {
       id: "tr_seed_3",
-      createdAt: asDateTimeISO(now, -0.5),
-      petName: "Pipa",
+      createdAt: asDateTimeISO(now, -3.2),
+      petName: "Nina",
       species: "Perro",
-      ownerName: "Gabriela Núñez",
-      phone: "+598 97 314 990",
+      ownerName: "Federico L.",
+      phone: "+598 99 220 145",
       symptoms: ["cojera"],
-      freeText: "Se golpeó jugando en el parque.",
+      freeText: "Apoya menos una pata tras correr.",
       priority: "baja",
-      recommendedAction: "Reposo, frío local y consulta de control en las próximas 24 h."
+      recommendedAction: "Control programado y pautas de cuidado en casa para seguimiento seguro."
+    },
+    {
+      id: "tr_seed_4",
+      createdAt: asDateTimeISO(now, -5),
+      petName: "Olivia",
+      species: "Gato",
+      ownerName: "Lucas P.",
+      phone: "+598 91 640 903",
+      symptoms: ["diarrea", "fiebre"],
+      freeText: "Decaída desde ayer.",
+      priority: "media",
+      recommendedAction: "Evaluación hoy con plan de hidratación y seguimiento por WhatsApp."
+    },
+    {
+      id: "tr_seed_5",
+      createdAt: asDateTimeISO(now, -8),
+      petName: "Bruno",
+      species: "Perro",
+      ownerName: "Carla M.",
+      phone: "+598 92 601 220",
+      symptoms: ["sangrado"],
+      freeText: "Corte en la almohadilla con sangrado persistente.",
+      priority: "alta",
+      recommendedAction: "Ingreso prioritario para controlar sangrado y evaluar sutura si corresponde."
     }
   ];
 
