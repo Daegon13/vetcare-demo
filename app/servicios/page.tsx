@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Container, Card, CardContent, Badge } from "@/components/ui";
+import { Container, Card, CardContent, Badge, LinkButton } from "@/components/ui";
 import { LeadCTA } from "@/components/LeadCTA";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import { BRAND, SERVICES } from "@/lib/data";
@@ -44,12 +44,12 @@ export default function ServicesPage() {
           <Badge className="w-fit">SERVICIOS</Badge>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Atención clínica, preventiva y estética</h1>
           <p className="max-w-2xl text-sm sm:text-base text-black/65 dark:text-white/70">
-            Cuidamos a tu mascota con un equipo profesional, protocolos actualizados y seguimiento personalizado en cada etapa. Elegí el servicio que necesitás y reservá en minutos.
+            Brindamos atención veterinaria integral con profesionales especializados, protocolos actualizados y un enfoque humano en cada consulta. Conocé nuestras prestaciones y elegí la opción ideal para tu mascota.
           </p>
           <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
-            <li>• Turnos planificados por tipo de atención para una experiencia ágil y ordenada.</li>
-            <li>• Confirmaciones y recordatorios por WhatsApp para que no se te pase ningún control.</li>
-            <li>• Historial clínico unificado para acompañar mejor la salud de tu mascota.</li>
+            <li>• Turnos organizados por tipo de atención para una experiencia ágil y cuidada.</li>
+            <li>• Confirmaciones y recordatorios por WhatsApp para acompañar cada control.</li>
+            <li>• Seguimiento clínico para sostener el bienestar de tu mascota en el tiempo.</li>
           </ul>
         </section>
 
@@ -122,9 +122,14 @@ export default function ServicesPage() {
             })}
           </div>
 
+          <p className="text-xs text-black/55 dark:text-white/60">
+            Valores orientativos sujetos al tipo de consulta y evaluación profesional en clínica.
+          </p>
+
           <div className="flex flex-wrap justify-start gap-2">
-            <LeadCTA interest="servicios" label="Consultar servicios por WhatsApp" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300" />
-            <CommercialImplementationCTA variant="ghost" className="text-black/75 hover:text-black dark:text-white/80 dark:hover:text-white" />
+            <LinkButton href="/agenda" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Reservar turno</LinkButton>
+            <LeadCTA interest="servicios" label="Consultar por WhatsApp" variant="outline" />
+            <CommercialImplementationCTA />
           </div>
         </section>
       </Container>
