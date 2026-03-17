@@ -14,27 +14,27 @@ export const metadata: Metadata = buildPageMetadata({
 const FAQ = [
   {
     q: "¿Cuánto cuesta una consulta o control?",
-    a: "Cada servicio muestra un precio estimado para que tengas referencia antes de reservar. El valor final puede variar según evaluación clínica y estudios necesarios."
+    a: "Antes de reservar vas a ver un valor orientativo por servicio. Si durante la consulta hace falta sumar estudios o tratamiento, te lo explicamos y confirmamos con vos antes de avanzar."
   },
   {
     q: "¿Atienden urgencias fuera de horario?",
-    a: "Sí, podés iniciar la evaluación de urgencia y contactar por WhatsApp para coordinar guardia. Si hay dificultad respiratoria, sangrado o desmayo, se prioriza atención inmediata."
+    a: "Sí. Podés iniciar la evaluación de urgencia y escribir por WhatsApp para coordinar guardia. Si hay dificultad respiratoria, sangrado activo o desmayo, se prioriza atención inmediata."
   },
   {
     q: "¿Puedo cancelar o reprogramar un turno?",
-    a: "Sí. Podés hacerlo con anticipación desde el canal de confirmación para liberar ese horario y elegir uno nuevo según disponibilidad."
+    a: "Sí, desde el mensaje de confirmación en pocos pasos. Podés cancelar o mover el turno sin llamadas y elegir otro horario disponible al momento."
   },
   {
     q: "¿Qué horarios manejan para turnos generales?",
-    a: "La agenda muestra los horarios disponibles en tiempo real. Si no encontrás lugar hoy, podés dejar consulta por WhatsApp y te proponemos la opción más cercana."
+    a: "La agenda se actualiza en tiempo real. Si no encontrás lugar en el horario que necesitás, escribinos por WhatsApp y te ayudamos a encontrar la opción más cercana."
   },
   {
     q: "¿Cómo sé qué vacunas o controles le faltan a mi mascota?",
-    a: "En el portal vas a ver historial, próximos vencimientos y recordatorios para mantener el plan preventivo al día."
+    a: "En el portal podés ver historial clínico, próximos vencimientos y recordatorios automáticos para mantener vacunas y controles al día."
   },
   {
-    q: "¿Cómo puedo evaluar si encaja con mi veterinaria?",
-    a: `Podés recorrer agenda, urgencias y portal para conocer la experiencia completa y validar si se adapta a tu forma de trabajo.`
+    q: "¿Qué cambia en la práctica al reservar por esta vía?",
+    a: "Todo se vuelve más simple: reservas más rápido, recibís recordatorios para no olvidarte y podés hacer seguimiento de controles y vacunas en un solo lugar."
   }
 ];
 
@@ -44,7 +44,7 @@ export default function FAQPage() {
       <SectionHeading
         eyebrow="FAQ"
         title="Preguntas frecuentes"
-        desc="Respuestas claras para decidir con confianza el próximo paso."
+        desc="Estas son las dudas que más recibimos en el día a día: respuestas claras para reservar rápido y hacer seguimiento sin fricción."
       />
 
       <div className="mt-8 grid gap-3">

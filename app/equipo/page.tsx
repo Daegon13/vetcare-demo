@@ -12,10 +12,26 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 const TEAM = [
-  { name: "Dra. Valentina Pereira", role: "Clínica general", bio: "Enfoque preventivo + medicina interna. Le gusta explicar todo con calma." },
-  { name: "Dr. Martín Silva", role: "Cirugía", bio: "Cirugías programadas y urgencias. Protocolos claros y seguimiento." },
-  { name: "Camila Ríos", role: "Asistente", bio: "Recepción, recordatorios y cuidado post-consulta. La que ordena el caos." },
-  { name: "Santiago Costa", role: "Peluquería / estética", bio: "Baño, corte higiénico, piel sensible y manejo amable." }
+  {
+    name: "Dra. Valentina Pereira",
+    role: "Clínica general",
+    bio: "Clínica general y medicina interna. Le dedica tiempo a cada consulta y explica diagnósticos y opciones de tratamiento sin vueltas."
+  },
+  {
+    name: "Dr. Martín Silva",
+    role: "Cirugía",
+    bio: "Cirugías programadas y urgencias. Trabaja con protocolos claros y seguimiento postoperatorio para que cada recuperación sea segura."
+  },
+  {
+    name: "Camila Ríos",
+    role: "Asistente",
+    bio: "Es el primer contacto con cada familia: coordina turnos, recordatorios y el seguimiento después de cada visita."
+  },
+  {
+    name: "Santiago Costa",
+    role: "Peluquería / estética",
+    bio: "Baño y corte higiénico con manejo amable, ideal para mascotas sensibles o nerviosas que necesitan ir de a poco."
+  }
 ];
 
 export default function EquipoPage() {
@@ -23,8 +39,8 @@ export default function EquipoPage() {
     <Container className="py-10">
       <SectionHeading
         eyebrow="Equipo"
-        title="Personas reales, trato humano"
-        desc="Equipo enfocado en atención cercana, seguimiento y confianza clínica."
+        title="Conocé al equipo que te acompaña en cada etapa"
+        desc="Somos un equipo chico y presente: atención cálida, criterio clínico y seguimiento real para que no te quedes con dudas."
       />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
