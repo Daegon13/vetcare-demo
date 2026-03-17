@@ -15,22 +15,22 @@ const TEAM = [
   {
     name: "Dra. Valentina Pereira",
     role: "Clínica general",
-    bio: "Clínica general y medicina interna. Prioriza la prevención y explica cada diagnóstico con lenguaje claro."
+    bio: "Clínica general y medicina interna. Le dedica tiempo a cada consulta y explica diagnósticos y opciones de tratamiento sin vueltas."
   },
   {
     name: "Dr. Martín Silva",
     role: "Cirugía",
-    bio: "Cirugías programadas y urgencias con protocolos definidos. Seguimiento postoperatorio para acompañar cada recuperación."
+    bio: "Cirugías programadas y urgencias. Trabaja con protocolos claros y seguimiento postoperatorio para que cada recuperación sea segura."
   },
   {
     name: "Camila Ríos",
     role: "Asistente",
-    bio: "Coordina turnos, recordatorios e indicaciones post-consulta para que cada familia sepa cómo seguir en casa."
+    bio: "Es el primer contacto con cada familia: coordina turnos, recordatorios y el seguimiento después de cada visita."
   },
   {
     name: "Santiago Costa",
     role: "Peluquería / estética",
-    bio: "Baño, corte higiénico y cuidado de piel sensible con manejo amable, especialmente en mascotas nerviosas."
+    bio: "Baño y corte higiénico con manejo amable, ideal para mascotas sensibles o nerviosas que necesitan ir de a poco."
   }
 ];
 
@@ -39,8 +39,8 @@ export default function EquipoPage() {
     <Container className="py-10">
       <SectionHeading
         eyebrow="Equipo"
-        title="Un equipo que conoce a cada mascota por su nombre"
-        desc="Combinamos criterio clínico, comunicación cercana y seguimiento para que cada consulta termine con un plan claro."
+        title="Conocé al equipo que te acompaña en cada etapa"
+        desc="Somos un equipo chico y presente: atención cálida, criterio clínico y seguimiento real para que no te quedes con dudas."
       />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">

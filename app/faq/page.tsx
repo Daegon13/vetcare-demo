@@ -14,27 +14,27 @@ export const metadata: Metadata = buildPageMetadata({
 const FAQ = [
   {
     q: "¿Cuánto cuesta una consulta o control?",
-    a: "Cada servicio muestra un precio orientativo antes de reservar. Si durante la consulta se necesita un estudio o tratamiento adicional, te explicamos todo antes de avanzar."
+    a: "Antes de reservar vas a ver un valor orientativo por servicio. Si durante la consulta hace falta sumar estudios o tratamiento, te lo explicamos y confirmamos con vos antes de avanzar."
   },
   {
     q: "¿Atienden urgencias fuera de horario?",
-    a: "Sí. Podés iniciar la evaluación de urgencia y escribir por WhatsApp para coordinar guardia. Casos con dificultad respiratoria, sangrado activo o desmayo se priorizan de inmediato."
+    a: "Sí. Podés iniciar la evaluación de urgencia y escribir por WhatsApp para coordinar guardia. Si hay dificultad respiratoria, sangrado activo o desmayo, se prioriza atención inmediata."
   },
   {
     q: "¿Puedo cancelar o reprogramar un turno?",
-    a: "Sí, en pocos pasos desde el mensaje de confirmación. Así liberás ese horario y podés elegir otro turno disponible sin llamadas ni demoras."
+    a: "Sí, desde el mensaje de confirmación en pocos pasos. Podés cancelar o mover el turno sin llamadas y elegir otro horario disponible al momento."
   },
   {
     q: "¿Qué horarios manejan para turnos generales?",
-    a: "La agenda se actualiza en tiempo real con los horarios disponibles. Si necesitás una opción más cercana, podés escribir por WhatsApp y te ayudamos a resolverlo rápido."
+    a: "La agenda se actualiza en tiempo real. Si no encontrás lugar en el horario que necesitás, escribinos por WhatsApp y te ayudamos a encontrar la opción más cercana."
   },
   {
     q: "¿Cómo sé qué vacunas o controles le faltan a mi mascota?",
-    a: "En el portal tenés historial clínico, próximos vencimientos y recordatorios automáticos para mantener el plan preventivo al día."
+    a: "En el portal podés ver historial clínico, próximos vencimientos y recordatorios automáticos para mantener vacunas y controles al día."
   },
   {
-    q: "¿Qué beneficios tiene implementar esta experiencia en mi veterinaria?",
-    a: "Te permite responder más rápido, ordenar agenda y urgencias en un mismo flujo, reducir ausencias con recordatorios y dar mejor seguimiento a cada paciente."
+    q: "¿Qué cambia en la práctica al reservar por esta vía?",
+    a: "Todo se vuelve más simple: reservas más rápido, recibís recordatorios para no olvidarte y podés hacer seguimiento de controles y vacunas en un solo lugar."
   }
 ];
 
@@ -44,7 +44,7 @@ export default function FAQPage() {
       <SectionHeading
         eyebrow="FAQ"
         title="Preguntas frecuentes"
-        desc="Resolvemos las dudas más comunes para que puedas avanzar con claridad, rapidez y seguimiento desde el primer contacto."
+        desc="Estas son las dudas que más recibimos en el día a día: respuestas claras para reservar rápido y hacer seguimiento sin fricción."
       />
 
       <div className="mt-8 grid gap-3">
