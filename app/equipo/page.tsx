@@ -12,10 +12,26 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 const TEAM = [
-  { name: "Dra. Valentina Pereira", role: "Clínica general", bio: "Enfoque preventivo + medicina interna. Le gusta explicar todo con calma." },
-  { name: "Dr. Martín Silva", role: "Cirugía", bio: "Cirugías programadas y urgencias. Protocolos claros y seguimiento." },
-  { name: "Camila Ríos", role: "Asistente", bio: "Recepción, recordatorios y cuidado post-consulta. La que ordena el caos." },
-  { name: "Santiago Costa", role: "Peluquería / estética", bio: "Baño, corte higiénico, piel sensible y manejo amable." }
+  {
+    name: "Dra. Valentina Pereira",
+    role: "Clínica general",
+    bio: "Clínica general y medicina interna. Prioriza la prevención y explica cada diagnóstico con lenguaje claro."
+  },
+  {
+    name: "Dr. Martín Silva",
+    role: "Cirugía",
+    bio: "Cirugías programadas y urgencias con protocolos definidos. Seguimiento postoperatorio para acompañar cada recuperación."
+  },
+  {
+    name: "Camila Ríos",
+    role: "Asistente",
+    bio: "Coordina turnos, recordatorios e indicaciones post-consulta para que cada familia sepa cómo seguir en casa."
+  },
+  {
+    name: "Santiago Costa",
+    role: "Peluquería / estética",
+    bio: "Baño, corte higiénico y cuidado de piel sensible con manejo amable, especialmente en mascotas nerviosas."
+  }
 ];
 
 export default function EquipoPage() {
@@ -23,8 +39,8 @@ export default function EquipoPage() {
     <Container className="py-10">
       <SectionHeading
         eyebrow="Equipo"
-        title="Personas reales, trato humano"
-        desc="Equipo enfocado en atención cercana, seguimiento y confianza clínica."
+        title="Un equipo que conoce a cada mascota por su nombre"
+        desc="Combinamos criterio clínico, comunicación cercana y seguimiento para que cada consulta termine con un plan claro."
       />
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
