@@ -1,13 +1,8 @@
 "use client";
 
-import * as React from "react";
-
 import { trackEvent } from "@/lib/analytics";
 import { getStoredUtm } from "@/lib/utm";
-import {
-  COMMERCIAL_IMPLEMENTATION_CTA,
-  getCommercialImplementationHrefWithUtm
-} from "@/lib/commercialCta";
+import { COMMERCIAL_IMPLEMENTATION_CTA, useCommercialImplementationHref } from "@/lib/commercialCta";
 import { LinkButton } from "@/components/ui";
 
 type CommercialImplementationCTAProps = {
@@ -17,11 +12,7 @@ type CommercialImplementationCTAProps = {
 };
 
 export function CommercialImplementationCTA({ className, variant = "outline", location }: CommercialImplementationCTAProps) {
-  const [href, setHref] = React.useState(COMMERCIAL_IMPLEMENTATION_CTA.href);
-
-  React.useEffect(() => {
-    setHref(getCommercialImplementationHrefWithUtm());
-  }, []);
+  const href = useCommercialImplementationHref();
 
   function onClick() {
     trackEvent("cta_implementation_click", {

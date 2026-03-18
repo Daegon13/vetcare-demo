@@ -6,17 +6,16 @@ import { BRAND } from "@/lib/data";
 import { trackEvent } from "@/lib/analytics";
 import { addLead } from "@/lib/leads";
 import { buildWhatsappUrl, getStoredUtm } from "@/lib/utm";
-import { COMMERCIAL_IMPLEMENTATION_CTA, getCommercialImplementationHrefWithUtm } from "@/lib/commercialCta";
+import { COMMERCIAL_IMPLEMENTATION_CTA, useCommercialImplementationHref } from "@/lib/commercialCta";
 
 export function FloatingCta() {
   const pathname = usePathname();
   const [whatsappUrl, setWhatsappUrl] = React.useState(BRAND.whatsappUrl);
-  const [implementationUrl, setImplementationUrl] = React.useState(COMMERCIAL_IMPLEMENTATION_CTA.href);
+  const implementationUrl = useCommercialImplementationHref();
 
   React.useEffect(() => {
     const utm = getStoredUtm();
     setWhatsappUrl(buildWhatsappUrl(BRAND.whatsappUrl, utm, "Mi interés: implementación."));
-    setImplementationUrl(getCommercialImplementationHrefWithUtm());
   }, []);
 
   function onWhatsappClick() {
