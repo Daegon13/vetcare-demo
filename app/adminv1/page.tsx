@@ -188,7 +188,7 @@ export default function AdminV1Page() {
           <Button variant="outline" onClick={demoReset}>Reset demo</Button>
           <LinkButton href="/adminv1/marketing" variant="outline">Enlaces de marketing</LinkButton>
           <LinkButton href="/agenda" variant="outline">Ir a Agenda</LinkButton>
-          <CommercialImplementationCTA />
+          <CommercialImplementationCTA location="adminv1" />
         </div>
       </div>
 

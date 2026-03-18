@@ -5,17 +5,17 @@ import { usePathname } from "next/navigation";
 import { BRAND } from "@/lib/data";
 import { trackEvent } from "@/lib/analytics";
 import { addLead } from "@/lib/leads";
-import { appendUtmToUrl, buildWhatsappUrl, getStoredUtm } from "@/lib/utm";
+import { buildWhatsappUrl, getStoredUtm } from "@/lib/utm";
+import { COMMERCIAL_IMPLEMENTATION_CTA, useCommercialImplementationHref } from "@/lib/commercialCta";
 
 export function FloatingCta() {
   const pathname = usePathname();
   const [whatsappUrl, setWhatsappUrl] = React.useState(BRAND.whatsappUrl);
-  const [implementationUrl, setImplementationUrl] = React.useState(BRAND.implementationCtaUrl);
+  const implementationUrl = useCommercialImplementationHref();
 
   React.useEffect(() => {
     const utm = getStoredUtm();
     setWhatsappUrl(buildWhatsappUrl(BRAND.whatsappUrl, utm, "Mi interés: implementación."));
-    setImplementationUrl(appendUtmToUrl(BRAND.implementationCtaUrl, utm));
   }, []);
 
   function onWhatsappClick() {
@@ -51,7 +51,7 @@ export function FloatingCta() {
         onClick={onImplementationClick}
         className="inline-flex h-10 items-center justify-center rounded-xl border border-black/10 bg-white px-4 text-xs font-semibold text-graphite-900 shadow-soft hover:bg-black/5 dark:border-white/10 dark:bg-graphite-900 dark:text-white dark:hover:bg-white/10 sm:text-sm"
       >
-        {BRAND.implementationCtaLabel}
+        {COMMERCIAL_IMPLEMENTATION_CTA.label}
       </a>
     </div>
   );
