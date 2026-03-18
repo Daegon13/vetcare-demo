@@ -4,15 +4,15 @@ import { Container, Card, CardContent, Badge } from "@/components/ui";
 import { COMMERCIAL_IMPLEMENTATION_CTA } from "@/lib/commercialCta";
 import { BRAND } from "@/lib/data";
 import { buildPageMetadata } from "@/lib/seo";
-import { ContactoDemoForm } from "./contacto-demo-form";
+import { ContactoForm } from "./contacto-form";
 
 export const metadata: Metadata = buildPageMetadata({
   title: `Implementación para veterinarias | ${BRAND.name}`,
   description: `Dejanos tus datos y te mostramos cómo implementar ${BRAND.name} en tu veterinaria.`,
-  path: "/contacto-demo"
+  path: "/contacto"
 });
 
-export default function ContactoDemoPage() {
+export default function ContactoPage() {
   return (
     <Container className="py-10 sm:py-14 grid gap-8">
       <section className="grid gap-4">
@@ -31,7 +31,7 @@ export default function ContactoDemoPage() {
 
       <Card>
         <CardContent>
-          <ContactoDemoForm />
+          <ContactoForm />
         </CardContent>
       </Card>
     </Container>
