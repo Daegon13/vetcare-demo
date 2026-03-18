@@ -129,7 +129,7 @@ export default function ServicesPage() {
           <div className="flex flex-wrap justify-start gap-2">
             <LinkButton href="/agenda" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Reservar turno</LinkButton>
             <LeadCTA interest="servicios" label="Consultar por WhatsApp" variant="outline" />
-            <CommercialImplementationCTA />
+            <CommercialImplementationCTA location="servicios" />
           </div>
         </section>
       </Container>

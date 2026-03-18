@@ -3,6 +3,7 @@ import { SectionHeading } from "@/components/section";
 import { LeadCTA } from "@/components/LeadCTA";
 import { Container, Card, CardContent, CardHeader, Badge, LinkButton } from "@/components/ui";
 import { BRAND } from "@/lib/data";
+import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -76,6 +77,7 @@ export default function UbicacionPage() {
                 Agendar turno
               </LinkButton>
               <LeadCTA interest="general" label="Consultar por WhatsApp" variant="outline" />
+              <CommercialImplementationCTA location="ubicacion" />
             </div>
           </CardContent>
         </Card>

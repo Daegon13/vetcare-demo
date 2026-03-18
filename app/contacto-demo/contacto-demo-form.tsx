@@ -4,6 +4,7 @@ import * as React from "react";
 import { usePathname } from "next/navigation";
 
 import { Button, Field, Input, Textarea } from "@/components/ui";
+import { COMMERCIAL_IMPLEMENTATION_CTA } from "@/lib/commercialCta";
 import { trackEvent } from "@/lib/analytics";
 import { BRAND } from "@/lib/data";
 import { addLead } from "@/lib/leads";
@@ -106,7 +107,7 @@ export function ContactoDemoForm() {
           rel="noreferrer"
           className="inline-flex h-11 items-center rounded-xl border border-black/10 bg-white px-4 text-sm font-semibold text-graphite-900 hover:bg-black/5 dark:border-white/15 dark:bg-graphite-900 dark:text-white dark:hover:bg-white/10"
         >
-          Hablar por WhatsApp
+          {COMMERCIAL_IMPLEMENTATION_CTA.secondaryWhatsappLabel}
         </a>
       </div>
 

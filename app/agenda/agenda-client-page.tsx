@@ -273,7 +273,7 @@ function AgendaPageInner() {
                 ) : null}
               </div>
               <div className="pt-1">
-                <CommercialImplementationCTA />
+                <CommercialImplementationCTA location="agenda" />
               </div>
 
               {justCreated ? (

@@ -178,7 +178,7 @@ export default function UrgenciasPage() {
                 Calcular prioridad
               </Button>
               <LeadCTA interest="urgencias" label="Escribir por WhatsApp" variant="outline" />
-              <CommercialImplementationCTA />
+              <CommercialImplementationCTA location="urgencias" />
             </div>
             <div className="text-xs text-black/45">Resultado orientativo para decidir rápido el próximo paso de atención.</div>
 

@@ -203,7 +203,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
           <LinkButton href="/servicios" variant="outline">
             Ver servicios
           </LinkButton>
-          <CommercialImplementationCTA />
+          <CommercialImplementationCTA location="home" />
           <LinkButton href="/mi-mascota" variant="outline">
             Abrir Mi Mascota
           </LinkButton>

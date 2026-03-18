@@ -5,6 +5,7 @@ import Link from "next/link";
 import { trackEvent } from "@/lib/analytics";
 import { Button, Card, CardContent, CardHeader, Container, Field, Input } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
+import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 
 type Destination = {
   label: string;
@@ -102,9 +103,12 @@ export default function AdminV1MarketingPage() {
           title="Marketing link builder"
           desc="Generá links con UTM para campañas internas sin depender de herramientas externas."
         />
-        <Link href="/adminv1" className="inline-flex h-11 items-center rounded-xl border border-black/10 bg-white px-4 text-sm font-semibold hover:bg-black/5">
-          Volver al admin
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/adminv1" className="inline-flex h-11 items-center rounded-xl border border-black/10 bg-white px-4 text-sm font-semibold hover:bg-black/5">
+            Volver al admin
+          </Link>
+          <CommercialImplementationCTA location="adminv1_marketing" />
+        </div>
       </div>
 
       <Card className="mt-6">
