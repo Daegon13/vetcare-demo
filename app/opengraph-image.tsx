@@ -44,7 +44,7 @@ export default function OpenGraphImage() {
         </div>
 
         <div style={{ marginTop: 22, fontSize: 26, color: "rgba(0,0,0,0.65)", maxWidth: 900 }}>
-          Demo web lista para vender: agenda con disponibilidad, triage de urgencias y recordatorios por WhatsApp.
+          Agenda online, orientación inicial en urgencias y seguimiento por WhatsApp en una experiencia veterinaria clara.
         </div>
 
         <div

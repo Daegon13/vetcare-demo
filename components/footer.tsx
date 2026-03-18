@@ -16,7 +16,7 @@ export function Footer() {
         </div>
 
         <div className="grid gap-3 sm:justify-items-end">
-          <div className="text-sm font-semibold text-black/80 sm:text-right">Hablá con nuestro equipo</div>
+          <div className="text-sm font-semibold text-black/80 sm:text-right">Escribinos y coordinamos la mejor atención para tu mascota</div>
           <div className="flex gap-2">
             <LinkButton href="/agenda" variant="outline">Reservar turno</LinkButton>
             <LinkButton
@@ -25,7 +25,7 @@ export function Footer() {
               rel="noreferrer"
               className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300"
             >
-              WhatsApp
+              Hablar por WhatsApp
             </LinkButton>
           </div>
         </div>

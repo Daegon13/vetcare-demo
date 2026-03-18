@@ -11,8 +11,8 @@ import { getRobotsMetadata, getSiteUrl } from "@/lib/seo";
 
 const siteUrl = getSiteUrl();
 
-const defaultTitle = `${BRAND.name} — Turnos, urgencias y portal del cliente`;
-const defaultDescription = `${BRAND.name} reúne agenda online, atención priorizada y seguimiento digital para una experiencia veterinaria más ágil.`;
+const defaultTitle = `${BRAND.name} — Turnos, urgencias y seguimiento para tu mascota`;
+const defaultDescription = `${BRAND.name} ofrece agenda online, orientación inicial en urgencias y seguimiento por WhatsApp para una atención veterinaria clara y cercana.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
