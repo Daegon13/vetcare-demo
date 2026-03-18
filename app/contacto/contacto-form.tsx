@@ -10,7 +10,7 @@ import { BRAND } from "@/lib/data";
 import { addLead } from "@/lib/leads";
 import { buildWhatsappUrl, getStoredUtm } from "@/lib/utm";
 
-type DemoContactFormState = {
+type ContactFormState = {
   nombre: string;
   veterinaria: string;
   ciudad: string;
@@ -18,7 +18,7 @@ type DemoContactFormState = {
   necesidad: string;
 };
 
-const INITIAL_STATE: DemoContactFormState = {
+const INITIAL_STATE: ContactFormState = {
   nombre: "",
   veterinaria: "",
   ciudad: "",
@@ -26,10 +26,10 @@ const INITIAL_STATE: DemoContactFormState = {
   necesidad: ""
 };
 
-export function ContactoDemoForm() {
+export function ContactoForm() {
   const pathname = usePathname();
   const [submitted, setSubmitted] = React.useState(false);
-  const [form, setForm] = React.useState<DemoContactFormState>(INITIAL_STATE);
+  const [form, setForm] = React.useState<ContactFormState>(INITIAL_STATE);
 
   const whatsappUrl = React.useMemo(() => {
     const utm = getStoredUtm();
@@ -45,7 +45,7 @@ export function ContactoDemoForm() {
     return buildWhatsappUrl(BRAND.whatsappUrl, utm, chunks.join("\n"));
   }, [form]);
 
-  function updateField<K extends keyof DemoContactFormState>(key: K, value: DemoContactFormState[K]) {
+  function updateField<K extends keyof ContactFormState>(key: K, value: ContactFormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
@@ -54,7 +54,7 @@ export function ContactoDemoForm() {
 
     const utm = getStoredUtm();
     addLead({
-      sourcePage: pathname || "/contacto-demo",
+      sourcePage: pathname || "/contacto",
       channel: "implementation_form",
       utm: utm ?? undefined,
       interest: ["implementacion"],
@@ -62,7 +62,7 @@ export function ContactoDemoForm() {
     });
 
     trackEvent("implementation_form_submitted", {
-      location: pathname || "/contacto-demo",
+      location: pathname || "/contacto",
       has_whatsapp: Number(form.contacto.includes("+") || /\d{6,}/.test(form.contacto))
     });
 

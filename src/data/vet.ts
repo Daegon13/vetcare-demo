@@ -1,7 +1,7 @@
 import type { ServiceId, PetSpecies } from "@/lib/types";
 
-// Fuente única de datos mock para la demo.
-// Mantenerlo acá permite “rebrandear” la demo cambiando un solo archivo.
+// Fuente única de datos comerciales/base para la experiencia pública.
+// Mantenerlo acá permite ajustar branding y CTA comerciales cambiando un solo archivo.
 
 export const clinica = {
   nombre: "VetCare",
@@ -9,7 +9,7 @@ export const clinica = {
   whatsapp: "+59891234567",
   whatsappUrl: "https://wa.me/59891234567?text=Hola%20VetCare%2C%20quiero%20conocer%20la%20experiencia%20digital%20para%20mi%20veterinaria.",
   ctaImplementacionLabel: "Quiero esto para mi veterinaria",
-  ctaImplementacionUrl: "/contacto-demo",
+  ctaImplementacionUrl: "/contacto",
   telefono: "+598 91 234 567",
   direccion: "Av. Italia 2450, Montevideo",
   horarios: "Lunes a sábado · 9:00 a 19:00"

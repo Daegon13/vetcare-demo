@@ -116,7 +116,7 @@ export function buildWhatsappUrl(baseWhatsappUrl: string, utm: UTMData | null, e
     return baseWhatsappUrl;
   }
 
-  const baseText = parsed.searchParams.get("text") ?? "Hola, vengo por la demo VetCare.";
+  const baseText = parsed.searchParams.get("text") ?? "Hola, quiero conocer la solución VetCare para mi veterinaria.";
   const details = [extraMessage].filter(Boolean).join(" ").trim();
 
   const utmChunks: string[] = [];
