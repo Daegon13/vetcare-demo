@@ -21,7 +21,7 @@ type LeadEventInput = Omit<LeadEvent, "id" | "createdAtISO"> & {
   createdAtISO?: string;
 };
 
-const LEADS_STORAGE_KEY = "vetcare:leads";
+export const LEADS_STORAGE_KEY = "vetcare:leads";
 
 function hasStorage() {
   return typeof window !== "undefined" && typeof window.localStorage !== "undefined";
@@ -112,4 +112,14 @@ export function exportLeadsCSV(): string {
 
 export function exportLeadsJSON(): string {
   return JSON.stringify(getLeads(), null, 2);
+}
+
+
+export function saveLeads(items: LeadEvent[]) {
+  if (!hasStorage()) return;
+  try {
+    localStorage.setItem(LEADS_STORAGE_KEY, JSON.stringify(items));
+  } catch {
+    // noop
+  }
 }

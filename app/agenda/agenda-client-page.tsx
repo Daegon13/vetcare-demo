@@ -7,7 +7,7 @@ import { LeadCTA } from "@/components/LeadCTA";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import type { Appointment, ServiceId } from "@/lib/types";
 import { buildDailySlots, getService, makeICS } from "@/lib/schedule";
-import { loadAppointments, saveAppointments } from "@/lib/storage";
+import { getSeedPreview, loadAppointments, saveAppointments } from "@/lib/storage";
 import { formatDateLong, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
@@ -77,7 +77,7 @@ function AgendaPageInner() {
   const [ownerName, setOwnerName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [notes, setNotes] = React.useState("");
-  const [appts, setAppts] = React.useState<Appointment[]>([]);
+  const [appts, setAppts] = React.useState<Appointment[]>(() => getSeedPreview().appointments);
   const [justCreated, setJustCreated] = React.useState<Appointment | null>(null);
 
   React.useEffect(() => {

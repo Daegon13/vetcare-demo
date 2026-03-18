@@ -1,13 +1,14 @@
 import type { Appointment, Campaign, PetProfile, TriageCase } from "./types";
 import { DEFAULT_CAMPAIGNS, DEFAULT_PET } from "./data";
 import { buildDemoSeed } from "./demoSeed";
+import { clearLeads, getLeads, LEADS_STORAGE_KEY, saveLeads, type LeadEvent } from "./leads";
 
 const KEY = {
   appts: "vetcare.appts.v1",
   triage: "vetcare.triage.v1",
   pet: "vetcare.pet.v1",
   campaigns: "vetcare.campaigns.v1",
-  seeded: "vetcare.seeded.v1"
+  seeded: "vetcare.seeded.v2"
 };
 
 function safeParse<T>(raw: string | null, fallback: T): T {
@@ -72,20 +73,75 @@ function setSeededFlag() {
   }
 }
 
+function upsertSeedList<T extends { id: string }>(current: T[], seeded: T[]) {
+  const currentById = new Map(current.map((item) => [item.id, item]));
+  let changed = false;
+
+  for (const item of seeded) {
+    if (!currentById.has(item.id)) {
+      currentById.set(item.id, item);
+      changed = true;
+    }
+  }
+
+  return {
+    items: Array.from(currentById.values()),
+    changed
+  };
+}
+
+function sortAppointments(items: Appointment[]) {
+  return items
+    .slice()
+    .sort((a, b) => `${a.dateISO}${a.time}`.localeCompare(`${b.dateISO}${b.time}`));
+}
+
+function sortTriage(items: TriageCase[]) {
+  return items
+    .slice()
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+}
+
+function sortCampaigns(items: Campaign[]) {
+  return items
+    .slice()
+    .sort((a, b) => new Date(a.scheduledISO).getTime() - new Date(b.scheduledISO).getTime());
+}
+
+function sortLeads(items: LeadEvent[]) {
+  return items
+    .slice()
+    .sort((a, b) => new Date(b.createdAtISO).getTime() - new Date(a.createdAtISO).getTime());
+}
+
+function seedCollection<T extends { id: string }>(key: string, seeded: T[], fallback: T[], sortItems?: (items: T[]) => T[]) {
+  const current = safeGet<T[]>(key, fallback);
+  const { items, changed } = upsertSeedList(current, seeded);
+  const finalItems = sortItems ? sortItems(items) : items;
+
+  if (changed || safeGetRaw(key) === null) {
+    safeSet(key, finalItems);
+  }
+
+  return finalItems;
+}
+
 export function ensureDemoSeed() {
   if (!hasStorage()) return;
 
   try {
     const demo = buildDemoSeed();
-    const hasAppts = safeGetRaw(KEY.appts) !== null;
-    const hasTriage = safeGetRaw(KEY.triage) !== null;
-    const hasPet = safeGetRaw(KEY.pet) !== null;
-    const hasCampaigns = safeGetRaw(KEY.campaigns) !== null;
 
-    if (!hasAppts) safeSet(KEY.appts, demo.appointments);
-    if (!hasTriage) safeSet(KEY.triage, demo.triage);
-    if (!hasPet) safeSet(KEY.pet, demo.pet);
-    if (!hasCampaigns) safeSet(KEY.campaigns, demo.campaigns);
+    seedCollection(KEY.appts, demo.appointments, [], sortAppointments);
+    seedCollection(KEY.triage, demo.triage, [], sortTriage);
+    if (safeGetRaw(KEY.pet) === null) safeSet(KEY.pet, demo.pet);
+    seedCollection(KEY.campaigns, demo.campaigns, [], sortCampaigns);
+
+    const leadSeed = seedCollection(LEADS_STORAGE_KEY, demo.leads, getLeads(), sortLeads);
+    if (leadSeed.length > 0) {
+      saveLeads(leadSeed);
+    }
+
     setSeededFlag();
   } catch {
     // noop
@@ -93,14 +149,13 @@ export function ensureDemoSeed() {
 }
 
 export function clearDemo() {
-  // Intentionally removing only VetCare demo keys to preserve UI preferences such as next-themes ("theme")
-  // and marketing attribution storage such as "vetcare:utm".
   if (!hasStorage()) return;
   try {
     safeRemove(KEY.appts);
     safeRemove(KEY.triage);
     safeRemove(KEY.pet);
     safeRemove(KEY.campaigns);
+    clearLeads();
     safeRemove(KEY.seeded);
   } catch {
     // noop
@@ -112,10 +167,11 @@ export function resetDemo() {
   try {
     clearDemo();
     const demo = buildDemoSeed();
-    safeSet(KEY.appts, demo.appointments);
-    safeSet(KEY.triage, demo.triage);
+    safeSet(KEY.appts, sortAppointments(demo.appointments));
+    safeSet(KEY.triage, sortTriage(demo.triage));
     safeSet(KEY.pet, demo.pet);
-    safeSet(KEY.campaigns, demo.campaigns);
+    safeSet(KEY.campaigns, sortCampaigns(demo.campaigns));
+    saveLeads(sortLeads(demo.leads));
     setSeededFlag();
   } catch {
     // noop
@@ -127,9 +183,13 @@ export function restoreDemoData() {
   resetDemo();
 }
 
+export function getSeedPreview() {
+  return buildDemoSeed();
+}
+
 export function loadAppointments(): Appointment[] {
   ensureDemoSeed();
-  return safeGet(KEY.appts, []);
+  return safeGet(KEY.appts, getSeedPreview().appointments);
 }
 
 export function saveAppointments(items: Appointment[]) {
@@ -138,7 +198,7 @@ export function saveAppointments(items: Appointment[]) {
 
 export function loadTriage(): TriageCase[] {
   ensureDemoSeed();
-  return safeGet(KEY.triage, []);
+  return safeGet(KEY.triage, getSeedPreview().triage);
 }
 
 export function saveTriage(items: TriageCase[]) {
@@ -147,7 +207,7 @@ export function saveTriage(items: TriageCase[]) {
 
 export function loadPet(): PetProfile {
   ensureDemoSeed();
-  return safeGet(KEY.pet, DEFAULT_PET);
+  return safeGet(KEY.pet, getSeedPreview().pet ?? DEFAULT_PET);
 }
 
 export function savePet(p: PetProfile) {
@@ -156,7 +216,7 @@ export function savePet(p: PetProfile) {
 
 export function loadCampaigns(): Campaign[] {
   ensureDemoSeed();
-  return safeGet(KEY.campaigns, DEFAULT_CAMPAIGNS);
+  return safeGet(KEY.campaigns, getSeedPreview().campaigns ?? DEFAULT_CAMPAIGNS);
 }
 
 export function saveCampaigns(items: Campaign[]) {
