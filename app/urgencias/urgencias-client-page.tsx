@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import type { PetSpecies, TriageCase, TriagePriority } from "@/lib/types";
-import { loadTriage, saveTriage } from "@/lib/storage";
+import { getSeedPreview, loadTriage, saveTriage } from "@/lib/storage";
 import { uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
@@ -48,13 +48,12 @@ export default function UrgenciasPage() {
   const [phone, setPhone] = React.useState("");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [freeText, setFreeText] = React.useState("");
-  const [cases, setCases] = React.useState<TriageCase[]>([]);
-  const [ready, setReady] = React.useState(false);
+  const [cases, setCases] = React.useState<TriageCase[]>(() => getSeedPreview().triage);
+  const [ready, setReady] = React.useState(true);
   const [created, setCreated] = React.useState<TriageCase | null>(null);
 
   React.useEffect(() => {
     setCases(loadTriage());
-    setReady(true);
   }, []);
 
   function when(iso: string) {

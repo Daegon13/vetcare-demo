@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { Badge, Card } from "@/components/ui";
 import { SERVICES } from "@/lib/data";
-import { loadAppointments, loadPet, loadTriage } from "@/lib/storage";
+import { getSeedPreview, loadAppointments, loadPet, loadTriage } from "@/lib/storage";
 import type { Appointment, TriageCase, Vaccine } from "@/lib/types";
 
 type AgendaItem = {
@@ -66,16 +66,20 @@ function getPriorityTone(priority: string): "bad" | "warn" | "neutral" {
 }
 
 export function HeroVisual() {
-  const [agenda, setAgenda] = React.useState<AgendaItem[]>(AGENDA_PLACEHOLDERS);
-  const [triage, setTriage] = React.useState({
-    petName: "Nina",
-    symptom: "dificultad para respirar",
-    priority: "ALTA"
-  });
-  const [pet, setPet] = React.useState({
-    petName: "Rocky",
-    vaccine: "Séxtuple anual",
-    dueLabel: "Vence en 5 días"
+  const seed = React.useMemo(() => getSeedPreview(), []);
+  const [agenda, setAgenda] = React.useState<AgendaItem[]>(() => seed.appointments.slice(0, 2).map(formatAppt));
+  const [triage, setTriage] = React.useState(() => ({
+    petName: getTopTriage(seed.triage)?.petName ?? "Nina",
+    symptom: getTopTriage(seed.triage)?.symptoms[0] ?? "dificultad para respirar",
+    priority: getTopTriage(seed.triage)?.priority.toUpperCase() ?? "ALTA"
+  }));
+  const [pet, setPet] = React.useState(() => {
+    const vaccine = getNextVaccine(seed.pet.vaccines);
+    return {
+      petName: seed.pet.petName,
+      vaccine: vaccine?.name ?? "Séxtuple anual",
+      dueLabel: vaccine?.nextDueISO ? `Vence el ${vaccine.nextDueISO}` : "Vence en 5 días"
+    };
   });
 
   React.useEffect(() => {

@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { BRAND, SERVICES } from "@/lib/data";
 import type { Appointment, AppointmentStatus, Campaign, PetProfile, TriageCase } from "@/lib/types";
-import { loadAppointments, loadCampaigns, loadPet, loadTriage, resetDemo, saveAppointments, saveCampaigns, savePet, saveTriage } from "@/lib/storage";
+import { getSeedPreview, loadAppointments, loadCampaigns, loadPet, loadTriage, resetDemo, saveAppointments, saveCampaigns, savePet, saveTriage } from "@/lib/storage";
 import { cn, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Button, Badge, Field, Input, Select, Textarea, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
@@ -21,12 +21,14 @@ function statTone(n: number) {
 export default function AdminV1Page() {
   const [tab, setTab] = React.useState<Tab>("turnos");
 
-  const [appts, setAppts] = React.useState<Appointment[]>([]);
-  const [triage, setTriage] = React.useState<TriageCase[]>([]);
-  const [pet, setPet] = React.useState<PetProfile | null>(null);
-  const [campaigns, setCampaigns] = React.useState<Campaign[]>([]);
-  const [leads, setLeads] = React.useState<LeadEvent[]>([]);
-  const [ready, setReady] = React.useState(false);
+  const seed = React.useMemo(() => getSeedPreview(), []);
+
+  const [appts, setAppts] = React.useState<Appointment[]>(seed.appointments);
+  const [triage, setTriage] = React.useState<TriageCase[]>(seed.triage);
+  const [pet, setPet] = React.useState<PetProfile | null>(seed.pet);
+  const [campaigns, setCampaigns] = React.useState<Campaign[]>(seed.campaigns);
+  const [leads, setLeads] = React.useState<LeadEvent[]>(seed.leads);
+  const [ready, setReady] = React.useState(true);
 
   const [q, setQ] = React.useState("");
 
@@ -39,7 +41,6 @@ export default function AdminV1Page() {
 
   React.useEffect(() => {
     reloadFromStorage();
-    setReady(true);
   }, []);
 
   function persistAppts(next: Appointment[]) {
