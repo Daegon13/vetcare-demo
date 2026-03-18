@@ -7,12 +7,12 @@ export const clinica = {
   nombre: "VetCare",
   ciudad: "Montevideo",
   whatsapp: "+59891234567",
-  whatsappUrl: "https://wa.me/59891234567?text=Hola%20VetCare%2C%20quiero%20ver%20como%20funciona%20la%20demo.",
+  whatsappUrl: "https://wa.me/59891234567?text=Hola%20VetCare%2C%20quiero%20conocer%20la%20experiencia%20digital%20para%20mi%20veterinaria.",
   ctaImplementacionLabel: "Quiero esto para mi veterinaria",
   ctaImplementacionUrl: "/contacto-demo",
   telefono: "+598 91 234 567",
-  direccion: "Av. Principal 1234, Montevideo",
-  horarios: "Lun a Sáb · 9:00–19:00"
+  direccion: "Av. Italia 2450, Montevideo",
+  horarios: "Lunes a sábado · 9:00 a 19:00"
 };
 
 export const servicios: {
@@ -165,7 +165,7 @@ export const testimonios = [
 export const faqs = [
   {
     q: "¿Puedo agendar sin llamar?",
-    a: "Sí. En la demo, el turno se confirma y queda guardado. En producción se conecta con WhatsApp/Email."
+    a: "Sí. Podés reservar en pocos pasos y recibir la confirmación por WhatsApp o email según el flujo configurado."
   },
   {
     q: "¿El triage reemplaza a una consulta?",
@@ -173,6 +173,6 @@ export const faqs = [
   },
   {
     q: "¿Cómo funcionan los recordatorios?",
-    a: "En demo se simulan. En producción se automatizan por WhatsApp/Email con plantillas aprobadas."
+    a: "Los recordatorios pueden enviarse por WhatsApp o email con mensajes listos para cada etapa de atención."
   }
 ];

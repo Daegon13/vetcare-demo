@@ -12,7 +12,7 @@ import { getRobotsMetadata, getSiteUrl } from "@/lib/seo";
 const siteUrl = getSiteUrl();
 
 const defaultTitle = `${BRAND.name} — Turnos, urgencias y portal del cliente`;
-const defaultDescription = `Demo web de ${BRAND.name}: agenda con disponibilidad real, triage de urgencias y portal para clientes.`;
+const defaultDescription = `${BRAND.name} reúne agenda online, atención priorizada y seguimiento digital para una experiencia veterinaria más ágil.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
