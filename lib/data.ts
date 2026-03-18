@@ -6,7 +6,7 @@ import { clinica, servicios, staff, vacunas, testimonios, faqs } from "@/src/dat
 
 export const BRAND = {
   name: clinica.nombre,
-  tagline: "Cuidado moderno, rápido y humano.",
+  tagline: "Cuidado veterinario claro, ágil y cercano.",
   phone: clinica.telefono,
   whatsapp: clinica.whatsapp.replace(/\s/g, ""),
   whatsappUrl: clinica.whatsappUrl,

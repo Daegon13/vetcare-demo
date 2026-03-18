@@ -43,7 +43,7 @@ export function GuidedDemoStrip({
   id,
   eyebrow = "RECORRIDO GUIADO",
   title = "Conocé VetCare en 3 pasos",
-  description = "Seguí este recorrido para ver en minutos el flujo completo de atención.",
+  description = "Recorré en minutos los momentos clave de la experiencia de atención.",
   steps = DEFAULT_DEMO_STEPS
 }: GuidedDemoStripProps) {
   return (
