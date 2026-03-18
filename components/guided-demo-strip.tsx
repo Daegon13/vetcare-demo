@@ -11,20 +11,20 @@ export type DemoStep = {
 const DEFAULT_DEMO_STEPS: DemoStep[] = [
   {
     label: "Turno",
-    description: "Reservá un turno en menos de un minuto, desde el servicio hasta la confirmación.",
+    description: "Reservá una consulta en pocos pasos, desde el servicio hasta la confirmación por tu canal de contacto.",
     ctaLabel: "Reservar turno",
     href: "/agenda"
   },
   {
     label: "Urgencias",
-    description: "Evaluá una urgencia con el triage guiado para priorizar síntomas en segundos.",
+    description: "Completá la orientación inicial para priorizar síntomas y saber cómo actuar antes de llegar.",
     ctaLabel: "Evaluar urgencia",
     href: "/urgencias"
   },
   {
     label: "Mi Mascota",
-    description: "Mirá el portal de Mi Mascota para revisar vacunas, vencimientos e historial.",
-    ctaLabel: "Abrir portal",
+    description: "Consultá vacunas, próximos controles e historial para seguir el plan de salud de tu mascota.",
+    ctaLabel: "Ver Mi Mascota",
     href: "/mi-mascota"
   }
 ];
@@ -41,9 +41,9 @@ type GuidedDemoStripProps = {
 export function GuidedDemoStrip({
   className,
   id,
-  eyebrow = "RECORRIDO GUIADO",
-  title = "Conocé VetCare en 3 pasos",
-  description = "Recorré en minutos los momentos clave de la experiencia de atención.",
+  eyebrow = "RECORRIDO DESTACADO",
+  title = "Conocé cómo te acompaña VetCare",
+  description = "Recorré los momentos clave de la atención para resolver turnos, urgencias y seguimiento desde un mismo lugar.",
   steps = DEFAULT_DEMO_STEPS
 }: GuidedDemoStripProps) {
   return (

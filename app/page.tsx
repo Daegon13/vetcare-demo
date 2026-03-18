@@ -12,8 +12,8 @@ import { GuidedDemoStrip } from "@/components/guided-demo-strip";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: `${BRAND.name} | Demo veterinaria con turnos y urgencias`,
-  description: `Conocé ${BRAND.name}: agenda online, triage de urgencias y portal para clientes en una sola experiencia.`,
+  title: `${BRAND.name} | Turnos, urgencias y seguimiento veterinario`,
+  description: `Conocé ${BRAND.name}: agenda online, orientación inicial en urgencias y seguimiento para tutores en una sola experiencia.`,
   path: "/"
 });
 
@@ -90,7 +90,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
               ) : null}
             </div>
             <div className="text-xs text-black/45 dark:text-white/55">
-              Conocé el flujo completo de atención en pocos minutos.
+              Encontrá turnos, orientación inicial y seguimiento en un recorrido claro y útil.
             </div>
             <div className="text-xs text-black/50 dark:text-white/60">
               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
@@ -123,7 +123,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
       </div>
 
       <Container className="py-6 sm:py-8">
-        <GuidedDemoStrip description="Empezá por agenda, seguí con urgencias y cerrá el recorrido en Mi Mascota." />
+        <GuidedDemoStrip description="Empezá por agenda, seguí con urgencias y cerrá el recorrido con el seguimiento de Mi Mascota." />
       </Container>
 
       <Container className="py-8 sm:py-10">

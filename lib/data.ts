@@ -1,12 +1,12 @@
 import type { Campaign, PetProfile, ServiceId } from "./types";
 import { clinica, servicios, staff, vacunas, testimonios, faqs } from "@/src/data/vet";
 
-// Capa de compatibilidad para el resto de la demo.
-// Si querés “rebrandear” VetCare, cambiá /src/data/vet.ts.
+// Capa de compatibilidad para el resto de la aplicación.
+// Si querés rebrandear VetCare, cambiá /src/data/vet.ts.
 
 export const BRAND = {
   name: clinica.nombre,
-  tagline: "Cuidado veterinario claro, ágil y cercano.",
+  tagline: clinica.tagline,
   phone: clinica.telefono,
   whatsapp: clinica.whatsapp.replace(/\s/g, ""),
   whatsappUrl: clinica.whatsappUrl,

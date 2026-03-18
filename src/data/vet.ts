@@ -5,14 +5,15 @@ import type { ServiceId, PetSpecies } from "@/lib/types";
 
 export const clinica = {
   nombre: "VetCare",
+  tagline: "Atención veterinaria clara, cercana y fácil de coordinar.",
   ciudad: "Montevideo",
   whatsapp: "+59891234567",
-  whatsappUrl: "https://wa.me/59891234567?text=Hola%20VetCare%2C%20quiero%20conocer%20la%20experiencia%20digital%20para%20mi%20veterinaria.",
-  ctaImplementacionLabel: "Quiero esto para mi veterinaria",
+  whatsappUrl: "https://wa.me/59891234567?text=Hola%20VetCare%2C%20quiero%20coordinar%20una%20consulta%20sobre%20turnos%20y%20atenci%C3%B3n%20para%20mi%20mascota.",
+  ctaImplementacionLabel: "Solicitar asesoría para mi veterinaria",
   ctaImplementacionUrl: "/contacto",
   telefono: "+598 91 234 567",
   direccion: "Av. Italia 2450, Montevideo",
-  horarios: "Lunes a sábado · 9:00 a 19:00"
+  horarios: "Lunes a sábado, de 9:00 a 19:00"
 };
 
 export const servicios: {
