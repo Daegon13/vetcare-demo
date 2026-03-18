@@ -3,12 +3,14 @@ import { DEFAULT_CAMPAIGNS, DEFAULT_PET } from "./data";
 import { buildDemoSeed } from "./demoSeed";
 import { clearLeads, getLeads, LEADS_STORAGE_KEY, saveLeads, type LeadEvent } from "./leads";
 
+const DEMO_SEED_VERSION = "3";
+
 const KEY = {
   appts: "vetcare.appts.v1",
   triage: "vetcare.triage.v1",
   pet: "vetcare.pet.v1",
   campaigns: "vetcare.campaigns.v1",
-  seeded: "vetcare.seeded.v2"
+  seeded: "vetcare.seeded.version"
 };
 
 function safeParse<T>(raw: string | null, fallback: T): T {
@@ -64,21 +66,32 @@ function safeRemove(key: string) {
   }
 }
 
+function getSeededVersion() {
+  return safeGetRaw(KEY.seeded);
+}
+
 function setSeededFlag() {
   if (!hasStorage()) return;
   try {
-    localStorage.setItem(KEY.seeded, "1");
+    localStorage.setItem(KEY.seeded, DEMO_SEED_VERSION);
   } catch {
     // noop
   }
 }
 
-function upsertSeedList<T extends { id: string }>(current: T[], seeded: T[]) {
+function upsertSeedList<T extends { id: string }>(current: T[], seeded: T[], replaceSeededItems = false) {
   const currentById = new Map(current.map((item) => [item.id, item]));
   let changed = false;
 
   for (const item of seeded) {
-    if (!currentById.has(item.id)) {
+    const existing = currentById.get(item.id);
+    if (!existing) {
+      currentById.set(item.id, item);
+      changed = true;
+      continue;
+    }
+
+    if (replaceSeededItems && JSON.stringify(existing) !== JSON.stringify(item)) {
       currentById.set(item.id, item);
       changed = true;
     }
@@ -114,9 +127,15 @@ function sortLeads(items: LeadEvent[]) {
     .sort((a, b) => new Date(b.createdAtISO).getTime() - new Date(a.createdAtISO).getTime());
 }
 
-function seedCollection<T extends { id: string }>(key: string, seeded: T[], fallback: T[], sortItems?: (items: T[]) => T[]) {
+function seedCollection<T extends { id: string }>(
+  key: string,
+  seeded: T[],
+  fallback: T[],
+  sortItems?: (items: T[]) => T[],
+  options?: { replaceSeededItems?: boolean }
+) {
   const current = safeGet<T[]>(key, fallback);
-  const { items, changed } = upsertSeedList(current, seeded);
+  const { items, changed } = upsertSeedList(current, seeded, options?.replaceSeededItems);
   const finalItems = sortItems ? sortItems(items) : items;
 
   if (changed || safeGetRaw(key) === null) {
@@ -126,18 +145,32 @@ function seedCollection<T extends { id: string }>(key: string, seeded: T[], fall
   return finalItems;
 }
 
+function shouldRefreshPet(currentPet: PetProfile, seedVersion: string | null) {
+  if (seedVersion === DEMO_SEED_VERSION) return false;
+  return currentPet.id === DEFAULT_PET.id || currentPet.id.startsWith("pet_seed_");
+}
+
 export function ensureDemoSeed() {
   if (!hasStorage()) return;
 
   try {
     const demo = buildDemoSeed();
+    const seedVersion = getSeededVersion();
+    const shouldRefreshSeededRecords = seedVersion !== DEMO_SEED_VERSION;
 
-    seedCollection(KEY.appts, demo.appointments, [], sortAppointments);
-    seedCollection(KEY.triage, demo.triage, [], sortTriage);
-    if (safeGetRaw(KEY.pet) === null) safeSet(KEY.pet, demo.pet);
-    seedCollection(KEY.campaigns, demo.campaigns, [], sortCampaigns);
+    seedCollection(KEY.appts, demo.appointments, [], sortAppointments, { replaceSeededItems: shouldRefreshSeededRecords });
+    seedCollection(KEY.triage, demo.triage, [], sortTriage, { replaceSeededItems: shouldRefreshSeededRecords });
 
-    const leadSeed = seedCollection(LEADS_STORAGE_KEY, demo.leads, getLeads(), sortLeads);
+    const currentPet = safeGet(KEY.pet, demo.pet);
+    if (safeGetRaw(KEY.pet) === null || shouldRefreshPet(currentPet, seedVersion)) {
+      safeSet(KEY.pet, demo.pet);
+    }
+
+    seedCollection(KEY.campaigns, demo.campaigns, [], sortCampaigns, { replaceSeededItems: shouldRefreshSeededRecords });
+
+    const leadSeed = seedCollection(LEADS_STORAGE_KEY, demo.leads, getLeads(), sortLeads, {
+      replaceSeededItems: shouldRefreshSeededRecords
+    });
     if (leadSeed.length > 0) {
       saveLeads(leadSeed);
     }
