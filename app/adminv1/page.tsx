@@ -238,12 +238,12 @@ export default function AdminV1Page() {
     <Container className="py-10">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <SectionHeading
-          eyebrow="Admin v1"
-          title="Panel operativo listo para demo comercial"
-          desc="Una vista compacta para mostrar agenda activa, casos priorizados, seguimiento de pacientes y campañas con señal de demanda desde la primera carga."
+          eyebrow="Panel de gestión"
+          title="Panel operativo con información clara desde la primera vista"
+          desc="Una vista compacta para revisar agenda activa, casos priorizados, seguimiento de pacientes y campañas sin pantallas vacías al ingresar."
         />
         <div className="flex gap-2 flex-wrap">
-          <Button variant="outline" onClick={demoReset}>Reset demo</Button>
+          <Button variant="outline" onClick={demoReset}>Restablecer datos</Button>
           <LinkButton href="/adminv1/marketing" variant="outline">Enlaces de marketing</LinkButton>
           <LinkButton href="/agenda" variant="outline">Ir a Agenda</LinkButton>
           <CommercialImplementationCTA location="adminv1" />
@@ -256,9 +256,9 @@ export default function AdminV1Page() {
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div className="grid gap-2">
                 <Badge tone="good">Operación visible</Badge>
-                <h2 className="text-2xl font-black text-graphite-950">{BRAND.name} en ritmo de atención real</h2>
+                <h2 className="text-2xl font-black text-graphite-950">{BRAND.name} con agenda, pacientes y seguimiento visibles desde el primer vistazo</h2>
                 <p className="max-w-2xl text-sm text-black/70">
-                  La demo abre con turnos confirmados, pacientes en seguimiento, urgencias priorizadas y campañas activas para que la conversación comercial parta desde resultados tangibles.
+                  La vista abre con turnos confirmados, pacientes en seguimiento, urgencias priorizadas y campañas activas para revisar la operación sin pasos extra.
                 </p>
               </div>
               <div className="rounded-2xl border border-cyanSoft-400/40 bg-white/90 px-4 py-3 text-sm shadow-sm">
@@ -346,7 +346,7 @@ export default function AdminV1Page() {
         </CardContent></Card>
 
         <Card><CardContent className="grid gap-1">
-          <div className="text-xs font-semibold text-black/50">Mascota demo</div>
+          <div className="text-xs font-semibold text-black/50">Mascota destacada</div>
           <div className="text-2xl font-black">{ready ? (pet?.petName ?? "—") : "…"}</div>
           <div className="text-sm text-black/60">{ready ? `${pet?.species ?? ""} · ${pet?.breed ?? "Ficha activa"}` : "Cargando"}</div>
         </CardContent></Card>
@@ -384,7 +384,7 @@ export default function AdminV1Page() {
               <div className="grid gap-3">
                 <div>
                   <div className="text-sm font-extrabold">Turnos</div>
-                  <div className="text-sm text-black/60">Agenda demostrativa con contexto clínico y comercial para mostrar operación continua.</div>
+                  <div className="text-sm text-black/60">Agenda activa con contexto clínico y estado de cada turno para revisar la jornada con rapidez.</div>
                 </div>
                 <div className="grid gap-2 md:grid-cols-3">
                   {filteredAppts.slice(0, 3).map(a => (
@@ -495,8 +495,8 @@ export default function AdminV1Page() {
           <Card>
             <CardHeader className="flex items-center justify-between gap-3 flex-wrap">
               <div className="grid">
-                <div className="text-sm font-extrabold">Mascota demo</div>
-                <div className="text-sm text-black/60">Ficha cargada para enseñar continuidad de cuidado, vacunas y contexto clínico en segundos.</div>
+                <div className="text-sm font-extrabold">Mascota destacada</div>
+                <div className="text-sm text-black/60">Ficha cargada con vacunas, datos clínicos y próximos hitos para consultar el estado general en segundos.</div>
               </div>
               <LinkButton href="/mi-mascota" variant="outline">Abrir portal</LinkButton>
             </CardHeader>
@@ -535,7 +535,7 @@ export default function AdminV1Page() {
               )}
 
               <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/70">
-                Historial preventivo visible, datos clínicos listos para conversar y próximos hitos de cuidado que ayudan a vender seguimiento recurrente.
+                Historial preventivo visible, datos clínicos ordenados y próximos hitos de cuidado para sostener el seguimiento.
               </div>
             </CardContent>
           </Card>
@@ -546,13 +546,13 @@ export default function AdminV1Page() {
             <Card className="lg:col-span-5">
               <CardHeader>
                 <div className="text-sm font-extrabold">Canales de conversión de leads</div>
-                <div className="text-sm text-black/60">Señales de demanda capturadas desde agenda y landing para mostrar trazabilidad comercial.</div>
+                <div className="text-sm text-black/60">Eventos de contacto capturados desde agenda y landing para revisar el origen de cada conversación.</div>
               </CardHeader>
               <CardContent className="grid gap-3">
                 {!ready ? (
                   <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
                 ) : leads.length === 0 ? (
-                  <div className="text-sm text-black/60">La demo ya incluye eventos de contacto para contar el recorrido completo.</div>
+                  <div className="text-sm text-black/60">Todavía no hay eventos guardados en esta vista.</div>
                 ) : (
                   leads.map((event) => (
                     <div key={event.id} className="rounded-2xl border border-black/10 bg-white p-3 text-sm">

@@ -115,9 +115,9 @@ export default function AdminV1MarketingPage() {
     <Container className="py-10">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <SectionHeading
-          eyebrow="Admin v1"
-          title="Marketing link builder"
-          desc="Generá links listos para compartir con UTM, preview confiable y comportamiento coherente entre demo interna y producción."
+          eyebrow="Panel de gestión"
+          title="Generador de enlaces para campañas"
+          desc="Generá enlaces listos para compartir con UTM y una vista previa confiable antes de publicarlos."
         />
         <div className="flex flex-wrap gap-2">
           <Link href="/adminv1" className="inline-flex h-11 items-center rounded-xl border border-black/10 bg-white px-4 text-sm font-semibold hover:bg-black/5">
@@ -129,8 +129,8 @@ export default function AdminV1MarketingPage() {
 
       <Card className="mt-6">
         <CardHeader>
-          <div className="text-sm font-extrabold">Destino</div>
-          <div className="text-sm text-black/60">Elegí la ruta base y completá parámetros UTM opcionales. El builder toma como base la URL pública configurada y, en local, usa el origin actual de forma segura.</div>
+          <div className="text-sm font-extrabold">Destino del enlace</div>
+          <div className="text-sm text-black/60">Elegí la ruta base y completá parámetros UTM opcionales. Tomamos como base la URL pública configurada y, en local, usamos el origen actual para mantener el preview confiable.</div>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
@@ -168,7 +168,7 @@ export default function AdminV1MarketingPage() {
 
           <div className="grid gap-4 lg:grid-cols-2">
             <div className="grid gap-2">
-              <div className="text-sm font-semibold">Presets de canal</div>
+              <div className="text-sm font-semibold">Canales sugeridos</div>
               <div className="flex flex-wrap gap-2">
                 {CHANNEL_PRESETS.map((preset) => (
                   <Button
@@ -191,7 +191,7 @@ export default function AdminV1MarketingPage() {
             </div>
 
             <div className="grid gap-2">
-              <div className="text-sm font-semibold">Campañas ejemplo</div>
+              <div className="text-sm font-semibold">Campañas sugeridas</div>
               <div className="flex flex-wrap gap-2">
                 {CAMPAIGN_PRESETS.map((campaign) => (
                   <Button key={campaign} size="sm" variant="outline" onClick={() => updateField("utm_campaign", campaign)}>
@@ -212,19 +212,19 @@ export default function AdminV1MarketingPage() {
                 setCopyFeedback("idle");
               }}
             />
-            Incluir demo=1 {includeDemo ? "(activo por entorno demo)" : ""}
+            Incluir recorrido guiado {includeDemo ? "(activo en esta vista)" : ""}
           </label>
 
           <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-4">
-            <div className="text-xs font-semibold uppercase text-black/50">Preview</div>
+            <div className="text-xs font-semibold uppercase text-black/50">Vista previa</div>
             <p className="mt-2 break-all font-mono text-sm">{generatedLink || "Resolviendo URL pública…"}</p>
             <p className="mt-2 text-xs text-black/60">{previewContext}</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={copyLink} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Copy link</Button>
+            <Button onClick={copyLink} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Copiar enlace</Button>
             {copyFeedback === "copied" ? <span className="text-sm text-emerald-700">Link copiado ✅</span> : null}
-            {copyFeedback === "error" ? <span className="text-sm text-rose-700">No se pudo copiar. Copiá desde el preview.</span> : null}
+            {copyFeedback === "error" ? <span className="text-sm text-rose-700">No se pudo copiar. Podés hacerlo desde la vista previa.</span> : null}
           </div>
         </CardContent>
       </Card>

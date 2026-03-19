@@ -25,7 +25,7 @@ export default function ContactoPage() {
         <div className="grid gap-2 rounded-2xl border border-cyanSoft-200/70 bg-cyanSoft-50/70 p-4 text-sm text-graphite-900 dark:border-cyanSoft-400/20 dark:bg-cyanSoft-400/10 dark:text-white/85 sm:grid-cols-3">
           <div><span className="font-extrabold">Implementación guiada:</span> configuramos marca, servicios y canales de contacto.</div>
           <div><span className="font-extrabold">Salida rápida:</span> validamos agenda, urgencias y seguimiento con tu operación diaria.</div>
-          <div><span className="font-extrabold">CTA único:</span> {COMMERCIAL_IMPLEMENTATION_CTA.label} siempre lleva a esta ruta activa.</div>
+          <div><span className="font-extrabold">Contacto unificado:</span> desde acá coordinamos la propuesta, resolvemos dudas y te acompañamos en la puesta en marcha.</div>
         </div>
       </section>
 

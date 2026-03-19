@@ -98,6 +98,9 @@ export function Nav() {
   }
 
   const navLinks = demoToolsEnabled ? [...links, { href: "/adminv1", label: "Panel de gestión" }] : links;
+  const implementationRoutes = new Set(["/contacto", "/lp", "/gracias", "/adminv1", "/adminv1/marketing"]);
+  const primaryCtaHref = implementationRoutes.has(pathname || "") ? withDemo("/contacto") : withDemo("/agenda");
+  const primaryCtaLabel = implementationRoutes.has(pathname || "") ? "Solicitar asesoría" : "Reservar turno";
 
   return (
     <div className="sticky top-0 z-30 border-b border-black/5 bg-warm-100/85 text-graphite-900 backdrop-blur dark:border-white/10 dark:bg-graphite-950/85 dark:text-white">
@@ -144,8 +147,8 @@ export function Nav() {
             </button>
           ) : null}
 
-          <LinkButton href={withDemo("/agenda")} className="hidden whitespace-nowrap sm:inline-flex" variant="outline">
-            {demoToolsEnabled ? "Reservar turno" : "Solicitar asesoría"}
+          <LinkButton href={primaryCtaHref} className="hidden whitespace-nowrap sm:inline-flex" variant="outline">
+            {primaryCtaLabel}
           </LinkButton>
 
           {demoToolsEnabled ? <ThemeToggle /> : null}

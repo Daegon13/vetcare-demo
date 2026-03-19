@@ -16,8 +16,8 @@ export function Footer() {
         </div>
 
         <div className="grid gap-3 sm:justify-items-end">
-          <div className="text-sm font-semibold text-black/80 sm:text-right">Escribinos y coordinamos la mejor atención para tu mascota</div>
-          <div className="flex gap-2">
+          <div className="text-sm font-semibold text-black/80 sm:text-right">¿Querés coordinar una consulta o conocer la implementación? Te dejamos una opción clara para cada caso.</div>
+          <div className="flex flex-wrap gap-2 sm:justify-end">
             <LinkButton href="/agenda" variant="outline">Reservar turno</LinkButton>
             <LinkButton
               href={`https://wa.me/${BRAND.whatsapp.replace(/\D/g, "")}`}
@@ -27,6 +27,7 @@ export function Footer() {
             >
               Hablar por WhatsApp
             </LinkButton>
+            <LinkButton href="/contacto" variant="outline">Solicitar asesoría</LinkButton>
           </div>
         </div>
       </Container>
