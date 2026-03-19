@@ -6,7 +6,7 @@ import { appendUtmToUrl, getStoredUtm } from "@/lib/utm";
 export const COMMERCIAL_IMPLEMENTATION_CTA = {
   label: BRAND.implementationCtaLabel,
   href: BRAND.implementationCtaUrl,
-  secondaryWhatsappLabel: "Hablar por WhatsApp"
+  secondaryWhatsappLabel: BRAND.implementationSecondaryCtaLabel
 } as const;
 
 export function resolveCommercialImplementationHref() {

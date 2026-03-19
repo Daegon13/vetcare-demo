@@ -11,6 +11,7 @@ export const BRAND = {
   whatsapp: clinica.whatsapp.replace(/\s/g, ""),
   whatsappUrl: clinica.whatsappUrl,
   implementationCtaLabel: clinica.ctaImplementacionLabel,
+  implementationSecondaryCtaLabel: clinica.ctaImplementacionSecundariaLabel,
   implementationCtaUrl: clinica.ctaImplementacionUrl,
   address: clinica.direccion,
   hours: clinica.horarios

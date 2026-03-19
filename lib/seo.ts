@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { BRAND } from "@/lib/data";
+import { getConfiguredPublicSiteUrl } from "@/lib/siteUrl";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = getConfiguredPublicSiteUrl() ?? "https://example.com";
 const siteName = BRAND.name;
 
 const defaultOgImage = "/opengraph-image";
