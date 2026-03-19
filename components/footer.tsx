@@ -16,9 +16,10 @@ export function Footer() {
         </div>
 
         <div className="grid gap-3 sm:justify-items-end">
-          <div className="text-sm font-semibold text-black/80 sm:text-right">Escribinos y coordinamos la mejor atención para tu mascota</div>
-          <div className="flex gap-2">
+          <div className="text-sm font-semibold text-black/80 sm:text-right">Elegí cómo querés avanzar: turno online, WhatsApp o asesoría para tu veterinaria.</div>
+          <div className="flex flex-wrap gap-2 sm:justify-end">
             <LinkButton href="/agenda" variant="outline">Reservar turno</LinkButton>
+            <LinkButton href="/contacto" variant="outline">Solicitar asesoría</LinkButton>
             <LinkButton
               href={`https://wa.me/${BRAND.whatsapp.replace(/\D/g, "")}`}
               target="_blank"

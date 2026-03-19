@@ -169,7 +169,7 @@ export default function AgendaClientPage({ initialAppointments, initialServiceId
           <CardContent className="p-5 sm:p-6">
             <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Acción rápida</div>
             <div className="mt-3 text-2xl font-black tracking-tight">Reservá o resolvé por WhatsApp en la misma vista.</div>
-            <div className="mt-2 text-sm text-white/72">Jerarquía clara para demo comercial: disponibilidad primero, acción principal siempre a mano y soporte inmediato por chat.</div>
+            <div className="mt-2 text-sm text-white/72">Disponibilidad primero, acción principal siempre a mano y soporte inmediato por chat para resolver más rápido.</div>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button onClick={jumpToBooking} className="h-11 px-5 bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
                 Reservar ahora
@@ -316,7 +316,7 @@ export default function AgendaClientPage({ initialAppointments, initialServiceId
             <div className="text-sm text-black/60">Vista rápida para tutor y recepción</div>
           </CardHeader>
           <CardContent className="grid gap-3">
-            <Badge tone="neutral">Agenda demo visible desde el inicio</Badge>
+            <Badge tone="neutral">Agenda visible desde el inicio</Badge>
             {upcomingVisible.map(a => (
               <div key={a.id} className="grid gap-1 rounded-2xl border border-black/10 bg-white p-4">
                 <div className="flex items-center justify-between gap-3">

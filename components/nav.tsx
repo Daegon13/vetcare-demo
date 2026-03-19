@@ -145,7 +145,7 @@ export function Nav() {
           ) : null}
 
           <LinkButton href={withDemo("/agenda")} className="hidden whitespace-nowrap sm:inline-flex" variant="outline">
-            {demoToolsEnabled ? "Reservar turno" : "Solicitar asesoría"}
+            Reservar turno
           </LinkButton>
 
           {demoToolsEnabled ? <ThemeToggle /> : null}
