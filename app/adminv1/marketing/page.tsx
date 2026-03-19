@@ -117,7 +117,7 @@ export default function AdminV1MarketingPage() {
         <SectionHeading
           eyebrow="Panel de gestión"
           title="Generador de enlaces para campañas"
-          desc="Generá enlaces listos para compartir con UTM, una vista previa confiable y comportamiento coherente entre panel y sitio público."
+          desc="Generá enlaces listos para compartir con UTM y una vista previa confiable antes de publicarlos."
         />
         <div className="flex flex-wrap gap-2">
           <Link href="/adminv1" className="inline-flex h-11 items-center rounded-xl border border-black/10 bg-white px-4 text-sm font-semibold hover:bg-black/5">
@@ -130,7 +130,7 @@ export default function AdminV1MarketingPage() {
       <Card className="mt-6">
         <CardHeader>
           <div className="text-sm font-extrabold">Destino del enlace</div>
-          <div className="text-sm text-black/60">Elegí la ruta base y completá parámetros UTM opcionales. El generador toma como base la URL pública configurada y, en local, usa el origen actual de forma segura.</div>
+          <div className="text-sm text-black/60">Elegí la ruta base y completá parámetros UTM opcionales. Tomamos como base la URL pública configurada y, en local, usamos el origen actual para mantener el preview confiable.</div>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
@@ -212,7 +212,7 @@ export default function AdminV1MarketingPage() {
                 setCopyFeedback("idle");
               }}
             />
-            Mantener modo demo {includeDemo ? "(activo por entorno demo)" : ""}
+            Incluir recorrido guiado {includeDemo ? "(activo en esta vista)" : ""}
           </label>
 
           <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-4">
@@ -224,7 +224,7 @@ export default function AdminV1MarketingPage() {
           <div className="flex flex-wrap items-center gap-3">
             <Button onClick={copyLink} className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Copiar enlace</Button>
             {copyFeedback === "copied" ? <span className="text-sm text-emerald-700">Link copiado ✅</span> : null}
-            {copyFeedback === "error" ? <span className="text-sm text-rose-700">No se pudo copiar. Copiá desde el preview.</span> : null}
+            {copyFeedback === "error" ? <span className="text-sm text-rose-700">No se pudo copiar. Podés hacerlo desde la vista previa.</span> : null}
           </div>
         </CardContent>
       </Card>
