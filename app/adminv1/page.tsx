@@ -1,8 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
-import { BRAND, SERVICES } from "@/lib/data";
+import { BRAND, SERVICES, STAFF } from "@/lib/data";
 import type { Appointment, AppointmentStatus, Campaign, PetProfile, TriageCase } from "@/lib/types";
 import { getSeedPreview, loadAppointments, loadCampaigns, loadPet, loadTriage, resetDemo, saveAppointments, saveCampaigns, savePet, saveTriage } from "@/lib/storage";
 import { cn, uid } from "@/lib/utils";
@@ -18,6 +17,26 @@ function statTone(n: number) {
   return n === 0 ? "neutral" : "good";
 }
 
+function formatDateLabel(dateISO: string, time?: string) {
+  const value = new Date(`${dateISO}T${time ?? "00:00"}:00`);
+  return value.toLocaleString("es-UY", {
+    weekday: "short",
+    day: "2-digit",
+    month: "short",
+    hour: time ? "2-digit" : undefined,
+    minute: time ? "2-digit" : undefined
+  });
+}
+
+function formatDateTimeLabel(value: string) {
+  return new Date(value).toLocaleString("es-UY", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
 export default function AdminV1Page() {
   const [tab, setTab] = React.useState<Tab>("turnos");
 
@@ -28,11 +47,10 @@ export default function AdminV1Page() {
   const [pet, setPet] = React.useState<PetProfile | null>(seed.pet);
   const [campaigns, setCampaigns] = React.useState<Campaign[]>(seed.campaigns);
   const [leads, setLeads] = React.useState<LeadEvent[]>(seed.leads);
-  const [ready, setReady] = React.useState(true);
+  const ready = true;
 
   const [q, setQ] = React.useState("");
 
-  // campaign form
   const [cTitle, setCTitle] = React.useState("");
   const [cAudience, setCAudience] = React.useState<Campaign["audience"]>("Clientes");
   const [cChannel, setCChannel] = React.useState<Campaign["channel"]>("WhatsApp");
@@ -64,8 +82,9 @@ export default function AdminV1Page() {
     const total = appts.length;
     const pending = appts.filter(a => a.status === "pendiente").length;
     const confirmed = appts.filter(a => a.status === "confirmado").length;
+    const attended = appts.filter(a => a.status === "atendido").length;
     const cancelled = appts.filter(a => a.status === "cancelado").length;
-    return { total, pending, confirmed, cancelled };
+    return { total, pending, confirmed, attended, cancelled };
   }, [appts]);
 
   const triageStats = React.useMemo(() => {
@@ -75,6 +94,42 @@ export default function AdminV1Page() {
     const baja = triage.filter(t => t.priority === "baja").length;
     return { total, alta, media, baja };
   }, [triage]);
+
+  const dashboardSummary = React.useMemo(() => {
+    const upcomingAppointments = appts
+      .filter(appointment => appointment.status !== "cancelado")
+      .slice()
+      .sort((a, b) => `${a.dateISO}${a.time}`.localeCompare(`${b.dateISO}${b.time}`));
+    const firstDate = upcomingAppointments[0]?.dateISO;
+    const nextAppointment = upcomingAppointments[0] ?? null;
+    const todayAppointments = firstDate ? upcomingAppointments.filter(appointment => appointment.dateISO === firstDate).length : 0;
+    const sentCampaigns = campaigns.filter(campaign => campaign.status === "enviada").length;
+    const activeCampaigns = campaigns.filter(campaign => campaign.status !== "borrador").length;
+    const leadChannels = new Set(leads.map(lead => lead.channel));
+
+    return {
+      nextAppointment,
+      todayAppointments,
+      sentCampaigns,
+      activeCampaigns,
+      leadChannels: leadChannels.size
+    };
+  }, [appts, campaigns, leads]);
+
+  const highlightedCases = React.useMemo(() => {
+    const priorityOrder = { alta: 0, media: 1, baja: 2 } as const;
+    return triage
+      .slice()
+      .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority] || new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 3);
+  }, [triage]);
+
+  const vaccinePreview = React.useMemo(() => {
+    return pet?.vaccines
+      .slice()
+      .sort((a, b) => (a.nextDueISO ?? a.dateISO).localeCompare(b.nextDueISO ?? b.dateISO))
+      .slice(0, 2) ?? [];
+  }, [pet]);
 
   function setStatus(id: string, status: AppointmentStatus) {
     persistAppts(appts.map(a => (a.id === id ? { ...a, status } : a)));
@@ -174,7 +229,9 @@ export default function AdminV1Page() {
     };
     const next = [item, ...campaigns];
     persistCampaigns(next);
-    setCTitle(""); setCMsg(""); setCWhen("");
+    setCTitle("");
+    setCMsg("");
+    setCWhen("");
   }
 
   return (
@@ -182,8 +239,8 @@ export default function AdminV1Page() {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <SectionHeading
           eyebrow="Admin v1"
-          title="Panel operativo (demo orientativa)"
-          desc="Vista integral de operación diaria: turnos, urgencias, seguimiento y campañas en un solo panel."
+          title="Panel operativo listo para demo comercial"
+          desc="Una vista compacta para mostrar agenda activa, casos priorizados, seguimiento de pacientes y campañas con señal de demanda desde la primera carga."
         />
         <div className="flex gap-2 flex-wrap">
           <Button variant="outline" onClick={demoReset}>Reset demo</Button>
@@ -193,6 +250,79 @@ export default function AdminV1Page() {
         </div>
       </div>
 
+      <div className="mt-6 grid gap-4 xl:grid-cols-[1.5fr_1fr]">
+        <Card className="overflow-hidden border-cyanSoft-400/40 bg-gradient-to-br from-cyanSoft-50 via-white to-white">
+          <CardContent className="grid gap-5 p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="grid gap-2">
+                <Badge tone="good">Operación visible</Badge>
+                <h2 className="text-2xl font-black text-graphite-950">{BRAND.name} en ritmo de atención real</h2>
+                <p className="max-w-2xl text-sm text-black/70">
+                  La demo abre con turnos confirmados, pacientes en seguimiento, urgencias priorizadas y campañas activas para que la conversación comercial parta desde resultados tangibles.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-cyanSoft-400/40 bg-white/90 px-4 py-3 text-sm shadow-sm">
+                <div className="text-xs font-semibold uppercase tracking-wide text-black/45">Próxima atención</div>
+                <div className="mt-1 font-extrabold text-graphite-950">
+                  {dashboardSummary.nextAppointment ? `${dashboardSummary.nextAppointment.petName} · ${formatDateLabel(dashboardSummary.nextAppointment.dateISO, dashboardSummary.nextAppointment.time)}` : "Agenda activa"}
+                </div>
+                <div className="text-black/60">
+                  {dashboardSummary.nextAppointment
+                    ? SERVICES.find(service => service.id === dashboardSummary.nextAppointment?.serviceId)?.name
+                    : "Turnos cargados para hoy y próximos días."}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-3">
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold text-black/50">Atención de hoy</div>
+                <div className="mt-1 text-2xl font-black">{dashboardSummary.todayAppointments}</div>
+                <div className="text-sm text-black/65">turnos activos en la jornada con seguimiento por WhatsApp y mostrador.</div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold text-black/50">Triage priorizado</div>
+                <div className="mt-1 text-2xl font-black">{triageStats.alta + triageStats.media}</div>
+                <div className="text-sm text-black/65">casos que requieren respuesta hoy, con recomendación lista para el equipo.</div>
+              </div>
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold text-black/50">Campañas en movimiento</div>
+                <div className="mt-1 text-2xl font-black">{dashboardSummary.activeCampaigns}</div>
+                <div className="text-sm text-black/65">acciones comerciales programadas en WhatsApp e Instagram.</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <div className="text-sm font-extrabold">Resumen de operación</div>
+            <div className="text-sm text-black/60">Bloques listos para contar la historia del negocio en una reunión comercial.</div>
+          </CardHeader>
+          <CardContent className="grid gap-3">
+            <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4">
+              <div className="text-xs font-semibold uppercase tracking-wide text-black/45">Equipo activo</div>
+              <div className="mt-1 text-sm font-semibold text-graphite-950">{STAFF[0]?.nombre}</div>
+              <div className="text-sm text-black/65">{STAFF[0]?.especialidades.join(" · ")}</div>
+            </div>
+            <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4">
+              <div className="text-xs font-semibold uppercase tracking-wide text-black/45">Paciente destacado</div>
+              <div className="mt-1 text-sm font-semibold text-graphite-950">{pet?.petName} · {pet?.breed ?? pet?.species}</div>
+              <div className="text-sm text-black/65">
+                {vaccinePreview[0]?.name
+                  ? `${vaccinePreview[0].name} próximo refuerzo ${formatDateLabel(vaccinePreview[0].nextDueISO ?? vaccinePreview[0].dateISO)}`
+                  : "Calendario preventivo cargado."}
+              </div>
+            </div>
+            <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4">
+              <div className="text-xs font-semibold uppercase tracking-wide text-black/45">Demanda capturada</div>
+              <div className="mt-1 text-sm font-semibold text-graphite-950">{leads.length} leads registrados</div>
+              <div className="text-sm text-black/65">{dashboardSummary.leadChannels} canales de origen con trazabilidad básica para seguimiento.</div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <div className="mt-6 grid gap-3 md:grid-cols-4">
         <Card><CardContent className="grid gap-1">
           <div className="text-xs font-semibold text-black/50">Turnos</div>
@@ -200,6 +330,7 @@ export default function AdminV1Page() {
           <div className="flex gap-2 flex-wrap">
             <Badge tone={ready ? statTone(apptStats.pending) : "neutral"}>Pend: {ready ? apptStats.pending : "…"}</Badge>
             <Badge tone={ready ? statTone(apptStats.confirmed) : "neutral"}>Conf: {ready ? apptStats.confirmed : "…"}</Badge>
+            <Badge tone={ready ? statTone(apptStats.attended) : "neutral"}>Atend: {ready ? apptStats.attended : "…"}</Badge>
             <Badge tone={ready ? (apptStats.cancelled ? "warn" : "neutral") : "neutral"}>Canc: {ready ? apptStats.cancelled : "…"}</Badge>
           </div>
         </CardContent></Card>
@@ -217,13 +348,13 @@ export default function AdminV1Page() {
         <Card><CardContent className="grid gap-1">
           <div className="text-xs font-semibold text-black/50">Mascota demo</div>
           <div className="text-2xl font-black">{ready ? (pet?.petName ?? "—") : "…"}</div>
-          <div className="text-sm text-black/60">{ready ? (pet?.species ?? "") : "Cargando"}</div>
+          <div className="text-sm text-black/60">{ready ? `${pet?.species ?? ""} · ${pet?.breed ?? "Ficha activa"}` : "Cargando"}</div>
         </CardContent></Card>
 
         <Card><CardContent className="grid gap-1">
           <div className="text-xs font-semibold text-black/50">Campañas</div>
           <div className="text-2xl font-black">{ready ? campaigns.length : "…"}</div>
-          <div className="text-sm text-black/60">WhatsApp · IG · Email</div>
+          <div className="text-sm text-black/60">{dashboardSummary.sentCampaigns} enviadas · {campaigns.length - dashboardSummary.sentCampaigns} preparadas</div>
         </CardContent></Card>
       </div>
 
@@ -250,9 +381,19 @@ export default function AdminV1Page() {
         {tab === "turnos" ? (
           <Card>
             <CardHeader className="flex items-center justify-between gap-4 flex-wrap">
-              <div className="grid">
-                <div className="text-sm font-extrabold">Turnos</div>
-                <div className="text-sm text-black/60">Gestión simple del estado de cada turno con contexto de cliente y mascota.</div>
+              <div className="grid gap-3">
+                <div>
+                  <div className="text-sm font-extrabold">Turnos</div>
+                  <div className="text-sm text-black/60">Agenda demostrativa con contexto clínico y comercial para mostrar operación continua.</div>
+                </div>
+                <div className="grid gap-2 md:grid-cols-3">
+                  {filteredAppts.slice(0, 3).map(a => (
+                    <div key={a.id} className="rounded-2xl border border-black/10 bg-black/[0.02] px-3 py-2 text-sm">
+                      <div className="font-semibold text-graphite-950">{a.petName} · {a.time}</div>
+                      <div className="text-black/65">{SERVICES.find(s => s.id === a.serviceId)?.name}</div>
+                    </div>
+                  ))}
+                </div>
               </div>
               <div className="text-xs text-black/50">Local: {BRAND.address}</div>
             </CardHeader>
@@ -260,7 +401,7 @@ export default function AdminV1Page() {
               {!ready ? (
                 <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" />
               ) : filteredAppts.length === 0 ? (
-                <div className="text-sm text-black/60">No hay turnos que coincidan.</div>
+                <div className="text-sm text-black/60">No encontramos coincidencias para esa búsqueda dentro de la agenda cargada.</div>
               ) : (
                 filteredAppts.map(a => (
                   <div key={a.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-2">
@@ -294,17 +435,32 @@ export default function AdminV1Page() {
         {tab === "triage" ? (
           <Card>
             <CardHeader>
-              <div className="text-sm font-extrabold">Triage entrante</div>
-              <div className="text-sm text-black/60">Permite ordenar casos entrantes y marcar resolución dentro del flujo demo.</div>
+              <div className="grid gap-3 lg:grid-cols-[1.3fr_1fr] lg:items-start">
+                <div>
+                  <div className="text-sm font-extrabold">Triage entrante</div>
+                  <div className="text-sm text-black/60">Resumen de ingresos para mostrar priorización clínica y respuesta rápida del equipo.</div>
+                </div>
+                <div className="grid gap-2">
+                  {highlightedCases.map(item => (
+                    <div key={item.id} className="rounded-2xl border border-black/10 bg-black/[0.02] p-3 text-sm">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-semibold text-graphite-950">{item.petName}</span>
+                        <Badge tone={item.priority === "alta" ? "bad" : item.priority === "media" ? "warn" : "good"}>{item.priority}</Badge>
+                      </div>
+                      <div className="text-black/65">{item.recommendedAction}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="grid gap-3">
               {!ready ? (
                 <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" />
               ) : filteredTriage.length === 0 ? (
-                <div className="text-sm text-black/60">No hay casos.</div>
+                <div className="text-sm text-black/60">Todos los casos priorizados ya fueron revisados.</div>
               ) : (
                 filteredTriage.map(t => (
-                  <div key={t.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-2">
+                  <div key={t.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="grid">
                         <div className="text-sm font-extrabold">{t.petName} <span className="text-black/40">·</span> {t.ownerName}</div>
@@ -312,6 +468,10 @@ export default function AdminV1Page() {
                         <div className="text-sm text-black/70">{t.recommendedAction}</div>
                       </div>
                       <Badge tone={t.priority === "alta" ? "bad" : t.priority === "media" ? "warn" : "good"}>{t.priority}</Badge>
+                    </div>
+                    <div className="grid gap-2 rounded-2xl bg-black/[0.02] p-3 text-sm text-black/70">
+                      <div><span className="font-semibold text-graphite-950">Motivo:</span> {t.freeText}</div>
+                      <div><span className="font-semibold text-graphite-950">Síntomas:</span> {t.symptoms.join(", ")}</div>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       <LinkButton
@@ -336,35 +496,46 @@ export default function AdminV1Page() {
             <CardHeader className="flex items-center justify-between gap-3 flex-wrap">
               <div className="grid">
                 <div className="text-sm font-extrabold">Mascota demo</div>
-                <div className="text-sm text-black/60">Vista de seguimiento para mostrar historial y próximos cuidados de la mascota.</div>
+                <div className="text-sm text-black/60">Ficha cargada para enseñar continuidad de cuidado, vacunas y contexto clínico en segundos.</div>
               </div>
               <LinkButton href="/mi-mascota" variant="outline">Abrir portal</LinkButton>
             </CardHeader>
             <CardContent className="grid gap-4">
               {!pet || !ready ? <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" /> : (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="Nombre">
-                    <Input value={pet.petName} onChange={e => persistPet({ ...pet, petName: e.target.value })} />
-                  </Field>
-                  <Field label="Especie">
-                    <Select value={pet.species} onChange={e => persistPet({ ...pet, species: e.target.value as any })}>
-                      <option>Perro</option><option>Gato</option><option>Otro</option>
-                    </Select>
-                  </Field>
-                  <Field label="Raza">
-                    <Input value={pet.breed ?? ""} onChange={e => persistPet({ ...pet, breed: e.target.value })} />
-                  </Field>
-                  <Field label="Peso kg">
-                    <Input type="number" step="0.1" value={pet.weightKg ?? ""} onChange={e => persistPet({ ...pet, weightKg: e.target.value ? Number(e.target.value) : undefined })} />
-                  </Field>
-                  <Field label="Alergias">
-                    <Textarea value={pet.allergies ?? ""} onChange={e => persistPet({ ...pet, allergies: e.target.value })} />
-                  </Field>
-                </div>
+                <>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <Field label="Nombre">
+                      <Input value={pet.petName} onChange={e => persistPet({ ...pet, petName: e.target.value })} />
+                    </Field>
+                    <Field label="Especie">
+                      <Select value={pet.species} onChange={e => persistPet({ ...pet, species: e.target.value as PetProfile["species"] })}>
+                        <option>Perro</option><option>Gato</option><option>Otro</option>
+                      </Select>
+                    </Field>
+                    <Field label="Raza">
+                      <Input value={pet.breed ?? ""} onChange={e => persistPet({ ...pet, breed: e.target.value })} />
+                    </Field>
+                    <Field label="Peso kg">
+                      <Input type="number" step="0.1" value={pet.weightKg ?? ""} onChange={e => persistPet({ ...pet, weightKg: e.target.value ? Number(e.target.value) : undefined })} />
+                    </Field>
+                    <Field label="Alergias">
+                      <Textarea value={pet.allergies ?? ""} onChange={e => persistPet({ ...pet, allergies: e.target.value })} />
+                    </Field>
+                  </div>
+                  <div className="grid gap-3 lg:grid-cols-2">
+                    {vaccinePreview.map(vaccine => (
+                      <div key={vaccine.id} className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm">
+                        <div className="font-extrabold text-graphite-950">{vaccine.name}</div>
+                        <div className="text-black/65">Aplicada: {formatDateLabel(vaccine.dateISO)}</div>
+                        <div className="text-black/65">Próximo hito: {formatDateLabel(vaccine.nextDueISO ?? vaccine.dateISO)}</div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
 
-              <div className="text-xs text-black/50">
-                En una versión real: múltiples mascotas por usuario, adjuntos, recordatorios automáticos y compra de planes.
+              <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm text-black/70">
+                Historial preventivo visible, datos clínicos listos para conversar y próximos hitos de cuidado que ayudan a vender seguimiento recurrente.
               </div>
             </CardContent>
           </Card>
@@ -375,19 +546,25 @@ export default function AdminV1Page() {
             <Card className="lg:col-span-5">
               <CardHeader>
                 <div className="text-sm font-extrabold">Canales de conversión de leads</div>
-                <div className="text-sm text-black/60">Registro local e idempotente por evento: whatsapp_click y thank_you.</div>
+                <div className="text-sm text-black/60">Señales de demanda capturadas desde agenda y landing para mostrar trazabilidad comercial.</div>
               </CardHeader>
               <CardContent className="grid gap-3">
                 {!ready ? (
                   <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
                 ) : leads.length === 0 ? (
-                  <div className="text-sm text-black/60">Aún no hay eventos de lead.</div>
+                  <div className="text-sm text-black/60">La demo ya incluye eventos de contacto para contar el recorrido completo.</div>
                 ) : (
                   leads.map((event) => (
                     <div key={event.id} className="rounded-2xl border border-black/10 bg-white p-3 text-sm">
-                      <div className="font-semibold">{event.channel}</div>
-                      <div className="text-xs text-black/60">leadId: {event.id.split(":")[0] ?? event.id}</div>
-                      <div className="text-xs text-black/55">{new Date(event.createdAtISO).toLocaleString("es-UY")}</div>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <div className="font-semibold">{event.channel}</div>
+                          <div className="text-xs text-black/60">{event.sourcePage} · {event.petName ?? "Lead comercial"}</div>
+                        </div>
+                        <Badge tone="neutral">{event.utm?.utm_source ?? "directo"}</Badge>
+                      </div>
+                      <div className="mt-2 text-xs text-black/60">leadId: {event.id.split(":")[0] ?? event.id}</div>
+                      <div className="text-xs text-black/55">{formatDateTimeLabel(event.createdAtISO)}</div>
                     </div>
                   ))
                 )}
@@ -396,13 +573,13 @@ export default function AdminV1Page() {
             <Card className="lg:col-span-3">
               <CardHeader>
                 <div className="text-sm font-extrabold">Campañas</div>
-                <div className="text-sm text-black/60">Simulación de marketing: programar, copiar y “enviar”.</div>
+                <div className="text-sm text-black/60">Campañas listas para ilustrar reactivación de clientes y generación de consultas.</div>
               </CardHeader>
               <CardContent className="grid gap-3">
                 {!ready ? (
                   <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
                 ) : campaigns.length === 0 ? (
-                  <div className="text-sm text-black/60">No hay campañas.</div>
+                  <div className="text-sm text-black/60">Ya hay acciones sugeridas para que la historia comercial no arranque en blanco.</div>
                 ) : (
                   campaigns.map(c => (
                     <div key={c.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-2">
@@ -452,7 +629,7 @@ export default function AdminV1Page() {
             <Card className="lg:col-span-2">
               <CardHeader>
                 <div className="text-sm font-extrabold">Nueva campaña</div>
-                <div className="text-sm text-black/60">Planificación de campañas para distintos públicos y canales.</div>
+                <div className="text-sm text-black/60">Carga rápida para preparar la próxima acción comercial sin salir del panel.</div>
               </CardHeader>
               <CardContent className="grid gap-3">
                 <Field label="Título">
@@ -460,13 +637,13 @@ export default function AdminV1Page() {
                 </Field>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field label="Audiencia">
-                    <Select value={cAudience} onChange={e => setCAudience(e.target.value as any)}>
+                    <Select value={cAudience} onChange={e => setCAudience(e.target.value as Campaign["audience"])}>
                       <option>Clientes</option>
                       <option>Prospectos</option>
                     </Select>
                   </Field>
                   <Field label="Canal">
-                    <Select value={cChannel} onChange={e => setCChannel(e.target.value as any)}>
+                    <Select value={cChannel} onChange={e => setCChannel(e.target.value as Campaign["channel"])}>
                       <option>WhatsApp</option>
                       <option>Instagram</option>
                       <option>Email</option>
@@ -483,7 +660,7 @@ export default function AdminV1Page() {
                   Crear campaña
                 </Button>
                 <div className="text-xs text-black/50">
-                  En producción: integración con WhatsApp Business API, proveedor de email y seguimiento de conversiones.
+                  Ideal para presentar campañas estacionales, reactivación de pacientes y recordatorios preventivos en un mismo flujo.
                 </div>
               </CardContent>
             </Card>
@@ -495,7 +672,7 @@ export default function AdminV1Page() {
             <CardHeader className="flex items-center justify-between gap-3 flex-wrap">
               <div className="grid">
                 <div className="text-sm font-extrabold">Leads</div>
-                <div className="text-sm text-black/60">Registro centralizado de contactos para seguimiento comercial.</div>
+                <div className="text-sm text-black/60">Base de contactos lista para seguimiento comercial y atribución básica por origen.</div>
               </div>
               <div className="flex flex-wrap gap-2">
                 <Button size="sm" variant="outline" onClick={onExportCSV}>Export CSV</Button>
@@ -507,7 +684,7 @@ export default function AdminV1Page() {
               {!ready ? (
                 <div className="h-24 w-full animate-pulse rounded-2xl bg-black/5" />
               ) : filteredLeads.length === 0 ? (
-                <div className="text-sm text-black/60">No hay leads para mostrar.</div>
+                <div className="text-sm text-black/60">No hay coincidencias para ese filtro dentro de los leads cargados.</div>
               ) : (
                 <table className="min-w-full text-left text-sm">
                   <thead>
@@ -522,13 +699,15 @@ export default function AdminV1Page() {
                   </thead>
                   <tbody>
                     {filteredLeads.map((lead) => (
-                      <tr key={lead.id} className="border-b border-black/5 align-top">
-                        <td className="px-2 py-2 whitespace-nowrap">{new Date(lead.createdAtISO).toLocaleString("es-UY")}</td>
-                        <td className="px-2 py-2">{lead.sourcePage}</td>
-                        <td className="px-2 py-2">{lead.channel}</td>
-                        <td className="px-2 py-2">{(lead.interest ?? []).join(", ") || "—"}</td>
-                        <td className="px-2 py-2">{lead.utm?.utm_campaign ?? "—"}</td>
-                        <td className="px-2 py-2">{lead.note ?? "—"}</td>
+                      <tr key={lead.id} className="border-b border-black/5 align-top last:border-0">
+                        <td className="px-2 py-2 text-black/70">{new Date(lead.createdAtISO).toLocaleString("es-UY")}</td>
+                        <td className="px-2 py-2 text-black/70">{lead.sourcePage}</td>
+                        <td className="px-2 py-2">
+                          <Badge tone="neutral">{lead.channel}</Badge>
+                        </td>
+                        <td className="px-2 py-2 text-black/70">{(lead.interest ?? []).join(", ") || "—"}</td>
+                        <td className="px-2 py-2 text-black/70">{lead.utm?.utm_campaign ?? "—"}</td>
+                        <td className="px-2 py-2 text-black/70">{lead.note ?? "—"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -537,10 +716,6 @@ export default function AdminV1Page() {
             </CardContent>
           </Card>
         ) : null}
-      </div>
-
-      <div className="mt-10 text-xs text-black/50">
-        Demo orientativa. En producción: login, roles, permisos, auditoría, backups, métricas y calendario real.
       </div>
     </Container>
   );
