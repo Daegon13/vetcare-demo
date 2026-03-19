@@ -1,83 +1,32 @@
 "use client";
 
 import * as React from "react";
-import { useSearchParams } from "next/navigation";
 import { BRAND, SERVICES } from "@/lib/data";
 import { LeadCTA } from "@/components/LeadCTA";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import type { Appointment, ServiceId } from "@/lib/types";
 import { buildDailySlots, getService, makeICS } from "@/lib/schedule";
-import { getSeedPreview, loadAppointments, saveAppointments } from "@/lib/storage";
+import { loadAppointments, saveAppointments } from "@/lib/storage";
 import { formatDateLong, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
-function buildDemoUpcomingAppointments(): Appointment[] {
-  const day = (offset: number) => {
-    const d = new Date();
-    d.setDate(d.getDate() + offset);
-    return d.toISOString().slice(0, 10);
-  };
+type AgendaClientPageProps = {
+  initialAppointments: Appointment[];
+  initialServiceId: ServiceId;
+};
 
-  return [
-    {
-      id: "demo_ap_1",
-      createdAt: new Date().toISOString(),
-      dateISO: day(0),
-      time: "11:00",
-      serviceId: "consulta",
-      petName: "Mora",
-      ownerName: "Paula Díaz",
-      phone: "09 222 113",
-      status: "confirmado"
-    },
-    {
-      id: "demo_ap_2",
-      createdAt: new Date().toISOString(),
-      dateISO: day(0),
-      time: "16:30",
-      serviceId: "vacunacion",
-      petName: "Simón",
-      ownerName: "Agustín Pérez",
-      phone: "09 714 540",
-      status: "pendiente"
-    },
-    {
-      id: "demo_ap_3",
-      createdAt: new Date().toISOString(),
-      dateISO: day(1),
-      time: "10:30",
-      serviceId: "control",
-      petName: "Kira",
-      ownerName: "Natalia Silva",
-      phone: "09 665 390",
-      status: "pendiente"
-    }
-  ];
-}
-
-export default function AgendaPage() {
-  return (
-    <React.Suspense fallback={<AgendaPageSkeleton />}>
-      <AgendaPageInner />
-    </React.Suspense>
-  );
-}
-
-function AgendaPageInner() {
-  const sp = useSearchParams();
-  const pre = sp.get("service") as ServiceId | null;
-
-  const [serviceId, setServiceId] = React.useState<ServiceId>(pre ?? "consulta");
+export default function AgendaClientPage({ initialAppointments, initialServiceId }: AgendaClientPageProps) {
+  const [serviceId, setServiceId] = React.useState<ServiceId>(initialServiceId);
   const [dateISO, setDateISO] = React.useState<string>(todayISO());
   const [time, setTime] = React.useState<string>("");
   const [petName, setPetName] = React.useState("");
   const [ownerName, setOwnerName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [notes, setNotes] = React.useState("");
-  const [appts, setAppts] = React.useState<Appointment[]>(() => getSeedPreview().appointments);
+  const [appts, setAppts] = React.useState<Appointment[]>(initialAppointments);
   const [justCreated, setJustCreated] = React.useState<Appointment | null>(null);
 
   React.useEffect(() => {
@@ -92,13 +41,10 @@ function AgendaPageInner() {
   const slots = React.useMemo(() => buildDailySlots(dateISO, serviceId, appts), [dateISO, serviceId, appts]);
   const quickSlots = React.useMemo(() => slots.filter(s => s.isAvailable).slice(0, 6), [slots]);
   const svc = React.useMemo(() => getService(serviceId), [serviceId]);
-  const upcomingReal = React.useMemo(
-    () => appts.slice().sort((a, b) => (a.dateISO + a.time).localeCompare(b.dateISO + b.time)),
+  const upcomingVisible = React.useMemo(
+    () => appts.slice().sort((a, b) => (a.dateISO + a.time).localeCompare(b.dateISO + b.time)).slice(0, 5),
     [appts]
   );
-  const upcomingDemo = React.useMemo(() => buildDemoUpcomingAppointments(), []);
-  const showingDemo = upcomingReal.length === 0;
-  const upcomingVisible = showingDemo ? upcomingDemo : upcomingReal;
 
   function persist(next: Appointment[]) {
     setAppts(next);
@@ -163,6 +109,68 @@ function AgendaPageInner() {
         title="Reservá un turno"
         desc="Disponibilidad confirmada para hoy y próximos días, con agenda activa y próximos turnos visibles desde el primer segundo."
       />
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-[1.5fr,1fr]">
+        <Card className="overflow-hidden border border-cyanSoft-200/70 bg-[radial-gradient(circle_at_top_left,_rgba(157,240,255,0.28),_transparent_45%),linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,250,252,0.96))]">
+          <CardContent className="p-5 sm:p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="max-w-2xl">
+                <Badge tone="good" className="bg-emerald-100 text-emerald-800">Disponibilidad activa</Badge>
+                <div className="mt-3 text-xl font-black tracking-tight text-graphite-950 sm:text-2xl">Primeros espacios listos para confirmar hoy mismo.</div>
+                <div className="mt-2 text-sm text-black/65">
+                  Elegí un bloque recomendado, mantené el CTA principal visible y avanzá a la reserva sin pantallas vacías ni mensajes técnicos.
+                </div>
+              </div>
+              <div className="grid min-w-[220px] gap-2 rounded-2xl border border-white/70 bg-white/80 p-4 shadow-sm backdrop-blur">
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-black/45">Hoy en agenda</div>
+                <div className="flex items-center gap-2 text-sm text-black/70">
+                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
+                  {quickSlots.length} horarios destacados disponibles
+                </div>
+                <div className="flex items-center gap-2 text-sm text-black/70">
+                  <span className="inline-flex h-2.5 w-2.5 rounded-full bg-cyanSoft-500" />
+                  {upcomingVisible.length} próximos turnos visibles
+                </div>
+                <div className="text-xs text-black/50">{formatDateLong(dateISO)}</div>
+              </div>
+            </div>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {upcomingVisible.slice(0, 3).map((a) => (
+                <div key={`hero-${a.id}`} className="rounded-2xl border border-black/10 bg-white/85 p-4 shadow-sm">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-sm font-extrabold text-graphite-950">{a.time}</div>
+                      <div className="text-xs text-black/50">{formatDateLong(a.dateISO)}</div>
+                    </div>
+                    <Badge tone={a.status === "confirmado" ? "good" : a.status === "cancelado" ? "bad" : "neutral"}>{a.status}</Badge>
+                  </div>
+                  <div className="mt-3 text-sm font-semibold text-graphite-950">{a.petName}</div>
+                  <div className="text-sm text-black/65">{SERVICES.find(s => s.id === a.serviceId)?.name}</div>
+                  <div className="mt-1 text-xs text-black/50">Titular: {a.ownerName}</div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border border-black/5 bg-graphite-950 text-white">
+          <CardContent className="p-5 sm:p-6">
+            <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Acción rápida</div>
+            <div className="mt-3 text-2xl font-black tracking-tight">Reservá o resolvé por WhatsApp en la misma vista.</div>
+            <div className="mt-2 text-sm text-white/72">Jerarquía clara para demo comercial: disponibilidad primero, acción principal siempre a mano y soporte inmediato por chat.</div>
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Button onClick={createAppointment} disabled={!canSubmit()} className="h-11 px-5 bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
+                Confirmar turno
+              </Button>
+              <LeadCTA interest="turnos" label="Consultar por WhatsApp" variant="outline" />
+            </div>
+            <div className="mt-5 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
+              Confirmación en pocos pasos, con turno visible en agenda y opción de exportar al calendario apenas se reserva.
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <Card className="mt-6">
         <CardContent className="p-4">
@@ -297,91 +305,36 @@ function AgendaPageInner() {
             <div className="text-sm text-black/60">Vista rápida para tutor y recepción</div>
           </CardHeader>
           <CardContent className="grid gap-3">
-            {showingDemo ? <Badge tone="neutral">Agenda de ejemplo cargada</Badge> : null}
+            <Badge tone="neutral">Agenda demo visible desde el inicio</Badge>
             {upcomingVisible.map(a => (
               <div key={a.id} className="grid gap-1 rounded-2xl border border-black/10 bg-white p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-sm font-extrabold">{a.petName}</div>
-                  {!showingDemo ? (
-                    <Badge tone={a.status === "cancelado" ? "bad" : a.status === "confirmado" ? "good" : "neutral"}>
-                      {a.status}
-                    </Badge>
-                  ) : null}
+                  <Badge tone={a.status === "cancelado" ? "bad" : a.status === "confirmado" ? "good" : "neutral"}>
+                    {a.status}
+                  </Badge>
                 </div>
                 <div className="text-sm text-black/70">{SERVICES.find(s => s.id === a.serviceId)?.name} · {a.dateISO} · {a.time}</div>
                 <div className="text-xs text-black/55">Titular: {a.ownerName} · Tel: {a.phone}</div>
 
-                {!showingDemo ? (
-                  <div className="flex flex-wrap gap-2 pt-2">
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <button
+                    className="rounded-xl bg-black/5 px-3 py-2 text-xs font-semibold hover:bg-black/10"
+                    onClick={() => downloadICS(a)}
+                  >
+                    .ics
+                  </button>
+                  {a.status !== "cancelado" ? (
                     <button
-                      className="rounded-xl bg-black/5 px-3 py-2 text-xs font-semibold hover:bg-black/10"
-                      onClick={() => downloadICS(a)}
+                      className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-800 hover:bg-rose-100"
+                      onClick={() => cancelAppointment(a.id)}
                     >
-                      .ics
+                      Cancelar
                     </button>
-                    {a.status !== "cancelado" ? (
-                      <button
-                        className="rounded-xl bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-800 hover:bg-rose-100"
-                        onClick={() => cancelAppointment(a.id)}
-                      >
-                        Cancelar
-                      </button>
-                    ) : null}
-                  </div>
-                ) : null}
+                  ) : null}
+                </div>
               </div>
             ))}
-          </CardContent>
-        </Card>
-      </div>
-    </Container>
-  );
-}
-
-function AgendaPageSkeleton() {
-  return (
-    <Container className="py-10">
-      <SectionHeading
-        eyebrow="Agenda"
-        title="Reservá un turno"
-        desc="Agenda profesional con disponibilidad activa, bloques sugeridos y seguimiento de turnos desde la primera carga."
-      />
-      <div className="mt-6">
-        <Card>
-          <CardContent className="p-4">
-            <div className="h-5 w-52 animate-pulse rounded bg-black/10" />
-            <div className="mt-2 text-xs text-black/55">Seleccioná un bloque sugerido para avanzar más rápido con la reserva.</div>
-            <div className="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-10 animate-pulse rounded-xl bg-black/5" />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-      <div className="mt-8 grid gap-4 lg:grid-cols-5">
-        <Card className="lg:col-span-3">
-          <CardContent className="p-6">
-            <div className="grid gap-3">
-              <div className="h-5 w-56 animate-pulse rounded bg-black/10" />
-              <div className="h-10 w-full animate-pulse rounded-xl bg-black/5" />
-              <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div key={i} className="h-10 animate-pulse rounded-xl bg-black/5" />
-                ))}
-              </div>
-              <div className="h-28 w-full animate-pulse rounded-2xl bg-black/5" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="lg:col-span-2">
-          <CardContent className="p-6">
-            <div className="grid gap-3">
-              <div className="h-5 w-44 animate-pulse rounded bg-black/10" />
-              <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
-              <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
-              <div className="h-20 w-full animate-pulse rounded-2xl bg-black/5" />
-            </div>
           </CardContent>
         </Card>
       </div>
