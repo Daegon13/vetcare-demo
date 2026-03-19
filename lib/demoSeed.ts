@@ -148,63 +148,63 @@ export function buildDemoSeed(referenceNow = new Date()): DemoSeedData {
   const triage: TriageCase[] = [
     {
       id: "tr_seed_1",
-      createdAt: asDateTimeISO(now, -0.4),
+      createdAt: asDateTimeISO(now, -0.3),
       petName: "Mora",
       species: "Perro",
       ownerName: "Paula G.",
       phone: "+598 98 412 310",
       symptoms: ["respira", "fiebre"],
-      freeText: "Jadea incluso en reposo. Ya avisaron por WhatsApp y el box está listo.",
+      freeText: "Jadea incluso en reposo después de una caminata corta y llegó más quieta de lo habitual.",
       priority: "alta",
-      recommendedAction: "Atención inmediata: equipo listo para recibirla y estabilizarla al llegar."
+      recommendedAction: "Atención inmediata: ingreso directo a evaluación, oxigenación y control clínico al llegar."
     },
     {
       id: "tr_seed_2",
-      createdAt: asDateTimeISO(now, -1.5),
+      createdAt: asDateTimeISO(now, -1.2),
+      petName: "Simón",
+      species: "Gato",
+      ownerName: "Valentina R.",
+      phone: "+598 94 771 240",
+      symptoms: ["ojo", "dolor"],
+      freeText: "Mantiene un ojo semicerrado desde la mañana y se esconde cuando intentan revisarlo.",
+      priority: "media",
+      recommendedAction: "Evaluación en el día para revisar dolor ocular y evitar que la lesión avance."
+    },
+    {
+      id: "tr_seed_3",
+      createdAt: asDateTimeISO(now, -2.6),
       petName: pet.petName,
       species: pet.species,
       ownerName: "Martín Pérez",
       phone: "+598 98 555 221",
       symptoms: ["vomito", "dolor"],
-      freeText: "Vomita desde la madrugada. Si no mejora, pasa a consulta del día.",
+      freeText: "Vomita desde la madrugada, tomó agua pero sigue incómodo y con abdomen sensible.",
       priority: "media",
-      recommendedAction: "Consulta en el día para cortar molestias y evitar deshidratación."
+      recommendedAction: "Consulta hoy con control de hidratación y manejo del dolor para evitar descompensación."
     },
     {
-      id: "tr_seed_3",
-      createdAt: asDateTimeISO(now, -3.2),
+      id: "tr_seed_4",
+      createdAt: asDateTimeISO(now, -4.8),
       petName: "Nina",
       species: "Perro",
       ownerName: "Federico L.",
       phone: "+598 99 220 145",
       symptoms: ["cojera"],
-      freeText: "Apoya menos una pata tras correr en la plaza.",
+      freeText: "Apoya menos una pata tras correr en la plaza, pero sigue animada y sin llanto intenso.",
       priority: "baja",
-      recommendedAction: "Control programado y pautas de cuidado en casa para seguimiento seguro."
-    },
-    {
-      id: "tr_seed_4",
-      createdAt: asDateTimeISO(now, -5),
-      petName: "Olivia",
-      species: "Gato",
-      ownerName: "Lucas P.",
-      phone: "+598 91 640 903",
-      symptoms: ["diarrea", "fiebre"],
-      freeText: "Decaída desde ayer. Ya quedó sugerido control en el día.",
-      priority: "media",
-      recommendedAction: "Evaluación hoy con plan de hidratación y seguimiento por WhatsApp."
+      recommendedAction: "Control programado con reposo, frío local y revisión si aparece inflamación o más dolor."
     },
     {
       id: "tr_seed_5",
-      createdAt: asDateTimeISO(now, -8),
+      createdAt: asDateTimeISO(now, -7.5),
       petName: "Bruno",
       species: "Perro",
       ownerName: "Carla M.",
       phone: "+598 92 601 220",
-      symptoms: ["sangrado"],
-      freeText: "Corte en la almohadilla con sangrado persistente.",
+      symptoms: ["sangrado", "trauma"],
+      freeText: "Se cortó una almohadilla al bajar de la camioneta y el sangrado no cede con presión.",
       priority: "alta",
-      recommendedAction: "Ingreso prioritario para controlar sangrado y evaluar sutura si corresponde."
+      recommendedAction: "Ingreso prioritario para controlar sangrado, limpiar la herida y definir si requiere sutura."
     }
   ];
 
