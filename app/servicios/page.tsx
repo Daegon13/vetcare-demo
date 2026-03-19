@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { Container, Card, CardContent, Badge, LinkButton } from "@/components/ui";
 import { LeadCTA } from "@/components/LeadCTA";
-import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 import { BRAND, SERVICES } from "@/lib/data";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
@@ -19,7 +18,7 @@ const ICONS: Array<{ key: string; label: string }> = [
   { key: "laboratorio", label: "Laboratorio" },
   { key: "cirugia", label: "Cirugía" },
   { key: "internacion", label: "Internación" },
-  { key: "grooming", label: "Grooming" },
+  { key: "grooming", label: "Estética" },
   { key: "control", label: "Control" }
 ];
 
@@ -39,28 +38,28 @@ function iconSrc(key: string) {
 export default function ServicesPage() {
   return (
     <div className="bg-gradient-to-b from-white to-warm-100 dark:from-graphite-950 dark:to-graphite-900">
-      <Container className="py-10 sm:py-14 grid gap-10">
+      <Container className="grid gap-10 py-10 sm:py-14">
         <section className="grid gap-4">
           <Badge className="w-fit">SERVICIOS</Badge>
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight">Atención clínica, preventiva y estética</h1>
-          <p className="max-w-2xl text-sm sm:text-base text-black/65 dark:text-white/70">
-            Brindamos atención veterinaria integral con profesionales especializados, protocolos actualizados y un enfoque humano en cada consulta. Conocé nuestras prestaciones y elegí la opción ideal para tu mascota.
+          <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Cuidado veterinario completo para cada etapa de tu mascota</h1>
+          <p className="max-w-2xl text-sm text-black/65 dark:text-white/70 sm:text-base">
+            En {BRAND.name} combinamos atención clínica, seguimiento preventivo y acompañamiento cercano para que resuelvas en un solo lugar lo que tu mascota necesita, con profesionales dedicados y tiempos pensados para atenderla con calma.
           </p>
           <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
-            <li>• Turnos organizados por tipo de atención para una experiencia ágil y cuidada.</li>
-            <li>• Confirmaciones y recordatorios por WhatsApp para acompañar cada control.</li>
-            <li>• Seguimiento clínico para sostener el bienestar de tu mascota en el tiempo.</li>
+            <li>• Consultas organizadas para reducir esperas y darte una experiencia más cómoda.</li>
+            <li>• Recordatorios y seguimiento para sostener controles, vacunas y tratamientos.</li>
+            <li>• Recomendaciones claras para que tomes decisiones con confianza en cada visita.</li>
           </ul>
         </section>
 
         <section className="grid gap-4 rounded-2xl border border-black/5 bg-white/70 p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900/70 sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-sm font-extrabold tracking-wide">Servicios destacados</h2>
-            <span className="text-xs text-black/50 dark:text-white/55">Atención integral</span>
+            <span className="text-xs text-black/50 dark:text-white/55">Todo en un solo lugar</span>
           </div>
 
           <div className="grid grid-cols-4 gap-3 sm:grid-cols-8">
-            {ICONS.map(icon => (
+            {ICONS.map((icon) => (
               <div
                 key={icon.key}
                 className="grid place-items-center gap-1 rounded-2xl border border-black/5 bg-white/80 p-2 dark:border-white/10 dark:bg-graphite-950/30"
@@ -78,15 +77,20 @@ export default function ServicesPage() {
           </div>
 
           <p className="text-xs text-black/55 dark:text-white/60">
-            Explorá las principales prestaciones y encontrá rápidamente la atención adecuada para tu mascota.
+            Identificá rápidamente el tipo de atención que buscás y elegí la opción más conveniente para tu mascota.
           </p>
         </section>
 
         <section className="grid gap-4">
-          <h2 className="text-xl sm:text-2xl font-extrabold">Listado de servicios</h2>
+          <div className="grid gap-2">
+            <h2 className="text-xl font-extrabold sm:text-2xl">Listado de servicios</h2>
+            <p className="max-w-2xl text-sm text-black/60 dark:text-white/65">
+              Te mostramos tiempos estimados y valores de referencia para ayudarte a comparar opciones y reservar con mayor tranquilidad.
+            </p>
+          </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {SERVICES.map(s => {
+            {SERVICES.map((s) => {
               const iconKey = SERVICE_ICON_BY_ID[s.id] ?? "consulta";
               return (
                 <Card key={s.id}>
@@ -103,19 +107,18 @@ export default function ServicesPage() {
 
                     <div className="grid grid-cols-3 gap-3 text-sm">
                       <div>
-                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">Agendar</div>
+                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">Tiempo estimado</div>
                         <div className="font-bold">{s.durationMin} min</div>
                       </div>
                       <div>
-                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">Buffer</div>
+                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">Preparación</div>
                         <div className="font-bold">{s.bufferMin} min</div>
                       </div>
                       <div>
-                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">$</div>
+                        <div className="text-[11px] font-semibold text-black/50 dark:text-white/55">Desde</div>
                         <div className="font-bold">{s.priceFrom}</div>
                       </div>
                     </div>
-
                   </CardContent>
                 </Card>
               );
@@ -123,13 +126,23 @@ export default function ServicesPage() {
           </div>
 
           <p className="text-xs text-black/55 dark:text-white/60">
-            Valores orientativos sujetos al tipo de consulta y evaluación profesional en clínica.
+            Los valores son orientativos y pueden ajustarse según la evaluación profesional, estudios complementarios o necesidades particulares de cada mascota.
           </p>
+        </section>
+
+        <section className="grid gap-4 rounded-2xl border border-black/5 bg-white/75 p-5 shadow-soft dark:border-white/10 dark:bg-graphite-900/70 sm:p-6">
+          <div className="grid gap-2">
+            <h2 className="text-xl font-extrabold sm:text-2xl">¿Listo para coordinar la atención?</h2>
+            <p className="max-w-2xl text-sm text-black/65 dark:text-white/70">
+              Reservá tu turno online o escribinos por WhatsApp y te ayudamos a elegir el servicio más adecuado para tu mascota.
+            </p>
+          </div>
 
           <div className="flex flex-wrap justify-start gap-2">
-            <LinkButton href="/agenda" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">Reservar turno</LinkButton>
+            <LinkButton href="/agenda" className="bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
+              Reservar turno
+            </LinkButton>
             <LeadCTA interest="servicios" label="Consultar por WhatsApp" variant="outline" />
-            <CommercialImplementationCTA location="servicios" />
           </div>
         </section>
       </Container>
