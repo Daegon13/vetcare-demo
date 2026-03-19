@@ -14,27 +14,27 @@ export const metadata: Metadata = buildPageMetadata({
 const FAQ = [
   {
     q: "¿Cuánto cuesta una consulta o control?",
-    a: "Antes de reservar vas a ver un valor orientativo por servicio. Si durante la consulta hace falta sumar estudios o tratamiento, te lo explicamos y confirmamos con vos antes de avanzar."
+    a: "Antes de reservar vas a ver un valor orientativo según el tipo de atención. Si durante la consulta hace falta sumar estudios, medicación o un procedimiento, te lo explicamos y lo confirmamos con vos antes de avanzar."
   },
   {
     q: "¿Atienden urgencias fuera de horario?",
-    a: "Sí. Podés iniciar la evaluación de urgencia y escribir por WhatsApp para coordinar guardia. Si hay dificultad respiratoria, sangrado activo o desmayo, se prioriza atención inmediata."
+    a: "Sí. Podés iniciar la evaluación de urgencia y escribirnos por WhatsApp para coordinar la guardia. Si hay dificultad respiratoria, sangrado activo, convulsiones o desmayo, la indicación es pedir atención inmediata."
   },
   {
     q: "¿Puedo cancelar o reprogramar un turno?",
-    a: "Sí, desde el mensaje de confirmación en pocos pasos. Podés cancelar o mover el turno sin llamadas y elegir otro horario disponible al momento."
+    a: "Sí. Desde la confirmación podés mover o cancelar el turno en pocos pasos, sin llamadas ni idas y vueltas. Si necesitás ayuda, también podés escribirnos y lo resolvemos con vos."
   },
   {
     q: "¿Qué horarios manejan para turnos generales?",
-    a: "La agenda se actualiza en tiempo real. Si no encontrás lugar en el horario que necesitás, escribinos por WhatsApp y te ayudamos a encontrar la opción más cercana."
+    a: "La agenda muestra disponibilidad actualizada para consultas, controles y servicios frecuentes. Si no encontrás un horario que te sirva, escribinos por WhatsApp y buscamos la opción más cercana."
   },
   {
     q: "¿Cómo sé qué vacunas o controles le faltan a mi mascota?",
-    a: "En el portal podés ver historial clínico, próximos vencimientos y recordatorios automáticos para mantener vacunas y controles al día."
+    a: "En el portal podés revisar historial, próximos vencimientos y recordatorios para mantener vacunas y controles al día sin depender de acordarte de memoria."
   },
   {
     q: "¿Qué cambia en la práctica al reservar por esta vía?",
-    a: "Todo se vuelve más simple: reservas más rápido, recibís recordatorios para no olvidarte y podés hacer seguimiento de controles y vacunas en un solo lugar."
+    a: "Ganás claridad desde el inicio: reservás más rápido, recibís recordatorios y tenés un seguimiento más ordenado de controles, vacunas y próximas indicaciones en un solo lugar."
   }
 ];
 
@@ -43,16 +43,16 @@ export default function FAQPage() {
     <Container className="py-10">
       <SectionHeading
         eyebrow="FAQ"
-        title="Preguntas frecuentes"
-        desc="Estas son las dudas que más recibimos en el día a día: respuestas claras para reservar rápido y hacer seguimiento sin fricción."
+        title="Respuestas claras para decidir rápido"
+        desc="Reunimos las dudas más comunes sobre turnos, urgencias y seguimiento para que puedas resolverlas en minutos y avanzar con tranquilidad."
       />
 
       <div className="mt-8 grid gap-3">
-        {FAQ.map(item => (
+        {FAQ.map((item) => (
           <Card key={item.q}>
             <CardContent>
               <details className="group">
-                <summary className="cursor-pointer list-none flex items-center justify-between gap-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
                   <div className="text-sm font-extrabold">{item.q}</div>
                   <Badge tone="neutral" className="group-open:bg-cyanSoft-50 group-open:text-graphite-900">+</Badge>
                 </summary>
@@ -61,6 +61,10 @@ export default function FAQPage() {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      <div className="mt-10 rounded-3xl border border-black/10 bg-white/70 p-5 text-sm text-black/65 shadow-sm">
+        Si tu duda no aparece acá, podés reservar directo o escribirnos por WhatsApp. La idea es que encuentres respuesta rápido y sepas cuál es el mejor siguiente paso para tu mascota.
       </div>
 
       <div className="mt-10 flex flex-wrap gap-2">
