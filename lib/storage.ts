@@ -3,7 +3,7 @@ import { DEFAULT_CAMPAIGNS, DEFAULT_PET } from "./data";
 import { buildDemoSeed } from "./demoSeed";
 import { clearLeads, getLeads, LEADS_STORAGE_KEY, saveLeads, type LeadEvent } from "./leads";
 
-const DEMO_SEED_VERSION = "3";
+const DEMO_SEED_VERSION = "4";
 
 const KEY = {
   appts: "vetcare.appts.v1",

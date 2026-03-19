@@ -24,6 +24,8 @@ const SYMPTOMS = [
   { id: "ojo", label: "Ojo irritado / secreción" }
 ];
 
+const SEED_CASES = getSeedPreview().triage;
+
 function assess(symptoms: string[]): { priority: TriagePriority; action: string } {
   const severe = ["respira", "sangrado", "convulsiones", "inconsciente", "trauma", "vomito_sangre"];
   const moderate = ["vomito", "diarrea", "fiebre", "dolor"];
@@ -41,6 +43,10 @@ function assess(symptoms: string[]): { priority: TriagePriority; action: string 
   return { priority: "baja", action: "Prioridad baja: podés agendar turno. Si aparecen signos de urgencia, volvé a evaluar." };
 }
 
+function getVisibleCases(items: TriageCase[]) {
+  return items.length > 0 ? items : SEED_CASES;
+}
+
 export default function UrgenciasPage() {
   const [petName, setPetName] = React.useState("");
   const [species, setSpecies] = React.useState<PetSpecies>("Perro");
@@ -48,12 +54,11 @@ export default function UrgenciasPage() {
   const [phone, setPhone] = React.useState("");
   const [selected, setSelected] = React.useState<string[]>([]);
   const [freeText, setFreeText] = React.useState("");
-  const [cases, setCases] = React.useState<TriageCase[]>(() => getSeedPreview().triage);
-  const [ready, setReady] = React.useState(true);
+  const [cases, setCases] = React.useState<TriageCase[]>(() => getVisibleCases(SEED_CASES));
   const [created, setCreated] = React.useState<TriageCase | null>(null);
 
   React.useEffect(() => {
-    setCases(loadTriage());
+    setCases(getVisibleCases(loadTriage()));
   }, []);
 
   function when(iso: string) {
@@ -64,14 +69,13 @@ export default function UrgenciasPage() {
     return `Hace ${Math.round(diffH / 24)} d`;
   }
 
-  const snapshot = React.useMemo(() => {
-    const recent = cases.slice(0, 5);
-    return {
-      alta: recent.filter(c => c.priority === "alta").length,
-      media: recent.filter(c => c.priority === "media").length,
-      baja: recent.filter(c => c.priority === "baja").length
-    };
-  }, [cases]);
+  const recentCases = React.useMemo(() => cases.slice(0, 5), [cases]);
+
+  const snapshot = React.useMemo(() => ({
+    alta: recentCases.filter(c => c.priority === "alta").length,
+    media: recentCases.filter(c => c.priority === "media").length,
+    baja: recentCases.filter(c => c.priority === "baja").length
+  }), [recentCases]);
 
   function toggle(id: string) {
     setSelected(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
@@ -108,20 +112,54 @@ export default function UrgenciasPage() {
     return "good";
   }
 
+  function speciesAccent(currentSpecies: PetSpecies) {
+    if (currentSpecies === "Gato") return "Paciente felino";
+    if (currentSpecies === "Perro") return "Paciente canino";
+    return "Paciente en observación";
+  }
+
   return (
     <Container className="py-10">
       <SectionHeading
         eyebrow="Urgencias"
         title="Evaluación rápida (triage)"
-        desc="Completá síntomas y obtené una prioridad orientativa al instante. Es una guía inicial para actuar rápido y coordinar la atención correcta."
+        desc="Indicá síntomas y obtené una prioridad orientativa al instante, con una cola reciente que ayuda a entender cómo se organiza la atención urgente en la clínica."
       />
+
+      <div className="mt-6 grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardContent className="grid gap-1 p-5">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-black/45">Tiempo de respuesta</div>
+            <div className="text-2xl font-black">Prioridad en menos de 3 min</div>
+            <p className="text-sm text-black/65">El formulario ordena síntomas clave y sugiere el próximo paso para decidir si conviene venir ya, hoy o con turno.</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="grid gap-2 p-5">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-black/45">Cola visible</div>
+            <div className="flex flex-wrap gap-2 text-xs">
+              <Badge tone="bad">Alta: {snapshot.alta}</Badge>
+              <Badge tone="warn">Media: {snapshot.media}</Badge>
+              <Badge tone="good">Baja: {snapshot.baja}</Badge>
+            </div>
+            <p className="text-sm text-black/65">Los casos recientes muestran qué se prioriza primero y qué puede resolverse con evaluación en el día.</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="grid gap-1 p-5">
+            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-black/45">Aclaración clínica</div>
+            <div className="text-base font-bold">Orientación inicial, no reemplaza la revisión veterinaria.</div>
+            <p className="text-sm text-black/65">Si hay dificultad para respirar, sangrado intenso, convulsiones o pérdida de conocimiento, la indicación es acudir de inmediato.</p>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
           <CardHeader className="flex items-center justify-between">
             <div className="grid">
               <div className="text-sm font-extrabold">Formulario de triage</div>
-              <div className="text-sm text-black/60">Marcá síntomas y describí si querés</div>
+              <div className="text-sm text-black/60">Marcá síntomas y agregá contexto para calcular la prioridad.</div>
             </div>
             <Badge tone="neutral">2–3 min</Badge>
           </CardHeader>
@@ -168,8 +206,8 @@ export default function UrgenciasPage() {
               </div>
             </div>
 
-            <Field label="Detalle (opcional)" hint="lo que te preocupe">
-              <Textarea value={freeText} onChange={e => setFreeText(e.target.value)} placeholder="Ej: empezó hace 1 hora, no quiere comer..." />
+            <Field label="Detalle (opcional)" hint="Sumá contexto útil para la evaluación inicial.">
+              <Textarea value={freeText} onChange={e => setFreeText(e.target.value)} placeholder="Ej: empezó hace 1 hora, no quiere comer, está más quieta de lo normal..." />
             </Field>
 
             <div className="flex flex-wrap gap-2">
@@ -179,7 +217,7 @@ export default function UrgenciasPage() {
               <LeadCTA interest="urgencias" label="Escribir por WhatsApp" variant="outline" />
               <CommercialImplementationCTA location="urgencias" />
             </div>
-            <div className="text-xs text-black/45">Resultado orientativo para decidir rápido el próximo paso de atención.</div>
+            <div className="text-xs text-black/45">La recomendación ayuda a definir el siguiente paso con rapidez y criterio clínico inicial.</div>
 
             {created ? (
               <Card className="bg-white ring-1 ring-black/5">
@@ -190,7 +228,7 @@ export default function UrgenciasPage() {
                   </div>
                   <p className="text-sm text-black/70">{created.recommendedAction}</p>
                   <div className="text-xs text-black/50">
-                    Consejo: ante cualquier empeoramiento, contactanos por WhatsApp para atención prioritaria.
+                    Consejo: ante cualquier empeoramiento, escribinos por WhatsApp para coordinar atención prioritaria.
                   </div>
                 </CardContent>
               </Card>
@@ -200,39 +238,29 @@ export default function UrgenciasPage() {
 
         <Card className="lg:col-span-2">
           <CardHeader className="grid gap-2">
-            <div className="text-sm font-extrabold">Casos recientes</div>
-            <div className="text-sm text-black/60">Muestra en vivo del triage: prioridades detectadas y acción recomendada.</div>
-            {ready ? (
-              <div className="flex flex-wrap gap-2 text-xs">
-                <Badge tone="bad">Alta: {snapshot.alta}</Badge>
-                <Badge tone="warn">Media: {snapshot.media}</Badge>
-                <Badge tone="good">Baja: {snapshot.baja}</Badge>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-extrabold">Casos recientes</div>
+                <div className="text-sm text-black/60">Ejemplos recientes con prioridad, contexto clínico breve y acción sugerida.</div>
               </div>
-            ) : null}
+              <Badge tone="neutral">{recentCases.length} visibles</Badge>
+            </div>
           </CardHeader>
           <CardContent className="grid gap-3">
-            {!ready ? (
-              <div className="grid gap-3">
-                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
-                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
-                <div className="h-16 w-full animate-pulse rounded-2xl bg-black/5" />
-              </div>
-            ) : (
-              cases.slice(0, 6).map(c => (
-                <div key={c.id} className="rounded-2xl border border-black/10 bg-white p-4 grid gap-1">
-                  <div className="flex items-center justify-between gap-3">
+            {recentCases.map(c => (
+              <div key={c.id} className="grid gap-2 rounded-2xl border border-black/10 bg-white p-4 shadow-[0_8px_30px_rgba(15,23,42,0.04)]">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
                     <div className="text-sm font-extrabold">{c.petName}</div>
-                    <Badge tone={tone(c.priority)}>{c.priority}</Badge>
+                    <div className="text-xs text-black/55">{speciesAccent(c.species)} · {c.ownerName} · {when(c.createdAt)}</div>
                   </div>
-                  <div className="text-xs text-black/55">{c.ownerName} · {c.phone} · {when(c.createdAt)}</div>
-                  <div className="text-xs text-black/55">
-                    {c.symptoms.slice(0, 2).map(id => SYMPTOMS.find(s => s.id === id)?.label ?? id).join(" · ")}
-                    {c.symptoms.length > 2 ? " · ..." : ""}
-                  </div>
-                  <div className="text-xs text-black/70">{c.recommendedAction}</div>
+                  <Badge tone={tone(c.priority)}>{c.priority.toUpperCase()}</Badge>
                 </div>
-              ))
-            )}
+                <div className="text-xs font-medium text-black/55">{c.symptoms.slice(0, 3).map(id => SYMPTOMS.find(s => s.id === id)?.label ?? id).join(" · ")}</div>
+                {c.freeText ? <div className="text-sm text-black/70">{c.freeText}</div> : null}
+                <div className="rounded-xl bg-black/[0.03] px-3 py-2 text-xs text-black/70">{c.recommendedAction}</div>
+              </div>
+            ))}
           </CardContent>
         </Card>
       </div>
