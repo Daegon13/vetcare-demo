@@ -10,6 +10,7 @@ export const clinica = {
   whatsapp: "+59891234567",
   whatsappUrl: "https://wa.me/59891234567?text=Hola%20VetCare%2C%20quiero%20coordinar%20una%20consulta%20sobre%20turnos%20y%20atenci%C3%B3n%20para%20mi%20mascota.",
   ctaImplementacionLabel: "Solicitar asesoría para mi veterinaria",
+  ctaImplementacionSecundariaLabel: "Hablar por WhatsApp",
   ctaImplementacionUrl: "/contacto",
   telefono: "+598 91 234 567",
   direccion: "Av. Italia 2450, Montevideo",

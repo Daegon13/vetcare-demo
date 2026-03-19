@@ -6,6 +6,8 @@ import { trackEvent } from "@/lib/analytics";
 import { Button, Card, CardContent, CardHeader, Container, Field, Input } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
+import { getDemoToolsState } from "@/lib/demoMode";
+import { getBrowserOrigin, isLocalOrigin, resolvePublicSiteUrl } from "@/lib/siteUrl";
 
 type Destination = {
   label: string;
@@ -35,7 +37,7 @@ const CHANNEL_PRESETS = [
   { label: "TikTok", utm_source: "tiktok", utm_medium: "social_video" },
   { label: "WhatsApp", utm_source: "whatsapp", utm_medium: "chat" }
 ];
-const CAMPAIGN_PRESETS = ["marin_dev_demo", "vetcare_demo", "promo_control"];
+const CAMPAIGN_PRESETS = ["demo_guiada", "vetcare_lanzamiento", "promo_control"];
 
 const DEFAULT_FIELDS: MarketingFields = {
   utm_source: "",
@@ -49,16 +51,18 @@ const DEFAULT_FIELDS: MarketingFields = {
 export default function AdminV1MarketingPage() {
   const [destination, setDestination] = React.useState<Destination>(DESTINATIONS[0]);
   const [fields, setFields] = React.useState<MarketingFields>(DEFAULT_FIELDS);
-  const [includeDemo, setIncludeDemo] = React.useState(false);
+  const [includeDemo, setIncludeDemo] = React.useState(() => getDemoToolsState().enabled);
   const [copyFeedback, setCopyFeedback] = React.useState<"idle" | "copied" | "error">("idle");
+  const [baseUrl, setBaseUrl] = React.useState(() => resolvePublicSiteUrl());
 
-  const baseUrl = React.useMemo(() => {
-    if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-    if (typeof window !== "undefined") return window.location.origin;
-    return "http://localhost:3000";
+  React.useEffect(() => {
+    setBaseUrl(resolvePublicSiteUrl());
+    setIncludeDemo(getDemoToolsState(new URLSearchParams(window.location.search)).enabled);
   }, []);
 
   const generatedLink = React.useMemo(() => {
+    if (!baseUrl) return "";
+
     const url = new URL(destination.path, baseUrl);
     const entries = Object.entries(fields) as Array<[keyof MarketingFields, string]>;
 
@@ -77,6 +81,11 @@ export default function AdminV1MarketingPage() {
   }, [baseUrl, destination.path, fields, includeDemo]);
 
   async function copyLink() {
+    if (!generatedLink) {
+      setCopyFeedback("error");
+      return;
+    }
+
     try {
       await navigator.clipboard.writeText(generatedLink);
       setCopyFeedback("copied");
@@ -95,13 +104,20 @@ export default function AdminV1MarketingPage() {
     setCopyFeedback("idle");
   }
 
+  const resolvedOrigin = baseUrl ?? getBrowserOrigin();
+  const previewContext = resolvedOrigin
+    ? isLocalOrigin(resolvedOrigin)
+      ? "Entorno local: usamos el origin actual para evitar previews falsos y mantener links copiables."
+      : "Producción: usamos la URL pública real para que el preview coincida con lo que ve el usuario final."
+    : "Resolviendo la URL pública del entorno…";
+
   return (
     <Container className="py-10">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <SectionHeading
           eyebrow="Admin v1"
           title="Marketing link builder"
-          desc="Generá links con UTM para campañas internas sin depender de herramientas externas."
+          desc="Generá links listos para compartir con UTM, preview confiable y comportamiento coherente entre demo interna y producción."
         />
         <div className="flex flex-wrap gap-2">
           <Link href="/adminv1" className="inline-flex h-11 items-center rounded-xl border border-black/10 bg-white px-4 text-sm font-semibold hover:bg-black/5">
@@ -114,7 +130,7 @@ export default function AdminV1MarketingPage() {
       <Card className="mt-6">
         <CardHeader>
           <div className="text-sm font-extrabold">Destino</div>
-          <div className="text-sm text-black/60">Elegí la ruta base y completá parámetros UTM opcionales.</div>
+          <div className="text-sm text-black/60">Elegí la ruta base y completá parámetros UTM opcionales. El builder toma como base la URL pública configurada y, en local, usa el origin actual de forma segura.</div>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
@@ -196,12 +212,13 @@ export default function AdminV1MarketingPage() {
                 setCopyFeedback("idle");
               }}
             />
-            Incluir demo=1
+            Incluir demo=1 {includeDemo ? "(activo por entorno demo)" : ""}
           </label>
 
           <div className="rounded-2xl border border-black/10 bg-black/[0.03] p-4">
             <div className="text-xs font-semibold uppercase text-black/50">Preview</div>
-            <p className="mt-2 break-all font-mono text-sm">{generatedLink}</p>
+            <p className="mt-2 break-all font-mono text-sm">{generatedLink || "Resolviendo URL pública…"}</p>
+            <p className="mt-2 text-xs text-black/60">{previewContext}</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
