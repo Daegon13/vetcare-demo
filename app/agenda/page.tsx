@@ -19,7 +19,9 @@ export default async function AgendaPage({
   const params = (await searchParams) ?? {};
   const rawService = Array.isArray(params.service) ? params.service[0] : params.service;
   const serviceIds = new Set<ServiceId>(SERVICES.map((service) => service.id));
+  const seedAppointments = getSeedPreview().appointments;
   const initialServiceId: ServiceId = rawService && serviceIds.has(rawService as ServiceId) ? (rawService as ServiceId) : "consulta";
+  const initialDateISO = seedAppointments[0]?.dateISO ?? new Date().toISOString().slice(0, 10);
 
-  return <AgendaClientPage initialAppointments={getSeedPreview().appointments} initialServiceId={initialServiceId} />;
+  return <AgendaClientPage initialAppointments={seedAppointments} initialServiceId={initialServiceId} initialDateISO={initialDateISO} />;
 }

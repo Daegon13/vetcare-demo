@@ -13,14 +13,20 @@ import { SectionHeading } from "@/components/section";
 
 const todayISO = () => new Date().toISOString().slice(0, 10);
 
+function resolveInitialDate(initialAppointments: Appointment[]) {
+  return initialAppointments[0]?.dateISO ?? todayISO();
+}
+
 type AgendaClientPageProps = {
   initialAppointments: Appointment[];
   initialServiceId: ServiceId;
+  initialDateISO: string;
 };
 
-export default function AgendaClientPage({ initialAppointments, initialServiceId }: AgendaClientPageProps) {
+export default function AgendaClientPage({ initialAppointments, initialServiceId, initialDateISO }: AgendaClientPageProps) {
+  const bookingRef = React.useRef<HTMLDivElement | null>(null);
   const [serviceId, setServiceId] = React.useState<ServiceId>(initialServiceId);
-  const [dateISO, setDateISO] = React.useState<string>(todayISO());
+  const [dateISO, setDateISO] = React.useState<string>(initialDateISO || resolveInitialDate(initialAppointments));
   const [time, setTime] = React.useState<string>("");
   const [petName, setPetName] = React.useState("");
   const [ownerName, setOwnerName] = React.useState("");
@@ -85,11 +91,12 @@ export default function AgendaClientPage({ initialAppointments, initialServiceId
   }
 
   function downloadICS(item: Appointment) {
+    const itemService = getService(item.serviceId);
     const ics = makeICS({
       title: `Turno VetCare — ${SERVICES.find(s => s.id === item.serviceId)?.name ?? "Servicio"}`,
       dateISO: item.dateISO,
       time: item.time,
-      minutes: svc.durationMin,
+      minutes: itemService.durationMin,
       description: `Mascota: ${item.petName}\nTitular: ${item.ownerName}\nTel: ${item.phone}${item.notes ? `\nNotas: ${item.notes}` : ""}`,
       location: BRAND.address
     });
@@ -100,6 +107,10 @@ export default function AgendaClientPage({ initialAppointments, initialServiceId
     a.download = `turno-${item.dateISO}-${item.time.replace(":", "")}.ics`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  function jumpToBooking() {
+    bookingRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   return (
@@ -160,8 +171,8 @@ export default function AgendaClientPage({ initialAppointments, initialServiceId
             <div className="mt-3 text-2xl font-black tracking-tight">Reservá o resolvé por WhatsApp en la misma vista.</div>
             <div className="mt-2 text-sm text-white/72">Jerarquía clara para demo comercial: disponibilidad primero, acción principal siempre a mano y soporte inmediato por chat.</div>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Button onClick={createAppointment} disabled={!canSubmit()} className="h-11 px-5 bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
-                Confirmar turno
+              <Button onClick={jumpToBooking} className="h-11 px-5 bg-cyanSoft-400 text-graphite-950 hover:bg-cyanSoft-300">
+                Reservar ahora
               </Button>
               <LeadCTA interest="turnos" label="Consultar por WhatsApp" variant="outline" />
             </div>
@@ -204,7 +215,7 @@ export default function AgendaClientPage({ initialAppointments, initialServiceId
         </CardContent>
       </Card>
 
-      <div className="mt-8 grid gap-4 lg:grid-cols-5">
+      <div ref={bookingRef} className="mt-8 grid gap-4 lg:grid-cols-5">
         <Card className="lg:col-span-3">
           <CardHeader className="flex items-center justify-between">
             <div className="grid">
