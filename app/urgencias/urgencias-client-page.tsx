@@ -131,7 +131,7 @@ export default function UrgenciasPage() {
         <Card>
           <CardContent className="grid gap-1 p-5">
             <div className="text-xs font-semibold uppercase tracking-[0.2em] text-black/45">Tiempo de respuesta</div>
-            <div className="text-2xl font-black">Prioridad en menos de 3 min</div>
+            <div className="text-2xl font-black">Orientación inmediata</div>
             <p className="text-sm text-black/65">El formulario ordena síntomas clave y sugiere el próximo paso para decidir si conviene venir ya, hoy o con turno.</p>
           </CardContent>
         </Card>
@@ -162,7 +162,7 @@ export default function UrgenciasPage() {
               <div className="text-sm font-extrabold">Formulario de triage</div>
               <div className="text-sm text-black/60">Marcá síntomas y agregá contexto para calcular la prioridad.</div>
             </div>
-            <Badge tone="neutral">2–3 min</Badge>
+            <Badge tone="neutral">Orientativo</Badge>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-3 sm:grid-cols-2">

@@ -118,7 +118,7 @@ export default function AgendaClientPage({ initialAppointments, initialServiceId
       <SectionHeading
         eyebrow="Agenda"
         title="Reservá un turno"
-        desc="Disponibilidad confirmada para hoy y próximos días, con agenda activa y próximos turnos visibles desde el primer segundo."
+        desc="Consultá los espacios de esta agenda demo y solicitá un turno en pocos pasos."
       />
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1.5fr,1fr]">

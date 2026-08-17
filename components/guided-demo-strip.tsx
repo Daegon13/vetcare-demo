@@ -10,13 +10,7 @@ export type DemoStep = {
 
 const DEFAULT_DEMO_STEPS: DemoStep[] = [
   {
-    label: "Pedidos",
-    description: "Pedí productos cotidianos con entrega o retiro, sin ocupar recepción para iniciar la gestión.",
-    ctaLabel: "Hacer un pedido",
-    href: "/pedidos"
-  },
-  {
-    label: "Turno",
+    label: "Agenda",
     description: "Reservá una consulta en pocos pasos, desde el servicio hasta la confirmación por tu canal de contacto.",
     ctaLabel: "Reservar turno",
     href: "/agenda"
@@ -26,6 +20,12 @@ const DEFAULT_DEMO_STEPS: DemoStep[] = [
     description: "Completá la orientación inicial para priorizar síntomas y saber cómo actuar antes de llegar.",
     ctaLabel: "Evaluar urgencia",
     href: "/urgencias"
+  },
+  {
+    label: "Pedidos",
+    description: "Pedí productos cotidianos con entrega o retiro, sin ocupar recepción para iniciar la gestión.",
+    ctaLabel: "Hacer un pedido",
+    href: "/pedidos"
   },
   {
     label: "Mi Mascota",

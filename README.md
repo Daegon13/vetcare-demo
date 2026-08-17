@@ -21,7 +21,7 @@ Este repositorio contiene una **demo comercial interactiva** para clínicas vete
 - No emite tickets reales de guardia ni procesa pagos reales.
 - No reemplaza implementación, QA y hardening antes de salir a producción.
 
-## Flujo recomendado para mostrar (90–120s)
+## Demo comercial recomendada (90–120s)
 
 > Objetivo: contar una historia breve de “problema → operación → resultado”.
 

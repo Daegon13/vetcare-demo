@@ -6,8 +6,8 @@ import { SectionHeading } from "@/components/section";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: `Equipo veterinario | ${BRAND.name}`,
-  description: `Conocé al equipo de ${BRAND.name}: profesionales en clínica, cirugía y atención integral para mascotas.`,
+  title: `Ejemplo de equipo veterinario | ${BRAND.name}`,
+  description: `Vista demostrativa de una página de equipo adaptable a una veterinaria.`,
   path: "/equipo"
 });
 
@@ -38,14 +38,13 @@ export default function EquipoPage() {
   return (
     <Container className="py-10">
       <SectionHeading
-        eyebrow="Equipo"
-        title="Un equipo cercano, criterioso y fácil de contactar"
-        desc="En VetCare combinamos atención cálida, criterio clínico y seguimiento ordenado para que cada tutor se sienta acompañado antes, durante y después de la consulta."
+        eyebrow="Página demostrativa"
+        title="Ejemplo de presentación del equipo"
+        desc="Esta sección muestra cómo podría organizarse la información de una veterinaria. Los perfiles son ficticios y deben reemplazarse antes de publicar."
       />
 
       <div className="mt-6 max-w-3xl text-sm leading-6 text-black/65">
-        Somos una veterinaria de cercanía: preferimos explicar con claridad, responder a tiempo y construir vínculos de confianza con cada familia.
-        Cuando una mascota necesita control, cirugía, seguimiento o simplemente una segunda mirada, el objetivo es el mismo: que sepan que hay un equipo presente del otro lado.
+        En una implementación real, este espacio presenta únicamente profesionales, roles y canales confirmados por la veterinaria.
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
@@ -57,7 +56,7 @@ export default function EquipoPage() {
                   <div className="text-sm font-extrabold">{p.name}</div>
                   <div className="text-xs font-semibold uppercase tracking-[0.08em] text-black/45">{p.role}</div>
                 </div>
-                <Badge tone="neutral">Equipo VetCare</Badge>
+                <Badge tone="neutral">Perfil ficticio · demo</Badge>
               </div>
               <div className="text-sm text-black/65">{p.bio}</div>
             </CardContent>

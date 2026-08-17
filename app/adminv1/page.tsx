@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BRAND, SERVICES, STAFF } from "@/lib/data";
+import { BRAND, SERVICES } from "@/lib/data";
 import type { Appointment, AppointmentStatus, Campaign, Order, OrderStatus, PetProfile, TriageCase } from "@/lib/types";
 import { getSeedPreview, loadAppointments, loadCampaigns, loadOrders, loadPet, loadTriage, resetDemo, saveAppointments, saveCampaigns, saveOrders, savePet, saveTriage } from "@/lib/storage";
 import { cn, uid } from "@/lib/utils";
@@ -312,9 +312,9 @@ export default function AdminV1Page() {
           </CardHeader>
           <CardContent className="grid gap-3">
             <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4">
-              <div className="text-xs font-semibold uppercase tracking-wide text-black/45">Equipo activo</div>
-              <div className="mt-1 text-sm font-semibold text-graphite-950">{STAFF[0]?.nombre}</div>
-              <div className="text-sm text-black/65">{STAFF[0]?.especialidades.join(" · ")}</div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-black/45">Solicitudes organizadas</div>
+              <div className="mt-1 text-sm font-semibold text-graphite-950">{pendingOrders} pedidos · {triageStats.alta + triageStats.media} casos priorizados</div>
+              <div className="text-sm text-black/65">Información operativa derivada de los datos almacenados en esta demo.</div>
             </div>
             <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-4">
               <div className="text-xs font-semibold uppercase tracking-wide text-black/45">Paciente destacado</div>

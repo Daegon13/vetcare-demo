@@ -19,7 +19,10 @@ const KEY = {
 function safeParse<T>(raw: string | null, fallback: T): T {
   try {
     if (!raw) return fallback;
-    return JSON.parse(raw) as T;
+    const parsed = JSON.parse(raw) as T;
+    if (Array.isArray(fallback) && !Array.isArray(parsed)) return fallback;
+    if (fallback !== null && typeof fallback === "object" && !Array.isArray(fallback) && (parsed === null || typeof parsed !== "object" || Array.isArray(parsed))) return fallback;
+    return parsed;
   } catch {
     return fallback;
   }
@@ -252,7 +255,9 @@ export function saveTriage(items: TriageCase[]) {
 
 export function loadPet(): PetProfile {
   ensureDemoSeed();
-  return safeGet(KEY.pet, getSeedPreview().pet ?? DEFAULT_PET);
+  const fallback = getSeedPreview().pet ?? DEFAULT_PET;
+  const pet = safeGet(KEY.pet, fallback);
+  return typeof pet.id === "string" && typeof pet.petName === "string" && Array.isArray(pet.vaccines) ? pet : fallback;
 }
 
 export function savePet(p: PetProfile) {
@@ -268,9 +273,16 @@ export function saveCampaigns(items: Campaign[]) {
   safeSet(KEY.campaigns, items);
 }
 
-export function loadOrders(): Order[] { ensureDemoSeed(); return safeGet(KEY.orders, getSeedPreview().orders); }
+export function loadOrders(): Order[] {
+  ensureDemoSeed();
+  return safeGet(KEY.orders, getSeedPreview().orders).filter(order =>
+    !!order && typeof order.id === "string" && typeof order.ownerName === "string" &&
+    typeof order.phone === "string" && typeof order.petName === "string" && Array.isArray(order.items) &&
+    (order.fulfillment === "delivery" || order.fulfillment === "retiro")
+  );
+}
 export function saveOrders(items: Order[]) { safeSet(KEY.orders, items); }
-export function loadSavedItems(): SavedItem[] { ensureDemoSeed(); return safeGet(KEY.savedItems, getSeedPreview().savedItems); }
+export function loadSavedItems(): SavedItem[] { ensureDemoSeed(); return safeGet(KEY.savedItems, getSeedPreview().savedItems).filter(item => !!item && typeof item.id === "string" && typeof item.petId === "string" && typeof item.productId === "string"); }
 export function saveSavedItems(items: SavedItem[]) { safeSet(KEY.savedItems, items); }
-export function loadSavedServices(): SavedService[] { ensureDemoSeed(); return safeGet(KEY.savedServices, getSeedPreview().savedServices); }
+export function loadSavedServices(): SavedService[] { ensureDemoSeed(); return safeGet(KEY.savedServices, getSeedPreview().savedServices).filter(item => !!item && typeof item.id === "string" && typeof item.petId === "string" && typeof item.serviceId === "string"); }
 export function saveSavedServices(items: SavedService[]) { safeSet(KEY.savedServices, items); }
