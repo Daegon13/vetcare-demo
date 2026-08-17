@@ -4,10 +4,11 @@ import * as React from "react";
 import type { PetSpecies, TriageCase, TriagePriority } from "@/lib/types";
 import { getSeedPreview, loadTriage, saveTriage } from "@/lib/storage";
 import { uid } from "@/lib/utils";
-import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge } from "@/components/ui";
+import { Container, Card, CardContent, CardHeader, Field, Input, Select, Textarea, Button, Badge, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 import { LeadCTA } from "@/components/LeadCTA";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
+import { BRAND } from "@/lib/data";
 
 const SYMPTOMS = [
   { id: "respira", label: "Dificultad respiratoria" },
@@ -217,7 +218,7 @@ export default function UrgenciasPage() {
               <LeadCTA interest="urgencias" label="Escribir por WhatsApp" variant="outline" />
               <CommercialImplementationCTA location="urgencias" />
             </div>
-            <div className="text-xs text-black/45">La recomendación ayuda a definir el siguiente paso con rapidez y criterio clínico inicial.</div>
+            <div className="text-xs text-black/45">Esta orientación inicial no es un diagnóstico ni reemplaza la evaluación veterinaria.</div>
 
             {created ? (
               <Card className="bg-white ring-1 ring-black/5">
@@ -227,6 +228,11 @@ export default function UrgenciasPage() {
                     <Badge tone={tone(created.priority)}>{created.priority.toUpperCase()}</Badge>
                   </div>
                   <p className="text-sm text-black/70">{created.recommendedAction}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {created.priority === "baja" ? <LinkButton href="/agenda" variant="outline">Agendar consulta</LinkButton> : null}
+                    {created.priority === "media" ? <LeadCTA interest="urgencias" label="Consultar por WhatsApp" variant="outline" /> : null}
+                    {created.priority === "alta" ? <><LinkButton href={`tel:${BRAND.phone.replace(/[^+\d]/g, "")}`} className="bg-rose-700 hover:bg-rose-800">Llamar ahora</LinkButton><span className="self-center text-sm font-semibold">Acudí a la veterinaria sin demora.</span></> : null}
+                  </div>
                   <div className="text-xs text-black/50">
                     Consejo: ante cualquier empeoramiento, escribinos por WhatsApp para coordinar atención prioritaria.
                   </div>

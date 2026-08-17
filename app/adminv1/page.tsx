@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import { BRAND, SERVICES, STAFF } from "@/lib/data";
-import type { Appointment, AppointmentStatus, Campaign, PetProfile, TriageCase } from "@/lib/types";
-import { getSeedPreview, loadAppointments, loadCampaigns, loadPet, loadTriage, resetDemo, saveAppointments, saveCampaigns, savePet, saveTriage } from "@/lib/storage";
+import type { Appointment, AppointmentStatus, Campaign, Order, OrderStatus, PetProfile, TriageCase } from "@/lib/types";
+import { getSeedPreview, loadAppointments, loadCampaigns, loadOrders, loadPet, loadTriage, resetDemo, saveAppointments, saveCampaigns, saveOrders, savePet, saveTriage } from "@/lib/storage";
 import { cn, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Button, Badge, Field, Input, Select, Textarea, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
@@ -11,7 +11,7 @@ import { CommercialImplementationCTA } from "@/components/commercial-implementat
 import { clearLeads, exportLeadsCSV, exportLeadsJSON, getLeads, type LeadEvent } from "@/lib/leads";
 import { trackEvent } from "@/lib/analytics";
 
-type Tab = "turnos" | "triage" | "mascotas" | "campañas" | "leads";
+type Tab = "turnos" | "triage" | "pedidos" | "mascotas" | "campañas" | "leads";
 
 function statTone(n: number) {
   return n === 0 ? "neutral" : "good";
@@ -47,6 +47,7 @@ export default function AdminV1Page() {
   const [pet, setPet] = React.useState<PetProfile | null>(seed.pet);
   const [campaigns, setCampaigns] = React.useState<Campaign[]>(seed.campaigns);
   const [leads, setLeads] = React.useState<LeadEvent[]>(seed.leads);
+  const [orders, setOrders] = React.useState<Order[]>(seed.orders);
   const ready = true;
 
   const [q, setQ] = React.useState("");
@@ -77,6 +78,7 @@ export default function AdminV1Page() {
     setCampaigns(next);
     saveCampaigns(next);
   }
+  function persistOrders(next: Order[]) { setOrders(next); saveOrders(next); }
 
   const apptStats = React.useMemo(() => {
     const total = appts.length;
@@ -115,6 +117,7 @@ export default function AdminV1Page() {
       leadChannels: leadChannels.size
     };
   }, [appts, campaigns, leads]);
+  const pendingOrders = orders.filter(order => !["entregado", "cancelado"].includes(order.status)).length;
 
   const highlightedCases = React.useMemo(() => {
     const priorityOrder = { alta: 0, media: 1, baja: 2 } as const;
@@ -145,6 +148,7 @@ export default function AdminV1Page() {
     setPet(loadPet());
     setCampaigns(loadCampaigns());
     setLeads(getLeads());
+    setOrders(loadOrders());
   }
 
   function demoReset() {
@@ -184,6 +188,8 @@ export default function AdminV1Page() {
       (lead.interest ?? []).join(" ").toLowerCase().includes(s)
     );
   });
+  const filteredOrders = orders.filter(order => !q.trim() || `${order.id} ${order.ownerName} ${order.phone} ${order.petName} ${order.items.map(i => i.name).join(" ")}`.toLowerCase().includes(q.toLowerCase()));
+  function setOrderStatus(id: string, status: OrderStatus) { persistOrders(orders.map(order => order.id === id ? { ...order, status } : order)); trackEvent("admin_order_status_changed", { order_id: id, status }); }
 
   function downloadFile(filename: string, content: string, mime: string) {
     const blob = new Blob([content], { type: mime });
@@ -240,7 +246,7 @@ export default function AdminV1Page() {
         <SectionHeading
           eyebrow="Panel de gestión"
           title="Panel operativo con información clara desde la primera vista"
-          desc="Una vista compacta para revisar agenda activa, casos priorizados, seguimiento de pacientes y campañas sin pantallas vacías al ingresar."
+          desc="Centro operativo para revisar turnos, casos priorizados, pedidos, pacientes y campañas desde una sola vista."
         />
         <div className="flex gap-2 flex-wrap">
           <Button variant="outline" onClick={demoReset}>Restablecer datos</Button>
@@ -274,7 +280,12 @@ export default function AdminV1Page() {
               </div>
             </div>
 
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-4">
+              <div className="rounded-2xl border border-black/10 bg-white p-4">
+                <div className="text-xs font-semibold text-black/50">Pedidos por resolver</div>
+                <div className="mt-1 text-2xl font-black">{pendingOrders}</div>
+                <div className="text-sm text-black/65">solicitudes organizadas con entrega, productos y contacto.</div>
+              </div>
               <div className="rounded-2xl border border-black/10 bg-white p-4">
                 <div className="text-xs font-semibold text-black/50">Atención de hoy</div>
                 <div className="mt-1 text-2xl font-black">{dashboardSummary.todayAppointments}</div>
@@ -323,7 +334,10 @@ export default function AdminV1Page() {
         </Card>
       </div>
 
-      <div className="mt-6 grid gap-3 md:grid-cols-4">
+      <div className="mt-6 grid gap-3 md:grid-cols-5">
+        <Card><CardContent className="grid gap-1">
+          <div className="text-xs font-semibold text-black/50">Pedidos</div><div className="text-2xl font-black">{orders.length}</div><div className="text-sm text-black/60">{pendingOrders} por resolver</div>
+        </CardContent></Card>
         <Card><CardContent className="grid gap-1">
           <div className="text-xs font-semibold text-black/50">Turnos</div>
           <div className="text-2xl font-black">{ready ? apptStats.total : "…"}</div>
@@ -360,7 +374,7 @@ export default function AdminV1Page() {
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-2">
-          {(["turnos", "triage", "mascotas", "campañas", "leads"] as Tab[]).map(t => (
+          {(["turnos", "triage", "pedidos", "mascotas", "campañas", "leads"] as Tab[]).map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -490,6 +504,8 @@ export default function AdminV1Page() {
             </CardContent>
           </Card>
         ) : null}
+
+        {tab === "pedidos" ? <Card><CardHeader><div className="text-sm font-extrabold">Pedidos entrantes</div><div className="text-sm text-black/60">Del autoservicio web a recepción, sin transcribir mensajes o llamadas.</div></CardHeader><CardContent className="grid gap-3">{filteredOrders.map(order => <div key={order.id} className="grid gap-3 rounded-2xl border border-black/10 bg-white p-4"><div className="flex flex-wrap items-start justify-between gap-3"><div><div className="font-extrabold">#{order.id} · {order.petName}</div><div className="text-sm text-black/65">{order.ownerName} · {order.phone} · {new Date(order.createdAt).toLocaleString("es-UY")}</div><div className="mt-2 text-sm">{order.items.map(item => `${item.quantity} × ${item.name}`).join(" · ")}</div></div><Badge tone={order.status === "entregado" ? "good" : order.status === "cancelado" ? "bad" : "warn"}>{order.status === "en_camino" ? "en camino" : order.status}</Badge></div><div className="rounded-xl bg-black/[0.03] p-3 text-sm"><strong>{order.fulfillment === "delivery" ? "Envío a domicilio" : "Retiro en veterinaria"}</strong>{order.deliveryDetails ? <div>{order.deliveryDetails.address}{order.deliveryDetails.neighborhood ? ` · ${order.deliveryDetails.neighborhood}` : ""}{order.deliveryDetails.instructions ? ` · ${order.deliveryDetails.instructions}` : ""}</div> : null}{order.notes ? <div>Observaciones: {order.notes}</div> : null}<div>Subtotal demo: ${order.subtotal.toLocaleString("es-UY")}</div></div><div className="flex flex-wrap gap-2"><Select aria-label={`Estado de ${order.id}`} className="w-auto" value={order.status} onChange={e => setOrderStatus(order.id, e.target.value as OrderStatus)}><option value="pendiente">Pendiente</option><option value="confirmado">Confirmado</option><option value="preparando">Preparando</option>{order.fulfillment === "delivery" ? <option value="en_camino">En camino</option> : <option value="listo">Listo para retirar</option>}<option value="entregado">Entregado</option><option value="cancelado">Cancelado</option></Select><LinkButton href={`https://wa.me/${order.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Hola ${order.ownerName}, te contactamos por el pedido ${order.id} de ${order.petName}.`)}`} target="_blank" rel="noreferrer" variant="outline">Contactar por WhatsApp</LinkButton></div></div>)}</CardContent></Card> : null}
 
         {tab === "mascotas" ? (
           <Card>

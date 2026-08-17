@@ -10,6 +10,12 @@ export type DemoStep = {
 
 const DEFAULT_DEMO_STEPS: DemoStep[] = [
   {
+    label: "Pedidos",
+    description: "Pedí productos cotidianos con entrega o retiro, sin ocupar recepción para iniciar la gestión.",
+    ctaLabel: "Hacer un pedido",
+    href: "/pedidos"
+  },
+  {
     label: "Turno",
     description: "Reservá una consulta en pocos pasos, desde el servicio hasta la confirmación por tu canal de contacto.",
     ctaLabel: "Reservar turno",
@@ -43,7 +49,7 @@ export function GuidedDemoStrip({
   id,
   eyebrow = "RECORRIDO DESTACADO",
   title = "Conocé cómo te acompaña VetCare",
-  description = "Recorré los momentos clave de la atención para resolver turnos, urgencias y seguimiento desde un mismo lugar.",
+  description = "Resolvé turnos, orientación, pedidos y seguimiento desde un mismo lugar.",
   steps = DEFAULT_DEMO_STEPS
 }: GuidedDemoStripProps) {
   return (
@@ -61,7 +67,7 @@ export function GuidedDemoStrip({
         <p className="text-sm text-black/60 dark:text-white/70">{description}</p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {steps.map((step, index) => (
           <article key={step.label} className="grid gap-3 rounded-xl bg-black/5 p-4 dark:bg-white/10">
             <p className="text-xs font-bold text-black/60 dark:text-white/60">PASO {index + 1}</p>

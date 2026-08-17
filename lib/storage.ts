@@ -1,15 +1,18 @@
-import type { Appointment, Campaign, PetProfile, TriageCase } from "./types";
+import type { Appointment, Campaign, Order, PetProfile, SavedItem, SavedService, TriageCase } from "./types";
 import { DEFAULT_CAMPAIGNS, DEFAULT_PET } from "./data";
 import { buildDemoSeed } from "./demoSeed";
 import { clearLeads, getLeads, LEADS_STORAGE_KEY, saveLeads, type LeadEvent } from "./leads";
 
-const DEMO_SEED_VERSION = "4";
+const DEMO_SEED_VERSION = "5";
 
 const KEY = {
   appts: "vetcare.appts.v1",
   triage: "vetcare.triage.v1",
   pet: "vetcare.pet.v1",
   campaigns: "vetcare.campaigns.v1",
+  orders: "vetcare.orders.v1",
+  savedItems: "vetcare.saved-items.v1",
+  savedServices: "vetcare.saved-services.v1",
   seeded: "vetcare.seeded.version"
 };
 
@@ -167,6 +170,9 @@ export function ensureDemoSeed() {
     }
 
     seedCollection(KEY.campaigns, demo.campaigns, [], sortCampaigns, { replaceSeededItems: shouldRefreshSeededRecords });
+    seedCollection(KEY.orders, demo.orders, [], undefined, { replaceSeededItems: shouldRefreshSeededRecords });
+    seedCollection(KEY.savedItems, demo.savedItems, [], undefined, { replaceSeededItems: shouldRefreshSeededRecords });
+    seedCollection(KEY.savedServices, demo.savedServices, [], undefined, { replaceSeededItems: shouldRefreshSeededRecords });
 
     const leadSeed = seedCollection(LEADS_STORAGE_KEY, demo.leads, getLeads(), sortLeads, {
       replaceSeededItems: shouldRefreshSeededRecords
@@ -188,6 +194,9 @@ export function clearDemo() {
     safeRemove(KEY.triage);
     safeRemove(KEY.pet);
     safeRemove(KEY.campaigns);
+    safeRemove(KEY.orders);
+    safeRemove(KEY.savedItems);
+    safeRemove(KEY.savedServices);
     clearLeads();
     safeRemove(KEY.seeded);
   } catch {
@@ -204,6 +213,9 @@ export function resetDemo() {
     safeSet(KEY.triage, sortTriage(demo.triage));
     safeSet(KEY.pet, demo.pet);
     safeSet(KEY.campaigns, sortCampaigns(demo.campaigns));
+    safeSet(KEY.orders, demo.orders);
+    safeSet(KEY.savedItems, demo.savedItems);
+    safeSet(KEY.savedServices, demo.savedServices);
     saveLeads(sortLeads(demo.leads));
     setSeededFlag();
   } catch {
@@ -255,3 +267,10 @@ export function loadCampaigns(): Campaign[] {
 export function saveCampaigns(items: Campaign[]) {
   safeSet(KEY.campaigns, items);
 }
+
+export function loadOrders(): Order[] { ensureDemoSeed(); return safeGet(KEY.orders, getSeedPreview().orders); }
+export function saveOrders(items: Order[]) { safeSet(KEY.orders, items); }
+export function loadSavedItems(): SavedItem[] { ensureDemoSeed(); return safeGet(KEY.savedItems, getSeedPreview().savedItems); }
+export function saveSavedItems(items: SavedItem[]) { safeSet(KEY.savedItems, items); }
+export function loadSavedServices(): SavedService[] { ensureDemoSeed(); return safeGet(KEY.savedServices, getSeedPreview().savedServices); }
+export function saveSavedServices(items: SavedService[]) { safeSet(KEY.savedServices, items); }

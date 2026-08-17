@@ -4,7 +4,7 @@ Este repositorio contiene una **demo comercial interactiva** para clínicas vete
 
 ## Resumen ejecutivo (para abrir una llamada en 15s)
 
-- **Problema:** la operación veterinaria se fragmenta entre agenda, urgencias y seguimiento.
+- **Problema:** la atención cotidiana se fragmenta entre agenda, urgencias, pedidos, teléfono y seguimiento.
 - **Demo:** una experiencia única para mostrar orden operativo y mejor respuesta al tutor.
 - **Resultado esperado:** menos fricción, mejor visibilidad y siguiente paso claro de implementación.
 
@@ -21,32 +21,36 @@ Este repositorio contiene una **demo comercial interactiva** para clínicas vete
 - No emite tickets reales de guardia ni procesa pagos reales.
 - No reemplaza implementación, QA y hardening antes de salir a producción.
 
-## Flujo recomendado para mostrar (60–120s)
+## Flujo recomendado para mostrar (90–120s)
 
 > Objetivo: contar una historia breve de “problema → operación → resultado”.
 
 1. **Inicio (10–15s):** Home + propuesta de valor.
 2. **Agenda (20–30s):** crear/confirmar un turno para evidenciar rapidez operativa.
 3. **Urgencias/Triage (20–30s):** cargar síntomas y mostrar prioridad estimada.
-4. **Portal mi mascota / historial (15–25s):** mostrar continuidad clínica.
-5. **Panel admin demo (15–20s):** validar operación (agenda + triage + campañas/reset).
-6. **Cierre CTA (5–10s):** invitar a implementación/piloto y próxima reunión.
+4. **Pedido a domicilio (20s):** elegir un producto habitual, cargar entrega y confirmar sin pago.
+5. **Portal Mi Mascota (15s):** mostrar próximas acciones, servicios frecuentes y repetición de pedidos.
+6. **Panel admin demo (15–20s):** abrir Pedidos, encontrar el recién creado y cambiar su estado.
+7. **Cierre CTA (5–10s):** mostrar que agenda, triage, campañas, leads y WhatsApp siguen disponibles.
 
 ### Runbook express (versión 90s)
 
 1. Home (valor)
 2. Agenda (crear turno)
-3. Urgencias (triage)
-4. Mi mascota (historial)
-5. Admin + CTA final
+3. Urgencias (orientación y canal recomendado)
+4. Pedidos (delivery para Milo)
+5. Mi Mascota (repetir producto/servicio)
+6. Admin (pedido entrante y cambio de estado)
 
 ## Features clave para mencionar en la demo
 
 - Triage orientativo para priorización de urgencias.
 - Agenda operativa con reserva, confirmación y cancelación.
 - Vista de urgencias recientes y prioridad.
+- Pedido web de productos cotidianos con retiro o delivery a coordinar, sin stock ni pago simulados.
+- Productos y servicios frecuentes con acciones para volver a pedir o reservar.
 - Historial y datos de mascota (portal “Mi mascota”).
-- Panel admin demo para lectura rápida de operación.
+- Centro operativo con pedidos, estado, entrega y contacto por WhatsApp, además de todas las capacidades previas.
 - Persistencia local para continuidad de la historia de demo.
 - Enlaces/UTM para campañas comerciales.
 - CTA de contacto para implementación.
@@ -65,6 +69,7 @@ Este repositorio contiene una **demo comercial interactiva** para clínicas vete
 - Home (`/`)
 - Agenda (`/agenda`)
 - Urgencias (`/urgencias`)
+- Pedidos (`/pedidos`)
 - Mi mascota / historial (`/mi-mascota`)
 - Admin demo (`/adminv1`) con demo tools habilitado
 
