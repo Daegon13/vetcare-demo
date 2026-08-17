@@ -32,6 +32,15 @@ export const VACCINES_SCHEMA = vacunas;
 export const TESTIMONIALS = testimonios;
 export const FAQS = faqs;
 
+export const PRODUCT_CATALOG = [
+  { id: "food-adult", name: "Alimento balanceado adulto", description: "Bolsa de alimento cotidiano para perros adultos (presentación demo).", category: "Alimento", price: 1890 },
+  { id: "snack-dental", name: "Snack dental", description: "Snack de cuidado cotidiano, complemento de la higiene habitual.", category: "Snacks", price: 320 },
+  { id: "shampoo-sensitive", name: "Shampoo piel sensible", description: "Higiene suave de uso externo. Suspender ante irritación.", category: "Higiene", price: 590 },
+  { id: "flea-preventive", name: "Preventivo antiparasitario", description: "Producto de ejemplo: la veterinaria validará especie, peso y antecedentes antes de confirmar.", category: "Cuidado preventivo", price: 780, requiresValidation: true },
+  { id: "waste-bags", name: "Bolsas para paseo", description: "Pack de bolsas biodegradables para el paseo diario.", category: "Accesorios", price: 240 },
+  { id: "water-bowl", name: "Bebedero portátil", description: "Accesorio plegable para paseos y viajes.", category: "Accesorios", price: 450 }
+] as const;
+
 export const DEFAULT_PET: PetProfile = {
   id: "pet_1",
   petName: "Milo",

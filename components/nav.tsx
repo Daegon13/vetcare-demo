@@ -18,6 +18,7 @@ const links = [
   { href: "/servicios", label: "Servicios" },
   { href: "/agenda", label: "Agenda" },
   { href: "/urgencias", label: "Urgencias" },
+  { href: "/pedidos", label: "Pedidos" },
   { href: "/mi-mascota", label: "Mi Mascota" },
   { href: "/equipo", label: "Equipo" },
   { href: "/ubicacion", label: "Ubicación" },
@@ -118,7 +119,7 @@ export function Nav() {
           ) : null}
         </Link>
 
-        <nav className="hidden max-w-[calc(100vw-34rem)] flex-1 items-center gap-1 overflow-x-auto whitespace-nowrap lg:flex">
+        <nav className="hidden max-w-[calc(100vw-31rem)] flex-1 items-center gap-0 overflow-x-auto whitespace-nowrap xl:flex">
           {navLinks.map(l => {
             const active = pathname === l.href;
             return (
@@ -126,7 +127,7 @@ export function Nav() {
                 key={l.href}
                 href={withDemo(l.href)}
                 className={cn(
-                  "rounded-xl px-3 py-2 text-sm font-semibold transition",
+                  "rounded-xl px-2 py-2 text-sm font-semibold transition 2xl:px-3",
                   active ? "bg-black/5 dark:bg-white/15" : "hover:bg-black/5 dark:hover:bg-white/10"
                 )}
               >
@@ -165,7 +166,7 @@ export function Nav() {
         </div>
       </Container>
 
-      <Container className="pb-3 lg:hidden">
+      <Container className="pb-3 xl:hidden">
         <div className="flex flex-wrap gap-2">
           {navLinks.map(l => {
             const active = pathname === l.href;

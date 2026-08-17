@@ -2,8 +2,10 @@
 
 import * as React from "react";
 import { BRAND } from "@/lib/data";
-import type { PetProfile, Vaccine } from "@/lib/types";
-import { loadPet, savePet } from "@/lib/storage";
+import Link from "next/link";
+import type { Appointment, Order, PetProfile, SavedItem, SavedService, Vaccine } from "@/lib/types";
+import { loadAppointments, loadOrders, loadPet, loadSavedItems, loadSavedServices, savePet } from "@/lib/storage";
+import { trackEvent } from "@/lib/analytics";
 import { formatDateLong, toWhatsAppLink, uid } from "@/lib/utils";
 import { Container, Card, CardContent, CardHeader, Field, Input, Button, Badge } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
@@ -58,6 +60,11 @@ function overdue(dateISO?: string) {
 export default function MiMascotaPage() {
   const [pet, setPet] = React.useState<PetProfile>(() => loadPet());
   const [history] = React.useState<HistoryItem[]>(getDemoHistory);
+  const [orders, setOrders] = React.useState<Order[]>([]);
+  const [appointments, setAppointments] = React.useState<Appointment[]>([]);
+  const [savedItems, setSavedItems] = React.useState<SavedItem[]>([]);
+  const [savedServices, setSavedServices] = React.useState<SavedService[]>([]);
+  React.useEffect(() => { setOrders(loadOrders()); setAppointments(loadAppointments()); setSavedItems(loadSavedItems()); setSavedServices(loadSavedServices()); }, []);
 
   const [vName, setVName] = React.useState("");
   const [vDate, setVDate] = React.useState("");
@@ -93,6 +100,9 @@ export default function MiMascotaPage() {
     .filter(v => soon(v.nextDueISO))
     .map(v => `${v.name} (${v.nextDueISO})`)
     .join(", ") || "N/A"}`;
+  const petOrders = orders.filter(order => order.petId === pet.id || order.petName.toLowerCase() === pet.petName.toLowerCase()).slice(0, 4);
+  const upcomingAppointments = appointments.filter(item => item.petName.toLowerCase() === pet.petName.toLowerCase() && item.status !== "cancelado" && item.dateISO >= new Date().toISOString().slice(0, 10));
+  const statusLabel = (status: Order["status"]) => status === "en_camino" ? "en camino" : status;
 
   return (
     <Container className="py-10">
@@ -247,6 +257,20 @@ export default function MiMascotaPage() {
           </CardContent>
         </Card>
       </div>
+
+      <section className="mt-6 grid gap-4">
+        <h2 className="text-2xl font-black">Próximas acciones</h2>
+        <div className="grid gap-3 sm:grid-cols-3">
+          <Card><CardContent className="p-4"><div className="text-xs font-bold uppercase text-black/50">Próxima vacuna</div><div className="mt-1 font-extrabold">{nextVaccine?.name ?? "Sin pendientes"}</div><div className="text-sm text-black/60">{nextVaccine?.nextDueISO ? formatDateLong(nextVaccine.nextDueISO) : "Calendario revisado"}</div></CardContent></Card>
+          <Card><CardContent className="p-4"><div className="text-xs font-bold uppercase text-black/50">Próximo control</div><div className="mt-1 font-extrabold">{upcomingAppointments[0] ? formatDateLong(upcomingAppointments[0].dateISO) : "A coordinar"}</div><Link href="/agenda?service=control" className="text-sm font-semibold underline">Agendar control</Link></CardContent></Card>
+          <Card><CardContent className="p-4"><div className="text-xs font-bold uppercase text-black/50">Turnos próximos</div><div className="mt-1 text-2xl font-black">{upcomingAppointments.length}</div><div className="text-sm text-black/60">reservas activas de {pet.petName}</div></CardContent></Card>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card><CardHeader><div className="font-extrabold">Servicios frecuentes</div><div className="text-sm text-black/60">Volvé a reservar con el servicio preseleccionado.</div></CardHeader><CardContent className="grid gap-3">{savedServices.filter(s => s.petId === pet.id).map(service => <div key={service.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3"><div><strong>{service.name}</strong><div className="text-xs text-black/55">Última vez: {formatDateLong(service.lastUsedAt)}</div></div><Link href={`/agenda?service=${service.serviceId}`} onClick={() => trackEvent("saved_service_clicked", { service: service.serviceId })} className="rounded-xl border px-3 py-2 text-sm font-semibold">Reservar nuevamente</Link></div>)}</CardContent></Card>
+          <Card><CardHeader><div className="font-extrabold">Productos habituales</div><div className="text-sm text-black/60">Iniciá el pedido con el producto ya agregado.</div></CardHeader><CardContent className="grid gap-3">{savedItems.filter(s => s.petId === pet.id).map(item => <div key={item.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border p-3"><div><strong>{item.name}</strong><div className="text-xs text-black/55">Último pedido: {new Date(item.lastOrderedAt).toLocaleDateString("es-UY")}</div></div><Link href={`/pedidos?producto=${item.productId}`} onClick={() => trackEvent("reorder_clicked", { product: item.productId })} className="rounded-xl border px-3 py-2 text-sm font-semibold">Volver a pedir</Link></div>)}</CardContent></Card>
+        </div>
+        <Card><CardHeader className="flex flex-wrap items-center justify-between gap-2"><div><div className="font-extrabold">Pedidos recientes</div><div className="text-sm text-black/60">Solicitudes asociadas a {pet.petName}, actualizadas desde recepción.</div></div><Link href="/pedidos" className="rounded-xl border px-3 py-2 text-sm font-semibold">Nuevo pedido</Link></CardHeader><CardContent className="grid gap-3">{petOrders.map(order => <div key={order.id} className="flex flex-wrap justify-between gap-3 rounded-xl border p-3"><div><strong>#{order.id}</strong><div className="text-sm text-black/60">{order.items.map(i => `${i.quantity} × ${i.name}`).join(", ")}</div><div className="text-xs text-black/50">{new Date(order.createdAt).toLocaleString("es-UY")}</div></div><Badge tone={order.status === "entregado" ? "good" : order.status === "cancelado" ? "bad" : "warn"}>{statusLabel(order.status)}</Badge></div>)}</CardContent></Card>
+      </section>
     </Container>
   );
 }

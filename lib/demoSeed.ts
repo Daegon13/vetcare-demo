@@ -4,7 +4,10 @@ import type {
   Campaign,
   PetProfile,
   ServiceId,
-  TriageCase
+  TriageCase,
+  Order,
+  SavedItem,
+  SavedService
 } from "./types";
 import type { LeadEvent } from "./leads";
 
@@ -14,6 +17,9 @@ type DemoSeedData = {
   pet: PetProfile;
   campaigns: Campaign[];
   leads: LeadEvent[];
+  orders: Order[];
+  savedItems: SavedItem[];
+  savedServices: SavedService[];
 };
 
 type SeedReferenceDate = {
@@ -269,5 +275,27 @@ export function buildDemoSeed(referenceNow = new Date()): DemoSeedData {
     }
   ];
 
-  return { appointments, triage, pet, campaigns, leads };
+  const order = (id: string, petName: string, ownerName: string, productId: string, name: string, quantity: number, unitPrice: number, category: string, status: Order["status"], fulfillment: Order["fulfillment"], hoursAgo: number): Order => ({
+    id, createdAt: asDateTimeISO(now, -hoursAgo), ownerName, phone: ownerName === "Martín Pérez" ? "+598 98 555 221" : "+598 99 410 220",
+    petId: petName === pet.petName ? pet.id : undefined, petName, items: [{ productId, name, quantity, unitPrice, category }], fulfillment,
+    deliveryDetails: fulfillment === "delivery" ? { address: "Av. Italia 2840", neighborhood: "Parque Batlle", instructions: "Tocar timbre 2." } : undefined,
+    status, subtotal: quantity * unitPrice
+  });
+  const orders: Order[] = [
+    order("VC-1048", pet.petName, "Martín Pérez", "food-adult", "Alimento balanceado adulto", 1, 1890, "Alimento", "pendiente", "delivery", 1),
+    order("VC-1047", "Luna", "Sofía Méndez", "snack-dental", "Snack dental", 2, 320, "Snacks", "confirmado", "retiro", 4),
+    order("VC-1046", pet.petName, "Martín Pérez", "flea-preventive", "Preventivo antiparasitario", 1, 780, "Cuidado preventivo", "preparando", "retiro", 28),
+    order("VC-1045", "Nala", "Camila Rodríguez", "shampoo-sensitive", "Shampoo piel sensible", 1, 590, "Higiene", "en_camino", "delivery", 50),
+    order("VC-1044", pet.petName, "Martín Pérez", "food-adult", "Alimento balanceado adulto", 2, 1890, "Alimento", "entregado", "delivery", 240)
+  ];
+  const savedItems: SavedItem[] = [
+    { id: "saved_item_milo_food", petId: pet.id, productId: "food-adult", name: "Alimento habitual", lastOrderedAt: orders[4].createdAt },
+    { id: "saved_item_milo_preventive", petId: pet.id, productId: "flea-preventive", name: "Preventivo antiparasitario", lastOrderedAt: orders[2].createdAt }
+  ];
+  const savedServices: SavedService[] = [
+    { id: "saved_service_milo_control", petId: pet.id, serviceId: "consulta", name: "Consulta preventiva", lastUsedAt: asDateISO(today, -16) },
+    { id: "saved_service_milo_groom", petId: pet.id, serviceId: "estetica", name: "Baño y estética", lastUsedAt: asDateISO(today, -75) }
+  ];
+
+  return { appointments, triage, pet, campaigns, leads, orders, savedItems, savedServices };
 }

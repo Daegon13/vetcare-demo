@@ -65,3 +65,16 @@ export type Campaign = {
   scheduledISO: string;
   status: "borrador" | "programada" | "enviada";
 };
+
+export type OrderStatus = "pendiente" | "confirmado" | "preparando" | "en_camino" | "listo" | "entregado" | "cancelado";
+export type FulfillmentMethod = "delivery" | "retiro";
+
+export type DeliveryDetails = { address: string; neighborhood?: string; instructions?: string };
+export type OrderItem = { productId: string; name: string; quantity: number; unitPrice: number; category: string };
+export type Order = {
+  id: string; createdAt: string; ownerName: string; phone: string; petId?: string; petName: string;
+  items: OrderItem[]; fulfillment: FulfillmentMethod; deliveryDetails?: DeliveryDetails; notes?: string;
+  status: OrderStatus; subtotal: number;
+};
+export type SavedItem = { id: string; petId: string; productId: string; name: string; lastOrderedAt: string };
+export type SavedService = { id: string; petId: string; serviceId: ServiceId; name: string; lastUsedAt: string };

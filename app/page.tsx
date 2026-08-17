@@ -12,8 +12,8 @@ import { GuidedDemoStrip } from "@/components/guided-demo-strip";
 import { CommercialImplementationCTA } from "@/components/commercial-implementation-cta";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: `${BRAND.name} | Turnos, urgencias y seguimiento veterinario`,
-  description: `Conocé ${BRAND.name}: agenda online, orientación inicial en urgencias y seguimiento para tutores en una sola experiencia.`,
+  title: `${BRAND.name} | Turnos, orientación, pedidos y seguimiento`,
+  description: `Conocé ${BRAND.name}: agenda, orientación inicial, pedidos y seguimiento en una sola experiencia.`,
   path: "/"
 });
 
@@ -65,10 +65,10 @@ export default function HomePage({ searchParams }: HomePageProps) {
               VetCare · Atención veterinaria más clara para tutores y equipos
             </Badge>
             <h1 className="text-3xl font-black tracking-tight sm:text-5xl">
-              Reservá más rápido, actuá antes en urgencias y seguí el plan de salud.
+              Resolvé turnos, pedidos y gestiones frecuentes online.
             </h1>
             <p className="max-w-xl text-sm text-black/60 dark:text-white/70 sm:text-lg">
-              Una experiencia simple para pedir turno, priorizar síntomas y mantener vacunas e historial al día en un solo lugar.
+              Menos pasos repetitivos y más continuidad. Cuando realmente necesitás al equipo, sabés cómo contactarlo.
             </p>
             <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
               <li>• Priorización de urgencias con guía clara y contacto directo por WhatsApp.</li>
@@ -82,6 +82,8 @@ export default function HomePage({ searchParams }: HomePageProps) {
               <LinkButton href="/urgencias" variant="outline">
                 Evaluar urgencia
               </LinkButton>
+              <LinkButton href="/pedidos" variant="outline">Pedir a domicilio</LinkButton>
+              <LinkButton href="/mi-mascota" variant="outline">Mi Mascota</LinkButton>
               <LeadCTA interest="general" label="Hablar por WhatsApp" variant="outline" />
               {demoToolsEnabled ? (
                 <LinkButton href="/adminv1" variant="ghost">
@@ -90,7 +92,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
               ) : null}
             </div>
             <div className="text-xs text-black/45 dark:text-white/55">
-              Encontrá turnos, orientación inicial y seguimiento en un recorrido claro y útil.
+              Elegí autoservicio para lo cotidiano o contacto humano cuando corresponde.
             </div>
             <div className="text-xs text-black/50 dark:text-white/60">
               Contacto: {BRAND.phone} · {BRAND.address} · {BRAND.hours}
@@ -114,7 +116,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
             <Card className="overflow-hidden">
               <div className="bg-graphite-900 p-6 text-white">
                 <div className="text-sm font-semibold text-white/70">Resumen rápido</div>
-                <div className="mt-2 text-2xl font-black">“Pasamos de mensajes sueltos a un flujo claro: turno, urgencia y seguimiento en minutos.”</div>
+                <div className="mt-2 text-2xl font-black">“Turnos, orientación, pedidos y seguimiento entran por un canal organizado.”</div>
                 <div className="mt-3 text-sm text-white/70">Flujo claro para el tutor, contexto útil para el equipo.</div>
               </div>
             </Card>
@@ -123,14 +125,14 @@ export default function HomePage({ searchParams }: HomePageProps) {
       </div>
 
       <Container className="py-6 sm:py-8">
-        <GuidedDemoStrip description="Empezá por agenda, seguí con urgencias y cerrá el recorrido con el seguimiento de Mi Mascota." />
+        <GuidedDemoStrip description="Empezá por agenda, evaluá una urgencia, creá un pedido y comprobá la continuidad en Mi Mascota." />
       </Container>
 
       <Container className="py-8 sm:py-10">
         <SectionHeading
           eyebrow="Experiencia en acción"
           title="Así se ve en la práctica"
-          desc="Vista rápida de agenda, urgencias y portal en una experiencia integral."
+          desc="Vista rápida de agenda, orientación, pedidos y portal en una experiencia integral."
         />
         <div className="mt-6">
           <HeroVisual />
