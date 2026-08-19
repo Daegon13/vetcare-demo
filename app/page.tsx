@@ -72,7 +72,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
             </p>
             <ul className="grid gap-1 text-sm text-black/65 dark:text-white/70">
               <li>• Priorización de urgencias con guía clara y contacto directo por WhatsApp.</li>
-              <li>• Recordatorios automáticos para reducir ausencias y sostener controles preventivos.</li>
+              <li>• Recordatorios y seguimiento para sostener los controles preventivos.</li>
               <li>• Historial y próximos vencimientos visibles para el tutor en un solo lugar.</li>
             </ul>
             <div className="flex flex-wrap gap-2">
@@ -160,7 +160,7 @@ export default function HomePage({ searchParams }: HomePageProps) {
           <div>
             <div className="text-sm font-extrabold">Qué incluye</div>
             <ul className="mt-2 grid gap-1 text-sm text-black/65 dark:text-white/70">
-              <li>• Sitio con agenda online y urgencias guiadas.</li>
+              <li>• Sitio con agenda online, urgencias guiadas y pedidos.</li>
               <li>• Portal para clientes con vacunas e historial básico.</li>
               <li>• Panel simple para seguimiento interno.</li>
             </ul>

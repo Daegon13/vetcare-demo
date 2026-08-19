@@ -6,6 +6,7 @@ import { PRODUCT_CATALOG } from "@/lib/data";
 import type { FulfillmentMethod, Order, OrderItem } from "@/lib/types";
 import { loadOrders, loadPet, saveOrders } from "@/lib/storage";
 import { trackEvent } from "@/lib/analytics";
+import { uid } from "@/lib/utils";
 import { Container, Card, CardContent, Badge, Button, Field, Input, Textarea, LinkButton } from "@/components/ui";
 import { SectionHeading } from "@/components/section";
 
@@ -24,6 +25,8 @@ export default function PedidosClientPage() {
   const [instructions, setInstructions] = React.useState("");
   const [notes, setNotes] = React.useState("");
   const [created, setCreated] = React.useState<Order | null>(null);
+  const [error, setError] = React.useState("");
+  const [submitting, setSubmitting] = React.useState(false);
 
   React.useEffect(() => {
     const product = params.get("producto");
@@ -37,11 +40,23 @@ export default function PedidosClientPage() {
   const subtotal = items.reduce((sum, item) => sum + item.quantity * item.unitPrice, 0);
   const changeQty = (id: string, delta: number) => setCart(current => ({ ...current, [id]: Math.max(0, (current[id] ?? 0) + delta) }));
 
-  function submit(event: React.FormEvent) {
+  function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!items.length || !ownerName.trim() || phone.replace(/\D/g, "").length < 8 || (fulfillment === "delivery" && !address.trim())) return;
+    if (submitting) return;
+    const missing: string[] = [];
+    if (!items.length) missing.push("al menos un producto");
+    if (!ownerName.trim()) missing.push("el nombre del tutor");
+    if (!petName.trim()) missing.push("la mascota");
+    if (phone.replace(/\D/g, "").length < 8) missing.push("un teléfono válido");
+    if (fulfillment === "delivery" && !address.trim()) missing.push("la dirección de entrega");
+    if (missing.length) {
+      setError(`Revisá estos datos: ${missing.join(", ")}.`);
+      return;
+    }
+    setSubmitting(true);
+    setError("");
     const order: Order = {
-      id: `VC-${String(Date.now()).slice(-4)}`, createdAt: new Date().toISOString(), ownerName: ownerName.trim(), phone: phone.trim(),
+      id: `VC-${uid("pedido").split("_")[1]!.slice(0, 6).toUpperCase()}`, createdAt: new Date().toISOString(), ownerName: ownerName.trim(), phone: phone.trim(),
       petId: petName.trim().toLowerCase() === pet.petName.toLowerCase() ? pet.id : undefined, petName: petName.trim(), items, fulfillment,
       deliveryDetails: fulfillment === "delivery" ? { address: address.trim(), neighborhood: neighborhood.trim() || undefined, instructions: instructions.trim() || undefined } : undefined,
       notes: notes.trim() || undefined, status: "pendiente", subtotal
@@ -71,7 +86,8 @@ export default function PedidosClientPage() {
         <fieldset className="grid gap-2"><legend className="font-extrabold">3. Entrega</legend><label className="flex min-h-11 items-center gap-2 rounded-xl border p-3"><input type="radio" checked={fulfillment === "delivery"} onChange={() => { setFulfillment("delivery"); trackEvent("delivery_selected", { method: "delivery" }); }} /> Envío a domicilio</label><label className="flex min-h-11 items-center gap-2 rounded-xl border p-3"><input type="radio" checked={fulfillment === "retiro"} onChange={() => { setFulfillment("retiro"); trackEvent("delivery_selected", { method: "retiro" }); }} /> Retiro en veterinaria</label></fieldset>
         {fulfillment === "delivery" ? <div className="grid gap-3"><Field label="Dirección"><Input required value={address} onChange={e => setAddress(e.target.value)} /></Field><Field label="Barrio (opcional)"><Input value={neighborhood} onChange={e => setNeighborhood(e.target.value)} /></Field><Field label="Instrucciones (opcional)"><Input value={instructions} onChange={e => setInstructions(e.target.value)} /></Field></div> : null}
         <h2 className="text-lg font-black">4. Datos de contacto</h2><Field label="Nombre"><Input required value={ownerName} onChange={e => setOwnerName(e.target.value)} /></Field><Field label="Teléfono"><Input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} /></Field><Field label="Mascota"><Input required value={petName} onChange={e => setPetName(e.target.value)} /></Field>
-        <Button type="submit" disabled={!items.length}>Enviar pedido · sin pagar</Button><p className="text-xs text-black/50">5. Al confirmar verás el número y el próximo paso. Pago y disponibilidad se coordinan con la veterinaria.</p>
+        {error ? <p role="alert" className="rounded-xl bg-rose-50 p-3 text-sm font-semibold text-rose-800">{error}</p> : null}
+        <Button type="submit" disabled={!items.length || submitting}>{submitting ? "Enviando pedido…" : "Enviar pedido · sin pagar"}</Button><p className="text-xs text-black/50">5. Al confirmar verás el número y el próximo paso. Pago y disponibilidad se coordinan con la veterinaria.</p>
       </CardContent></Card>
     </form>
   </Container>;
